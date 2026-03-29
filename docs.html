@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaRl Documentation — Corren</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--ink:#0D0D0D;--ink-2:#444440;--ink-3:#888780;--accent:#1A3A2A;--green:#C8F5A0;--border:rgba(13,13,13,.08);--border2:rgba(13,13,13,.14);--sidebar:260px;--mono:'DM Mono',monospace;--serif:'DM Serif Display',serif;--sans:'DM Sans',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(247,245,240,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px}
+.nav-logo{font-family:var(--mono);font-size:.95rem;font-weight:500;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:1px;letter-spacing:-.02em}
+.nav-logo .dot{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:1.1rem}
+.nav-right{display:flex;align-items:center;gap:1.5rem}
+.nav-right a{font-family:var(--mono);font-size:.75rem;color:var(--ink-3);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;transition:color .2s}
+.nav-right a:hover{color:var(--ink)}
+.nav-cta{color:var(--bg)!important;background:var(--ink);padding:.38rem 1rem;border-radius:2px;transition:background .2s!important}
+.nav-cta:hover{background:var(--accent)!important}
+.nav-version{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);background:rgba(13,13,13,.06);padding:.2rem .5rem;border-radius:2px}
+.layout{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh;padding-top:56px}
+.sidebar{position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;border-right:1px solid var(--border);padding:2rem 0;background:var(--bg);scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.sb-section{margin-bottom:1.75rem}
+.sb-label{font-family:var(--mono);font-size:.62rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;padding:.3rem 1.5rem .5rem;display:block}
+.sb-link{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.78rem;color:var(--ink-3);text-decoration:none;padding:.38rem 1.5rem;transition:all .15s;border-left:2px solid transparent;line-height:1.3}
+.sb-link:hover{color:var(--ink);background:rgba(13,13,13,.03)}
+.sb-link.active{color:var(--accent);border-left-color:var(--accent);background:rgba(26,58,42,.04)}
+.sb-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}
+.content{padding:3rem 4rem 6rem;max-width:820px}
+.doc-eyebrow{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.doc-eyebrow::before{content:'';display:inline-block;width:1.2rem;height:1px;background:var(--ink-3)}
+h1.doc-h1{font-family:var(--serif);font-size:3rem;line-height:1.05;letter-spacing:-.02em;margin-bottom:1rem}
+h1.doc-h1 em{font-style:italic;color:var(--accent)}
+.doc-lead{font-size:1.05rem;color:var(--ink-2);line-height:1.85;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+h2.doc-h2{font-family:var(--serif);font-size:1.85rem;line-height:1.15;margin:3rem 0 1rem;scroll-margin-top:72px}
+h3.doc-h3{font-family:var(--sans);font-size:1rem;font-weight:600;margin:2rem 0 .6rem;scroll-margin-top:72px;color:var(--ink)}
+h4.doc-h4{font-family:var(--mono);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:1.5rem 0 .5rem}
+.doc-p{color:var(--ink-2);line-height:1.85;margin-bottom:.9rem;font-size:.95rem}
+.doc-p code,.doc-p a{font-family:var(--mono);font-size:.82rem;background:rgba(13,13,13,.06);padding:.1rem .35rem;border-radius:2px;color:var(--accent);text-decoration:none}
+hr.doc-hr{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+.callout{padding:1rem 1.25rem;border-radius:0 3px 3px 0;margin:1.5rem 0;font-size:.9rem;line-height:1.7}
+.ci{background:rgba(26,58,42,.06);border-left:3px solid var(--accent)}
+.cw{background:rgba(200,120,30,.06);border-left:3px solid #C87820}
+.callout p{color:var(--ink-2);margin:0}
+.callout strong{color:var(--ink)}
+.cl{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;font-weight:500}
+.ci .cl{color:var(--accent)}.cw .cl{color:#C87820}
+.code-wrap{background:var(--ink);border-radius:3px;overflow:hidden;margin:1.25rem 0}
+.code-bar{display:flex;align-items:center;padding:.55rem 1rem;background:rgba(247,245,240,.05);border-bottom:1px solid rgba(247,245,240,.06)}
+.dots{display:flex;gap:.35rem}
+.d{width:9px;height:9px;border-radius:50%}
+.dr{background:#FF5F57}.dy{background:#FFBD2E}.dg{background:#28C840}
+.code-lang{font-family:var(--mono);font-size:.65rem;color:rgba(247,245,240,.3);margin-left:.75rem;letter-spacing:.06em;text-transform:uppercase}
+.code-wrap pre{font-family:var(--mono);font-size:.82rem;line-height:1.85;color:rgba(247,245,240,.75);padding:1.25rem 1.5rem;overflow-x:auto;white-space:pre}
+.ck{color:#7DD3FC}.ca{color:#FCA5A5}.cn{color:#FCD34D}.cp{color:#C8F5A0}.cc{color:rgba(200,245,160,.35)}.cs{color:#FF9F7D}
+.ci2{font-family:var(--mono);font-size:.82rem;background:rgba(13,13,13,.06);padding:.12rem .38rem;border-radius:2px;color:var(--accent)}
+.doc-table{width:100%;border-collapse:collapse;margin:1.25rem 0;font-size:.88rem}
+.doc-table th{text-align:left;font-family:var(--mono);font-size:.65rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;padding:.7rem 1rem;border-bottom:1px solid var(--border);font-weight:400}
+.doc-table td{padding:.7rem 1rem;border-bottom:1px solid var(--border);color:var(--ink-2);vertical-align:top}
+.doc-table tr:last-child td{border-bottom:none}
+.doc-table code{font-family:var(--mono);font-size:.8rem;color:var(--accent);background:rgba(26,58,42,.07);padding:.08rem .3rem;border-radius:2px}
+.req{font-family:var(--mono);font-size:.65rem;color:#C87820;background:rgba(200,120,30,.08);padding:.1rem .3rem;border-radius:2px}
+.opt{font-family:var(--mono);font-size:.65rem;color:var(--ink-3);background:rgba(13,13,13,.05);padding:.1rem .3rem;border-radius:2px}
+.new-badge{font-family:var(--mono);font-size:.6rem;color:var(--accent);background:rgba(26,58,42,.1);padding:.1rem .35rem;border-radius:2px;vertical-align:middle;margin-left:.3rem}
+.breadcrumb{font-family:var(--mono);font-size:.72rem;color:var(--ink-3);margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem}
+.breadcrumb a{color:var(--ink-3);text-decoration:none;transition:color .15s}
+.breadcrumb a:hover{color:var(--ink)}
+.breadcrumb span{opacity:.4}
+.doc-nav{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border)}
+.doc-nav a{font-family:var(--mono);font-size:.78rem;color:var(--ink-3);text-decoration:none;padding:1rem 1.25rem;border:1px solid var(--border);transition:all .2s;display:flex;flex-direction:column;gap:.25rem}
+.doc-nav a:hover{border-color:var(--ink);color:var(--ink)}
+.dn-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;opacity:.6}
+.doc-nav a.next{text-align:right}
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+
+.doc-eyebrow{animation:fadeIn .5s ease .1s both}
+h1.doc-h1{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .2s both}
+.doc-lead{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .35s both}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+.rv.v{opacity:1;transform:translateY(0)}
+
+/* code wrap hover */
+.code-wrap{transition:box-shadow .2s}
+.code-wrap:hover{box-shadow:0 0 0 1px rgba(200,245,160,.15)}
+
+/* sidebar link animation */
+.sb-link{transition:color .15s,background .15s,border-left-color .2s,padding-left .2s}
+.sb-link.active{padding-left:1.75rem}
+
+/* callout subtle pulse on appear */
+.callout{animation:fadeIn .4s ease both}
+
+/* table row hover */
+.doc-table tbody tr{transition:background .15s}
+.doc-table tbody tr:hover td{background:rgba(26,58,42,.04)}
+
+/* heading underline on hover */
+h2.doc-h2{position:relative;display:inline-block}
+h2.doc-h2::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--accent);transition:width .3s ease}
+h2.doc-h2:hover::after{width:100%}
+
+/* doc-nav hover */
+.doc-nav a{position:relative;overflow:hidden}
+.doc-nav a::before{content:'';position:absolute;inset:0;background:rgba(26,58,42,.04);transform:translateX(-101%);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.doc-nav a:hover::before{transform:translateX(0)}
+
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}.content{padding:2rem 1.25rem 4rem;max-width:100%}h1.doc-h1{font-size:2.2rem}.code-wrap pre{font-size:.75rem}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">corren<span class="dot">.</span></a>
+  <div class="nav-right">
+    <span class="nav-version">v1.0.0-alpha</span>
+    <a href="/">Home</a>
+    <a href="/grammar.html">Grammar</a>
+    <a href="https://github.com/amezianechayer/corren">GitHub</a>
+    <a href="https://github.com/amezianechayer/corren/releases" class="nav-cta">Download →</a>
+  </div>
+</nav>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sb-section">
+    <span class="sb-label">Getting Started</span>
+    <a href="#install" class="sb-link active"><span class="sb-dot"></span>Installation</a>
+    <a href="#quickstart" class="sb-link"><span class="sb-dot"></span>Quick Start</a>
+    <a href="#config" class="sb-link"><span class="sb-dot"></span>Configuration</a>
+    <a href="#cli" class="sb-link"><span class="sb-dot"></span>CLI Reference</a>
+  </div>
+  <div class="sb-section">
+    <span class="sb-label">FaRl Language</span>
+    <a href="#overview" class="sb-link"><span class="sb-dot"></span>Overview</a>
+    <a href="#types" class="sb-link"><span class="sb-dot"></span>Types</a>
+    <a href="#monetary" class="sb-link"><span class="sb-dot"></span>Monetary syntax</a>
+    <a href="#variables" class="sb-link"><span class="sb-dot"></span>Variables</a>
+    <a href="#transfer" class="sb-link"><span class="sb-dot"></span>transfer</a>
+    <a href="#sources" class="sb-link"><span class="sb-dot"></span>Sources</a>
+    <a href="#destinations" class="sb-link"><span class="sb-dot"></span>Destinations</a>
+    <a href="#allotment" class="sb-link"><span class="sb-dot"></span>Allotment rules</a>
+    <a href="#world" class="sb-link"><span class="sb-dot"></span>@world</a>
+    <a href="#metadata" class="sb-link"><span class="sb-dot"></span>Metadata</a>
+    <a href="#set-meta" class="sb-link"><span class="sb-dot"></span>set metadata</a>
+    <a href="#print" class="sb-link"><span class="sb-dot"></span>print &amp; fail</a>
+  </div>
+  <div class="sb-section">
+    <span class="sb-label">Examples</span>
+    <a href="#ex-marketplace" class="sb-link"><span class="sb-dot"></span>Marketplace split</a>
+    <a href="#ex-cascade" class="sb-link"><span class="sb-dot"></span>Source cascade</a>
+    <a href="#ex-commission" class="sb-link"><span class="sb-dot"></span>Dynamic commission</a>
+    <a href="#ex-allotment-src" class="sb-link"><span class="sb-dot"></span>Allotment source</a>
+    <a href="#ex-meta" class="sb-link"><span class="sb-dot"></span>Set metadata</a>
+  </div>
+  <div class="sb-section">
+    <span class="sb-label">HTTP API</span>
+    <a href="#api-script" class="sb-link"><span class="sb-dot"></span>POST /script</a>
+    <a href="#api-tx" class="sb-link"><span class="sb-dot"></span>Transactions</a>
+    <a href="#api-accounts" class="sb-link"><span class="sb-dot"></span>Accounts</a>
+  </div>
+</aside>
+<main class="content">
+  <div class="breadcrumb"><a href="/">corren.io</a><span>/</span><a href="#">docs</a><span>/</span>FaRl</div>
+  <div class="doc-eyebrow">Documentation</div>
+  <h1 class="doc-h1">FaRl <em>Language</em><br>Reference</h1>
+  <p class="doc-lead">FaRl (Financial aRrangement Language) is the scripting language built into Corren. It is designed to express financial flows clearly, safely, and with compile-time validation. Every script is atomic — if any statement fails, nothing is committed.</p>
+
+  <h2 class="doc-h2 rv" id="install">Installation</h2>
+  <p class="doc-p">Requires Go 1.16+. Build from source:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">bash</span></div>
+  <pre>git clone https://github.com/amezianechayer/corren
+cd corren && go build -o corren .
+sudo mv corren /usr/local/bin/
+corren --help</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="quickstart">Quick Start</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">bash</span></div>
+  <pre><span class="cc"># Terminal 1</span>
+corren server start
+
+<span class="cc"># Terminal 2</span>
+cat > script.farl &lt;&lt; EOF
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">10000</span>] (
+  <span class="ck">from</span> <span class="ca">@world</span>
+  <span class="ck">to</span>   <span class="ca">@banque:reserve</span>
+)
+EOF
+corren exec quickstart script.farl
+<span class="cp">200 {"ok":true}</span>
+
+curl http://localhost:3068/quickstart/accounts/@banque:reserve</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="config">Configuration</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">bash</span></div>
+  <pre>corren config init</pre></div>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">yaml — ~/.corren/corren.yaml</span></div>
+  <pre>server:
+  http:
+    bind_address: <span class="cs">127.0.0.1:3068</span>
+storage:
+  driver: <span class="cs">sqlite</span>          <span class="cc"># sqlite | postgres</span>
+  dir:    <span class="cs">~/.corren/data</span>
+  sqlite:
+    db_name: <span class="cs">corren</span>
+  postgres:
+    conn_string: <span class="cs">postgresql://localhost/postgres</span></pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="cli">CLI Reference</h2>
+  <table class="doc-table rv">
+    <thead><tr><th>Command</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>corren server start</code></td><td>Start the HTTP server on the configured address</td></tr>
+      <tr><td><code>corren exec &lt;ledger&gt; &lt;file&gt;</code></td><td>Compile and execute a FaRl script against a ledger</td></tr>
+      <tr><td><code>corren config init</code></td><td>Create the default config file at <code>~/.corren/corren.yaml</code></td></tr>
+      <tr><td><code>corren storage init</code></td><td>Initialize the database schema</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="overview">Overview</h2>
+  <p class="doc-p">A FaRl script is a sequence of statements separated by newlines. Each statement either moves money, prints a value, or sets metadata. The entire script executes as a single atomic transaction.</p>
+  <div class="callout rv ci"><div class="cl">Compile-time safety</div><p><strong>All errors are caught before execution.</strong> Insufficient balances, type mismatches, allocation overflows, and invalid source chains are detected at compile time. No partial states, ever.</p></div>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="cc"># Variables declared at the top</span>
+<span class="ck">var</span> $montant: <span class="cn">monetary</span>
+<span class="ck">var</span> $dest: <span class="cn">account</span>
+
+<span class="cc"># Statement 1</span>
+<span class="ck">transfer</span> $montant (
+  <span class="ck">from</span> <span class="ca">@world</span>
+  <span class="ck">to</span>   $dest
+)
+
+<span class="cc"># Statement 2 — uses balance from statement 1</span>
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> *] (
+  <span class="ck">from</span> $dest
+  <span class="ck">to</span>   <span class="ca">@archive</span>
+)</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="types">Types</h2>
+  <table class="doc-table rv">
+    <thead><tr><th>Type</th><th>Syntax</th><th>Examples</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>account</code></td><td><code>@name</code></td><td><code>@alice</code>, <code>@users:001</code></td><td>Account address. Starts with <code>@</code>. Namespaced with <code>:</code>.</td></tr>
+      <tr><td><code>monetary</code></td><td><code>[ASSET amount]</code></td><td><code>[DZD.2 5000]</code>, <code>[COIN 100]</code></td><td>A specific amount of an asset.</td></tr>
+      <tr><td><code>asset</code></td><td><code>ASSET</code></td><td><code>DZD</code>, <code>COIN</code>, <code>CREDIT</code></td><td>Asset identifier — uppercase only.</td></tr>
+      <tr><td><code>portion</code></td><td><code>N/D</code> or <code>N%</code></td><td><code>85/100</code>, <code>15%</code>, <code>12.5%</code></td><td>Fraction between 0 and 1 exclusive.</td></tr>
+      <tr><td><code>number</code></td><td><code>N</code></td><td><code>42</code>, <code>100</code></td><td>Unsigned integer. Used in arithmetic.</td></tr>
+      <tr><td><code>string</code></td><td><code>"..."</code></td><td><code>"seller"</code>, <code>"commission"</code></td><td>String literal. Used in metadata keys.</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="monetary">Monetary Syntax</h2>
+  <p class="doc-p">The monetary type has two forms depending on whether you need decimal precision:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="cc"># With precision — [ASSET.decimals amount]</span>
+[<span class="cn">DZD.2</span> <span class="cn">5000</span>]      <span class="cc"># Algerian Dinar, 2 decimal places</span>
+[<span class="cn">EUR.2</span> <span class="cn">10000</span>]    <span class="cc"># Euro, 2 decimal places</span>
+[<span class="cn">USD.2</span> <span class="cn">10000</span>]    <span class="cc"># US Dollar, 2 decimal places</span>
+[<span class="cn">TND.3</span> <span class="cn">5000</span>]     <span class="cc"># Tunisian Dinar, 3 decimal places</span>
+[<span class="cn">NGN.2</span> <span class="cn">5000</span>]     <span class="cc"># Nigerian Naira, 2 decimal places</span>
+
+<span class="cc"># Without precision — [ASSET amount]</span>
+[<span class="cn">COIN</span> <span class="cn">100</span>]        <span class="cc"># COIN token, no decimals</span>
+[<span class="cn">CREDIT</span> <span class="cn">50</span>]      <span class="cc"># CREDIT token</span>
+
+<span class="cc"># Transfer all balance</span>
+[<span class="cn">DZD.2</span> *]         <span class="cc"># all DZD.2 balance</span>
+[<span class="cn">COIN</span> *]          <span class="cc"># all COIN balance</span></pre></div>
+  <div class="callout rv ci"><div class="cl">Precision</div><p>The precision number (e.g. <code>.2</code> in <code>DZD.2</code>) is part of the <strong>asset name</strong> — it is not used for arithmetic. <code>DZD.2</code> and <code>DZD</code> are two different assets. Amounts are always stored as integers.</p></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="variables">Variables</h2>
+  <p class="doc-p">Variables are declared at the top of the script before any statements. They are injected as JSON when executing via the API.</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="cc"># Simple declaration</span>
+<span class="ck">var</span> $name: <span class="cn">type</span>
+
+<span class="cc"># With metadata origin</span>
+<span class="ck">var</span> $name: <span class="cn">type</span> = meta($account, <span class="cs">"key"</span>)</pre></div>
+
+  <h3 class="doc-h3">JSON variable format</h3>
+  <table class="doc-table rv">
+    <thead><tr><th>Type</th><th>JSON format</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><code>account</code></td><td>string</td><td><code>"@alice"</code></td></tr>
+      <tr><td><code>monetary</code></td><td>object</td><td><code>{"asset":"DZD.2","amount":5000}</code></td></tr>
+      <tr><td><code>asset</code></td><td>string</td><td><code>"DZD.2"</code></td></tr>
+      <tr><td><code>portion</code></td><td>string</td><td><code>"15%"</code> or <code>"3/20"</code></td></tr>
+      <tr><td><code>number</code></td><td>integer</td><td><code>42</code></td></tr>
+      <tr><td><code>string</code></td><td>string</td><td><code>"hello"</code></td></tr>
+    </tbody>
+  </table>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">json — API request body</span></div>
+  <pre>{
+  <span class="cs">"plain"</span>: <span class="cs">"var $montant: monetary\n..."</span>,
+  <span class="cs">"vars"</span>: {
+    <span class="cs">"montant"</span>:    { <span class="cs">"asset"</span>: <span class="cs">"DZD.2"</span>, <span class="cs">"amount"</span>: <span class="cn">5000</span> },
+    <span class="cs">"vendeur"</span>:    <span class="cs">"@users:001"</span>,
+    <span class="cs">"commission"</span>: <span class="cs">"10%"</span>
+  }
+}</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="transfer">transfer</h2>
+  <p class="doc-p">The <code class="ci2">transfer</code> statement moves a monetary amount from a source to a destination.</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl — syntax</span></div>
+  <pre><span class="ck">transfer</span> &lt;monetary | monetaryAll&gt; (
+  <span class="ck">from</span> &lt;source&gt;
+  <span class="ck">to</span>   &lt;destination&gt;
+)</pre></div>
+  <p class="doc-p">The <code class="ci2">from</code> and <code class="ci2">to</code> clauses can be in any order:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="cc"># Both orderings are valid</span>
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">1000</span>] (
+  <span class="ck">from</span> <span class="ca">@alice</span>
+  <span class="ck">to</span>   <span class="ca">@bob</span>
+)
+
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">1000</span>] (
+  <span class="ck">to</span>   <span class="ca">@bob</span>
+  <span class="ck">from</span> <span class="ca">@alice</span>
+)</pre></div>
+  <div class="callout rv ci"><div class="cl">Balance tracking</div><p>Corren tracks balance changes <strong>within the script</strong>. A transfer can spend funds received by a previous transfer in the same script, even if the initial database balance was 0.</p></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="sources">Sources</h2>
+  <h3 class="doc-h3">Single account</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">from</span> <span class="ca">@alice</span>
+<span class="ck">from</span> $vendeur    <span class="cc"># variable</span></pre></div>
+
+  <h3 class="doc-h3">Ordered cascade (in-order)</h3>
+  <p class="doc-p">Drains each source in order until the target amount is reached:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">from</span> {
+  <span class="ca">@wallet:ameziane</span>    <span class="cc"># drained first</span>
+  <span class="ca">@credit:ameziane</span>    <span class="cc"># then this</span>
+  <span class="ca">@world</span>              <span class="cc"># fallback (unlimited)</span>
+}</pre></div>
+
+  <h3 class="doc-h3">Capped source (max)</h3>
+  <p class="doc-p">Take at most a fixed amount, excess is returned:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre>max [<span class="cn">DZD.2</span> <span class="cn">1000</span>] <span class="ck">from</span> <span class="ca">@alice</span>
+
+<span class="cc"># Can be combined with cascade</span>
+<span class="ck">from</span> {
+  max [<span class="cn">DZD.2</span> <span class="cn">500</span>] <span class="ck">from</span> <span class="ca">@alice</span>
+  <span class="ca">@bob</span>
+}</pre></div>
+
+  <h3 class="doc-h3">Allotment source</h3>
+  <p class="doc-p">Take a proportional amount from each source:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">from</span> {
+  <span class="cp">60%</span>       <span class="ck">from</span> <span class="ca">@alice</span>
+  <span class="cp">35.5%</span>     <span class="ck">from</span> <span class="ca">@bob</span>
+  <span class="cp">4.5%</span>      <span class="ck">from</span> <span class="ca">@charlie</span>
+}</pre></div>
+  <div class="callout rv cw"><div class="cl">Restriction</div><p>You <strong>cannot</strong> use <code>*</code> (transfer all) with an allotment source. The total must be a fixed amount.</p></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="destinations">Destinations</h2>
+  <h3 class="doc-h3">Single account</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">to</span> <span class="ca">@bob</span>
+<span class="ck">to</span> $vendeur    <span class="cc"># variable</span></pre></div>
+
+  <h3 class="doc-h3">Allotment destination</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">to</span> {
+  <span class="cp">85/100</span>    <span class="ck">to</span> <span class="ca">@vendeur:yanis</span>
+  <span class="cp">10/100</span>    <span class="ck">to</span> <span class="ca">@plateforme:frais</span>
+  <span class="cp">5/100</span>     <span class="ck">to</span> <span class="ca">@taxes</span>
+}</pre></div>
+
+  <h3 class="doc-h3">With remaining</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">to</span> {
+  <span class="cp">10%</span>       <span class="ck">to</span> <span class="ca">@plateforme</span>
+  <span class="cp">5%</span>        <span class="ck">to</span> <span class="ca">@taxes</span>
+  remaining  <span class="ck">to</span> <span class="ca">@vendeur</span>    <span class="cc"># gets 85%</span>
+}</pre></div>
+
+  <h3 class="doc-h3">Ordered (in-order) destination</h3>
+  <p class="doc-p">Fill each destination in order until its capacity is reached:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">to</span> {
+  max [<span class="cn">DZD.2</span> <span class="cn">100</span>] <span class="ck">to</span> <span class="ca">@bob</span>   <span class="cc"># capped at 100</span>
+  <span class="ca">@charlie</span>                   <span class="cc"># gets the rest</span>
+}</pre></div>
+
+  <h3 class="doc-h3">Dynamic portion (variable)</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">var</span> $commission: <span class="cn">portion</span>
+
+<span class="ck">to</span> {
+  $commission  <span class="ck">to</span> <span class="ca">@plateforme</span>
+  remaining    <span class="ck">to</span> <span class="ca">@vendeur</span>
+}</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="allotment">Allotment Rules</h2>
+  <table class="doc-table rv">
+    <thead><tr><th>Rule</th><th>Valid</th><th>Invalid</th></tr></thead>
+    <tbody>
+      <tr><td>Fixed portions must sum to 100% (without <code>remaining</code>)</td><td><code>50% + 50%</code></td><td><code>50% + 30%</code></td></tr>
+      <tr><td>Only one <code>remaining</code> per allotment</td><td><code>20% + remaining</code></td><td><code>remaining + remaining</code></td></tr>
+      <tr><td>With <code>remaining</code>, fixed portions must be &lt; 100%</td><td><code>80% + remaining</code></td><td><code>100% + remaining</code></td></tr>
+      <tr><td>Variable portions require a <code>remaining</code></td><td><code>$p + remaining</code></td><td><code>$p + 50%</code></td></tr>
+    </tbody>
+  </table>
+  <div class="callout rv ci"><div class="cl">Rounding</div><p>When dividing non-divisible amounts, Corren distributes the remainder to the first portion. The total always equals the original amount exactly.</p></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="world">@world</h2>
+  <p class="doc-p"><code class="ci2">@world</code> is a special built-in account representing money creation. It emits unlimited funds with no balance check — like a central bank.</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="cc"># ✅ Emit a fixed amount</span>
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">10000</span>] (
+  <span class="ck">from</span> <span class="ca">@world</span>
+  <span class="ck">to</span>   <span class="ca">@banque:reserve</span>
+)
+
+<span class="cc"># ✅ Fallback in a cascade</span>
+<span class="ck">from</span> {
+  <span class="ca">@wallet</span>
+  <span class="ca">@world</span>
+}
+
+<span class="cc"># ❌ Cannot transfer all from @world</span>
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> *] ( <span class="ck">from</span> <span class="ca">@world</span>  <span class="ck">to</span> <span class="ca">@bob</span> )
+
+<span class="cc"># ❌ Cannot use @world in allotment source</span>
+<span class="ck">from</span> { <span class="cp">50%</span> <span class="ck">from</span> <span class="ca">@world</span>  <span class="cp">50%</span> <span class="ck">from</span> <span class="ca">@alice</span> }</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="metadata">Metadata (read)</h2>
+  <p class="doc-p">Variables can be resolved from account metadata at runtime using <code class="ci2">meta(account, "key")</code>:</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">var</span> $sale:       <span class="cn">account</span>
+<span class="ck">var</span> $seller:     <span class="cn">account</span> = meta($sale,   <span class="cs">"seller"</span>)
+<span class="ck">var</span> $commission: <span class="cn">portion</span> = meta($seller, <span class="cs">"commission_rate"</span>)
+
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">1000</span>] (
+  <span class="ck">from</span> $sale
+  <span class="ck">to</span>   {
+    $commission  <span class="ck">to</span> <span class="ca">@plateforme</span>
+    remaining    <span class="ck">to</span> $seller
+  }
+)</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="set-meta">set metadata <span class="new-badge">new</span></h2>
+  <p class="doc-p">FaRl can write metadata on transactions and accounts using <code class="ci2">set</code> statements.</p>
+
+  <h3 class="doc-h3">Set transaction metadata</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="cc"># Single key</span>
+<span class="ck">set transaction metadata</span> <span class="cs">"reference"</span> = <span class="cs">"PAY-2026-001"</span>
+<span class="ck">set transaction metadata</span> <span class="cs">"amount_dzd"</span> = <span class="cn">5000</span>
+
+<span class="cc"># Block form</span>
+<span class="ck">set transaction metadata</span> {
+  <span class="cs">"reference"</span> = <span class="cs">"PAY-2026-001"</span>
+  <span class="cs">"channel"</span>   = <span class="cs">"mobile"</span>
+  <span class="cs">"region"</span>    = <span class="cs">"alger"</span>
+}</pre></div>
+
+  <h3 class="doc-h3">Set account metadata</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">set account metadata of</span> <span class="ca">@vendeur:yanis</span> <span class="ck">key</span> <span class="cs">"commission_rate"</span> = <span class="cn">10</span>/<span class="cn">100</span>
+<span class="ck">set account metadata of</span> <span class="ca">@vendeur:yanis</span> <span class="ck">key</span> <span class="cs">"tier"</span>            = <span class="cs">"gold"</span></pre></div>
+
+  <div class="callout rv ci"><div class="cl">Atomicity</div><p>Metadata writes are part of the same atomic transaction. If a later statement fails, all <code>set</code> statements in the script are also rolled back.</p></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="print">print &amp; fail</h2>
+  <h3 class="doc-h3">print</h3>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">print</span> <span class="cn">42</span>
+<span class="ck">print</span> <span class="cn">10</span> + <span class="cn">5</span> - <span class="cn">2</span>
+<span class="ck">print</span> <span class="ca">@alice</span></pre></div>
+
+  <h3 class="doc-h3">fail</h3>
+  <p class="doc-p">Immediately aborts the script and rolls back all changes.</p>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">fail</span></pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="ex-marketplace">Example — Marketplace split</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">5000</span>] (
+  <span class="ck">from</span> <span class="ca">@client:ameziane</span>
+  <span class="ck">to</span>   <span class="ca">@courses:0587:paiement</span>
+)
+
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">5000</span>] (
+  <span class="ck">from</span> <span class="ca">@courses:0587:paiement</span>
+  <span class="ck">to</span>   {
+    <span class="cp">90/100</span>  <span class="ck">to</span> <span class="ca">@chauffeur:yanis</span>
+    <span class="cp">10/100</span>  <span class="ck">to</span> <span class="ca">@plateforme:frais</span>
+  }
+)
+
+<span class="ck">set transaction metadata</span> <span class="cs">"reference"</span> = <span class="cs">"COURSE-0587"</span></pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="ex-cascade">Example — Source cascade</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">3000</span>] (
+  <span class="ck">from</span> {
+    <span class="ca">@wallet:ameziane</span>    <span class="cc"># balance: 1000 → used first</span>
+    <span class="ca">@credit:ameziane</span>    <span class="cc"># balance: 2000 → used next</span>
+    <span class="ca">@world</span>              <span class="cc"># fallback</span>
+  }
+  <span class="ck">to</span> <span class="ca">@commande:0089</span>
+)
+<span class="cc"># Result: 1000 from wallet + 2000 from credit = 3000</span></pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="ex-commission">Example — Dynamic commission</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">var</span> $sale:   <span class="cn">account</span>
+<span class="ck">var</span> $seller: <span class="cn">account</span> = meta($sale,   <span class="cs">"seller"</span>)
+<span class="ck">var</span> $rate:   <span class="cn">portion</span> = meta($seller, <span class="cs">"commission_rate"</span>)
+
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">10000</span>] (
+  <span class="ck">from</span> $sale
+  <span class="ck">to</span>   {
+    $rate      <span class="ck">to</span> <span class="ca">@plateforme:commission</span>
+    remaining  <span class="ck">to</span> $seller
+  }
+)</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="ex-allotment-src">Example — Allotment source</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">1000</span>] (
+  <span class="ck">from</span> {
+    <span class="cp">60%</span>  <span class="ck">from</span> <span class="ca">@alice</span>     <span class="cc"># contributes 600</span>
+    <span class="cp">35%</span>  <span class="ck">from</span> <span class="ca">@bob</span>       <span class="cc"># contributes 350</span>
+    <span class="cp">5%</span>   <span class="ck">from</span> <span class="ca">@charlie</span>   <span class="cc"># contributes 50</span>
+  }
+  <span class="ck">to</span> <span class="ca">@destinataire</span>
+)</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="ex-meta">Example — Set metadata</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
+  <pre><span class="cc"># Set a seller's commission rate</span>
+<span class="ck">set account metadata of</span> <span class="ca">@vendeur:yanis</span> <span class="ck">key</span> <span class="cs">"commission_rate"</span> = <span class="cn">12</span>/<span class="cn">100</span>
+
+<span class="cc"># Now use it in a transfer</span>
+<span class="ck">var</span> $seller: <span class="cn">account</span>                              <span class="cc"># injected via vars</span>
+<span class="ck">var</span> $rate:   <span class="cn">portion</span> = meta($seller, <span class="cs">"commission_rate"</span>)
+
+<span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">5000</span>] (
+  <span class="ck">from</span> <span class="ca">@world</span>
+  <span class="ck">to</span>   {
+    $rate     <span class="ck">to</span> <span class="ca">@plateforme</span>
+    remaining <span class="ck">to</span> $seller
+  }
+)</pre></div>
+
+  <hr class="doc-hr">
+
+  <h2 class="doc-h2 rv" id="api-script">HTTP API — Execute a script</h2>
+  <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">bash</span></div>
+  <pre>curl -X POST http://localhost:3068/quickstart/script \
+  -H <span class="cs">"Content-Type: application/json"</span> \
+  -d '{
+    "plain": "transfer [DZD.2 1000] (\n  from @world\n  to @alice\n)",
+    "vars": {}
+  }'</pre></div>
+  <table class="doc-table rv">
+    <thead><tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>plain</code></td><td>string</td><td><span class="req">required</span></td><td>The FaRl script content</td></tr>
+      <tr><td><code>vars</code></td><td>object</td><td><span class="opt">optional</span></td><td>Variable values as JSON</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="doc-h2 rv" id="api-tx">HTTP API — Transactions</h2>
+  <table class="doc-table rv">
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET</code></td><td><code>/:ledger/transactions</code></td><td>List all transactions. Params: <code>after</code>, <code>account</code></td></tr>
+      <tr><td><code>POST</code></td><td><code>/:ledger/transactions</code></td><td>Create a manual transaction with explicit postings</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="doc-h2 rv" id="api-accounts">HTTP API — Accounts</h2>
+  <table class="doc-table rv">
+    <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET</code></td><td><code>/:ledger/accounts</code></td><td>List all accounts. Params: <code>after</code></td></tr>
+      <tr><td><code>GET</code></td><td><code>/:ledger/accounts/:address</code></td><td>Get balance and info for a specific account</td></tr>
+    </tbody>
+  </table>
+
+  <div class="doc-nav">
+    <a href="/"><span class="dn-label">← Previous</span>Home</a>
+    <a href="/grammar.html" class="next"><span class="dn-label">Next →</span>Grammar Reference</a>
+  </div>
+</main>
+</div>
+<script>
+// sidebar active
+const sideObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.sb-link[href="#${e.target.id}"]`);
+      if(a) a.classList.add('active');
+    }
+  });
+}, { rootMargin:'-20% 0px -75% 0px' });
+document.querySelectorAll('[id]').forEach(s => sideObs.observe(s));
+
+// scroll reveal
+const rvObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if(e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('v'), i * 60);
+      rvObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+</script>
+</body>
+</html>
