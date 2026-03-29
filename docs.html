@@ -168,7 +168,7 @@ h2.doc-h2:hover::after{width:100%}
   <div class="breadcrumb"><a href="/">corren.io</a><span>/</span><a href="#">docs</a><span>/</span>FaRl</div>
   <div class="doc-eyebrow">Documentation</div>
   <h1 class="doc-h1">FaRl <em>Language</em><br>Reference</h1>
-  <p class="doc-lead">FaRl (Financial aRrangement Language) is the scripting language built into Corren. It is designed to express financial flows clearly, safely, and with compile-time validation. Every script is atomic — if any statement fails, nothing is committed.</p>
+  <p class="doc-lead">FaRl (Financial accounting Rule Language) is the scripting language built into Corren. It is designed to express financial flows clearly, safely, and with compile-time validation. Every script is atomic — if any statement fails, nothing is committed.</p>
 
   <h2 class="doc-h2 rv" id="install">Installation</h2>
   <p class="doc-p">Requires Go 1.16+. Build from source:</p>
@@ -270,14 +270,14 @@ storage:
   <p class="doc-p">The monetary type has two forms depending on whether you need decimal precision:</p>
   <div class="code-wrap rv"><div class="code-bar"><div class="dots"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div></div><span class="code-lang">farl</span></div>
   <pre><span class="cc"># With precision — [ASSET.decimals amount]</span>
-[<span class="cn">DZD.2</span> <span class="cn">5000</span>]      <span class="cc"># Algerian Dinar, 2 decimal places</span>
+[<span class="cn">DZD.2</span> <span class="cn">5000</span>]     <span class="cc"># Algerian Dinar, 2 decimal places</span>
 [<span class="cn">EUR.2</span> <span class="cn">10000</span>]    <span class="cc"># Euro, 2 decimal places</span>
 [<span class="cn">USD.2</span> <span class="cn">10000</span>]    <span class="cc"># US Dollar, 2 decimal places</span>
 [<span class="cn">TND.3</span> <span class="cn">5000</span>]     <span class="cc"># Tunisian Dinar, 3 decimal places</span>
 [<span class="cn">NGN.2</span> <span class="cn">5000</span>]     <span class="cc"># Nigerian Naira, 2 decimal places</span>
 
 <span class="cc"># Without precision — [ASSET amount]</span>
-[<span class="cn">COIN</span> <span class="cn">100</span>]        <span class="cc"># COIN token, no decimals</span>
+[<span class="cn">COIN</span> <span class="cn">100</span>]       <span class="cc"># COIN token, no decimals</span>
 [<span class="cn">CREDIT</span> <span class="cn">50</span>]      <span class="cc"># CREDIT token</span>
 
 <span class="cc"># Transfer all balance</span>
