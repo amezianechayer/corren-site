@@ -1,618 +1,929 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corren — Programmable Financial Ledger</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Corren — Infrastructure financière programmable</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#F7F5F0;--ink:#0D0D0D;--ink-2:#444440;--ink-3:#888780;
-  --accent:#1A3A2A;--green:#C8F5A0;
-  --border:rgba(13,13,13,.08);--border2:rgba(13,13,13,.14);
-  --mono:'DM Mono',monospace;--serif:'DM Serif Display',serif;--sans:'DM Sans',sans-serif;
+:root{--mono:'JetBrains Mono',monospace;--green:#4ade80;--red-t:#fca5a5}
+
+[data-theme="dark"]{
+  --bg:#040810;--surface:#080d18;--surface2:#0c1220;
+  --border:rgba(59,130,246,0.12);--border-h:rgba(59,130,246,0.22);
+  --t1:#eef2ff;--t2:#8898b8;--t3:#3a4a6b;--t4:#1e2a40;
+  --accent:#3b82f6;--accent-b:#60a5fa;
+  --accent2:rgba(59,130,246,0.08);--accent3:rgba(59,130,246,0.04);
+  --accent-glow:rgba(59,130,246,0.15);
+  --code-kw:#60a5fa;--code-str:#7dd3fc;--code-num:#fca5a5;
+  --logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af;
+  --term-bg:#04080f;
+  --hero-overlay:rgba(4,8,16,0.3);
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[data-theme="light"]{
+  --bg:#f0f4ff;--surface:#ffffff;--surface2:#e8edf8;
+  --border:rgba(37,99,235,0.12);--border-h:rgba(37,99,235,0.22);
+  --t1:#0f1a2e;--t2:#4a5a7a;--t3:#9aa8c0;--t4:#d0d8e8;
+  --accent:#2563eb;--accent-b:#3b82f6;
+  --accent2:rgba(37,99,235,0.07);--accent3:rgba(37,99,235,0.03);
+  --accent-glow:rgba(37,99,235,0.12);
+  --code-kw:#1d4ed8;--code-str:#0369a1;--code-num:#dc2626;
+  --logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af;
+  --term-bg:#0f1a2e;
+  --hero-overlay:rgba(240,244,255,0.15);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
-body::after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.03;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:180px}
+body{background:var(--bg);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.65;overflow-x:hidden;transition:background .4s,color .4s}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--t4);border-radius:2px}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
-/* lang system */
-.en,.fr{display:none}
-body.lang-en .en{display:revert}
-body.lang-fr .fr{display:revert}
-span.en,span.fr{display:none}
-body.lang-en span.en{display:inline}
-body.lang-fr span.fr{display:inline}
-div.en,div.fr,p.en,p.fr,li.en,li.fr{display:none}
-body.lang-en div.en,body.lang-en p.en,body.lang-en li.en{display:block}
-body.lang-fr div.fr,body.lang-fr p.fr,body.lang-fr li.fr{display:block}
+/* ═══ NAV ═══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:all .4s}
+.nl{display:flex;align-items:center;gap:12px;font-weight:600;font-size:12px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:var(--t1)}
+.nl:hover .lb1{animation:lw .5s ease}
+.nl:hover .lb2{animation:lw .5s ease .08s}
+.nl:hover .lb3{animation:lw .5s ease .16s}
+@keyframes lw{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.nl span{color:var(--logo2)}
+.nr{display:flex;gap:24px;align-items:center}
+.nlinks{display:flex;gap:24px}
+.nlinks a{color:var(--t2);text-decoration:none;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:color .2s}
+.nlinks a:hover{color:var(--t1)}
+.tbtn{background:none;border:1px solid var(--border);color:var(--t2);font-family:var(--mono);font-size:11px;padding:5px 12px;cursor:pointer;border-radius:3px;transition:all .3s;letter-spacing:1px}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+.ncta{padding:7px 18px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--mono);border-radius:3px;transition:all .25s;position:relative;overflow:hidden}
+.ncta:hover{filter:brightness(1.15);box-shadow:0 0 20px var(--accent-glow)}
 
-/* hero title lines — FIX: hide all tl by default, show only matching lang */
-.tl{display:none!important}
-body.lang-en .tl.en{display:block!important;opacity:0;transform:translateY(110%);animation:tl .65s cubic-bezier(.22,1,.36,1) forwards}
-body.lang-fr .tl.fr{display:block!important;opacity:0;transform:translateY(110%);animation:tl .65s cubic-bezier(.22,1,.36,1) forwards}
-.tl:nth-child(1){animation-delay:.5s}
-.tl:nth-child(2){animation-delay:.65s}
-.tl:nth-child(3){animation-delay:.8s}
-.tl:nth-child(4){animation-delay:.5s}
-.tl:nth-child(5){animation-delay:.65s}
-.tl:nth-child(6){animation-delay:.8s}
-@keyframes tl{to{opacity:1;transform:translateY(0)}}
+/* ═══ HERO ═══ */
+.hero{height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#isoCanvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-overlay{position:absolute;inset:0;background:var(--hero-overlay);pointer-events:none;z-index:1}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
-  padding:1.1rem 3rem;background:rgba(247,245,240,.92);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);opacity:0;animation:navIn .5s ease .1s forwards}
-@keyframes navIn{to{opacity:1}}
-.nav-logo{font-family:var(--mono);font-size:1rem;font-weight:500;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:1px;letter-spacing:-.02em}
-.nav-logo .dot{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:1.2rem;line-height:1}
-.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
-.nav-links a{font-size:.8rem;color:var(--ink-3);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;transition:color .2s}
-.nav-links a:hover{color:var(--ink)}
-.nav-cta{font-family:var(--mono);font-size:.78rem;font-weight:500;color:var(--bg)!important;background:var(--ink);padding:.45rem 1.1rem;border-radius:2px;transition:background .2s!important}
-.nav-cta:hover{background:var(--accent)!important}
-.lang-toggle{display:flex;gap:.4rem}
-.lang-btn{font-family:var(--mono);font-size:.7rem;background:none;border:1px solid var(--border2);padding:.22rem .5rem;cursor:pointer;color:var(--ink-3);transition:all .2s;border-radius:2px}
-.lang-btn.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* Floating ledger blocks */
+.hblocks{position:absolute;inset:0;pointer-events:none;z-index:1}
+.hb{position:absolute;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 60%,transparent);backdrop-filter:blur(4px);border-radius:4px;padding:8px 12px;font-size:10px;color:var(--t2);opacity:.22;white-space:nowrap;animation:hbf linear infinite}
+[data-theme="light"] .hb{opacity:.14}
+.hb-v{color:var(--accent-b);font-size:11px;font-weight:500}
+.hb-s{color:var(--t3);font-size:9px;margin-top:2px}
+@keyframes hbf{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(.8deg)}100%{transform:translateY(0) rotate(0deg)}}
 
-/* HERO */
-.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:62px}
-.hero-left{display:flex;flex-direction:column;justify-content:center;padding:5rem 3.5rem 5rem 3rem;border-right:1px solid var(--border);position:relative;overflow:hidden}
-.hero-watermark{position:absolute;bottom:-5rem;left:-2rem;font-family:var(--serif);font-style:italic;font-size:16rem;color:rgba(13,13,13,.04);line-height:1;pointer-events:none;user-select:none;white-space:nowrap}
-.hero-eyebrow{font-family:var(--mono);font-size:.7rem;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.75rem;display:flex;align-items:center;gap:.75rem;opacity:0;animation:up .6s ease .4s forwards}
-.hero-eyebrow .line{display:inline-block;width:0;height:1px;background:var(--ink-3);animation:grow .5s ease .8s forwards}
-@keyframes grow{to{width:1.75rem}}
-.hero-title{font-family:var(--serif);font-size:clamp(3.2rem,5.5vw,6rem);line-height:1.02;letter-spacing:-.03em;margin-bottom:2rem;overflow:hidden;padding-bottom:.25em}
-.hero-title em{font-style:italic;color:var(--accent)}
-.hero-desc{font-size:.97rem;color:var(--ink-2);max-width:440px;line-height:1.8;margin-bottom:2.5rem;opacity:0;animation:up .6s ease 1s forwards}
-.hero-btns{display:flex;gap:1rem;opacity:0;animation:up .6s ease 1.15s forwards}
-.btn-p{font-family:var(--mono);font-size:.8rem;background:var(--accent);color:var(--green);padding:.8rem 1.75rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:background .25s;letter-spacing:.02em}
-.btn-p:hover{background:var(--ink)}
-.btn-g{font-family:var(--mono);font-size:.8rem;color:var(--ink-3);border:1px solid var(--border2);padding:.8rem 1.75rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:all .2s}
-.btn-g:hover{border-color:var(--ink);color:var(--ink)}
-@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+/* HUD overlays */
+.hud{position:absolute;z-index:3;pointer-events:none}
+.hud-tl{top:90px;left:40px}
+.hud-tr{top:90px;right:40px}
+.hud-label{font-size:9px;color:rgba(96,165,250,.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.hud-val{font-size:12px;color:rgba(96,165,250,.6)}
+.hud-bar{width:100px;height:1px;background:rgba(59,130,246,.1);margin-top:6px}
+.hud-fill{height:100%;background:var(--accent);transition:width .5s}
+.spill{display:flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid rgba(59,130,246,.15);border-radius:12px;backdrop-filter:blur(8px);background:rgba(4,8,16,.5)}
+.spill .sd{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pu 1.5s infinite}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+.spill #sTxt{font-size:9px;color:rgba(96,165,250,.6);letter-spacing:1px;text-transform:uppercase}
 
-/* HERO RIGHT */
-.hero-right{display:flex;flex-direction:column;justify-content:center;padding:4rem 3rem;background:var(--ink);position:relative;overflow:hidden;gap:2rem}
-.hero-right::before{content:'';position:absolute;top:-20%;right:-10%;width:60%;height:60%;background:radial-gradient(circle,rgba(200,245,160,.08) 0%,transparent 70%);animation:glow 5s ease-in-out infinite}
-@keyframes glow{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+/* Scroll indicator */
+.scrl{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.3}
+.scrl span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t2)}
+.scrl::after{content:'';width:1px;height:28px;background:linear-gradient(var(--accent),transparent)}
 
-/* CODE EDITOR */
-.editor{background:#0D0D0D;border:1px solid rgba(247,245,240,.08);border-radius:4px;overflow:hidden;position:relative;z-index:1;opacity:0;animation:up .7s ease .7s forwards}
-.editor-bar{display:flex;align-items:center;gap:.4rem;padding:.65rem 1rem;background:rgba(247,245,240,.04);border-bottom:1px solid rgba(247,245,240,.06)}
-.ed-dot{width:9px;height:9px;border-radius:50%}
-.ed-r{background:#FF5F57}.ed-y{background:#FFBD2E}.ed-g{background:#28C840}
-.editor-title{margin-left:.5rem;font-family:var(--mono);font-size:.68rem;color:rgba(247,245,240,.3);letter-spacing:.05em}
-.editor-status{margin-left:auto;font-family:var(--mono);font-size:.65rem;display:flex;align-items:center;gap:.35rem;color:rgba(200,245,160,.6)}
-.ed-ok{width:6px;height:6px;border-radius:50%;background:#86EFAC;animation:pulse2 2s ease infinite}
-@keyframes pulse2{0%,100%{opacity:1}50%{opacity:.4}}
-.editor-body{display:flex}
-.line-nums{padding:.9rem .75rem;text-align:right;font-family:var(--mono);font-size:.75rem;line-height:1.9;color:rgba(247,245,240,.15);user-select:none;border-right:1px solid rgba(247,245,240,.05);min-width:2.5rem}
-.editor-code{padding:.9rem 1.1rem;font-family:var(--mono);font-size:.78rem;line-height:1.9;color:rgba(247,245,240,.7);white-space:pre;overflow:hidden;flex:1}
-.ek{color:#7DD3FC}.ea{color:#FCA5A5}.en2{color:#FCD34D}.ep2{color:#C8F5A0}.eco{color:rgba(200,245,160,.3)}
-.exec-out{padding:.75rem 1.1rem;border-top:1px solid rgba(247,245,240,.06);font-family:var(--mono);font-size:.75rem;display:flex;align-items:center;gap:.75rem}
-.exec-cmd{color:rgba(200,245,160,.45)}
-.exec-ok{color:#86EFAC}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.cursor{display:inline-block;width:6px;height:13px;background:#C8F5A0;margin-left:2px;vertical-align:middle;animation:blink 1s infinite}
+/* Hero content */
+.hcontent{position:relative;z-index:4;text-align:center;padding:0 20px}
+.hbadge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border:1px solid var(--border);font-size:11px;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;border-radius:3px;background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(10px);animation:fi .8s ease both .2s}
+@keyframes fi{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.hbadge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pu 2s infinite}
+h1{font-size:clamp(26px,5vw,54px);font-weight:300;letter-spacing:-1px;line-height:1.15;margin-bottom:18px;animation:fu 1s ease both .4s}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+h1 strong{font-weight:600;color:var(--accent-b)}
+.hsub{font-size:14px;color:var(--t2);max-width:500px;margin:0 auto 44px;line-height:1.8;animation:fu 1s ease both .6s}
+.hbtns{display:flex;gap:12px;justify-content:center;animation:fu 1s ease both .8s}
 
-/* vertical text */
-.hero-vertical{display:flex;flex-direction:column;gap:.1rem;position:relative;z-index:1;opacity:0;animation:up .7s ease .5s forwards}
-.hero-vertical .vw{font-family:var(--serif);font-size:3.8rem;font-style:italic;color:rgba(247,245,240,.07);line-height:1;letter-spacing:-.03em;transition:color .35s;cursor:default}
-.hero-vertical .vw.active{color:rgba(247,245,240,.88)}
+/* ═══ TICKER ═══ */
+.ticker-w{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;background:var(--surface);transition:background .4s}
+.ticker{display:flex;animation:ts 32s linear infinite;width:max-content}
+.ticker span{padding:0 40px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);white-space:nowrap}
+.ticker span em{font-style:normal;color:var(--accent);margin-right:8px}
+@keyframes ts{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* TICKER */
-.ticker-wrap{overflow:hidden;padding:.85rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.ticker{display:flex;width:max-content;animation:tick 22s linear infinite}
-@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tick-item{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;padding:0 2.5rem;display:flex;align-items:center;gap:2.5rem}
-.tick-item::after{content:'·';color:var(--accent);font-size:1rem}
+/* ═══ BUTTONS ═══ */
+.btn-p{padding:12px 28px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:all .25s;text-decoration:none;border-radius:3px}
+.btn-p:hover{filter:brightness(1.15);box-shadow:0 0 28px var(--accent-glow)}
+.btn-g{padding:12px 28px;background:transparent;color:var(--t2);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);cursor:pointer;transition:all .25s;text-decoration:none;border-radius:3px}
+.btn-g:hover{border-color:var(--accent);color:var(--accent-b)}
+
+/* ═══ SECTIONS ═══ */
+.sw{padding:100px 40px;display:flex;flex-direction:column;align-items:center}
+.sl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sl::before,.sl::after{content:'';width:20px;height:1px;background:var(--t3)}
+.st{font-size:clamp(22px,3.5vw,38px);font-weight:300;text-align:center;margin-bottom:60px;letter-spacing:-.5px}
+.st em{font-style:normal;color:var(--accent-b);font-weight:500}
+
+/* ═══ TERMINAL ═══ */
+.terminal{width:100%;max-width:760px;border:1px solid var(--border);background:var(--term-bg);overflow:hidden;border-radius:4px}
+.term-bar{display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid rgba(59,130,246,.08);background:rgba(59,130,246,.03)}
+.td{width:8px;height:8px;border-radius:50%;border:1.5px solid}
+.td:nth-child(1){border-color:#f87171}
+.td:nth-child(2){border-color:#fbbf24}
+.td:nth-child(3){border-color:#4ade80}
+.term-title{flex:1;text-align:center;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:1px;text-transform:uppercase}
+.term-body{padding:20px;height:360px;font-size:12px;line-height:1.8;overflow-y:auto;color:#c8d4f0;scrollbar-width:thin}
+.term-body::-webkit-scrollbar{width:3px}
+.term-body::-webkit-scrollbar-thumb{background:rgba(59,130,246,.2)}
+.tl{opacity:0;animation:tla .25s ease forwards}
+@keyframes tla{to{opacity:1}}
+.tp{color:#60a5fa}.tc{color:#e8eeff}.to{color:#6478a0}.tok{color:#4ade80}.tdm{color:#3a4a6b}
+.tcur{display:inline-block;width:7px;height:14px;background:#60a5fa;animation:bl 1s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ═══ LEDGER ═══ */
+.ledger{width:100%;max-width:1000px;border:1px solid var(--border);background:var(--surface);overflow:hidden;border-radius:4px;transition:background .4s}
+.ledger-h{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+.st-dot{display:flex;align-items:center;gap:6px}
+.st-dot::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pu 1.5s infinite}
+.ledger-b{display:grid;grid-template-columns:1fr 1fr;min-height:360px}
+.ledger-c{padding:20px;border-right:1px solid var(--border);position:relative}
+.ledger-c pre{font-size:12px;line-height:1.7;color:var(--t2)}
+.scanl{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent-glow),transparent);animation:scn 3s linear infinite;pointer-events:none;opacity:.6}
+@keyframes scn{0%{top:0}100%{top:100%}}
+.ledger-v{padding:20px;font-size:12px}
+.ledger-vt{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.ar{display:flex;align-items:center;gap:8px;padding:7px 0;transition:all .4s;font-size:12px}
+.ar.act{color:var(--accent-b)}
+.ar.act .ab{text-shadow:0 0 10px var(--accent-glow)}
+.ar.act .abf{box-shadow:0 0 8px var(--accent-glow)}
+.ar.hd{font-weight:600;color:var(--t2);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.an{flex:1;min-width:130px}
+.ab{font-variant-numeric:tabular-nums;min-width:110px;text-align:right;transition:all .4s}
+.abar{width:65px;height:3px;background:var(--border);overflow:hidden;border-radius:2px}
+.abf{height:100%;background:var(--accent);transition:width .8s ease,box-shadow .4s;border-radius:2px}
+.asep{height:1px;background:var(--border);margin:4px 0}
+
+/* TX FLOW */
+.txf{width:100%;max-width:1000px;margin-top:36px;border:1px solid var(--border);background:var(--surface);padding:24px 32px;border-radius:4px;transition:background .4s}
+.txf-t{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
+.txf-label{font-size:11px;color:var(--t2);text-align:center;margin-top:12px;min-height:16px;transition:color .3s}
+.txf-label.act{color:var(--accent-b)}
+.fc{height:190px;position:relative}
+.fn{position:absolute;border:1px solid var(--border);padding:9px 13px;font-size:11px;background:var(--surface);transition:all .5s;z-index:2;border-radius:3px}
+.fn.act{border-color:var(--accent);color:var(--accent-b);box-shadow:0 0 18px var(--accent-glow)}
+.fn .ns{font-size:9px;color:var(--t3);margin-top:2px}
+.fn-name,.fn-sub{display:block}
+
+/* SPINNERS */
+.spr{display:flex;gap:40px;justify-content:center;margin-top:48px;flex-wrap:wrap}
+.asp{text-align:center}
+.asp pre{font-size:10px;line-height:1.2;color:var(--accent);opacity:.3;height:50px;display:flex;align-items:center;justify-content:center}
+[data-theme="light"] .asp pre{opacity:.45}
+.asp .lb{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-top:6px}
+
+/* PIPELINE */
+.pipe{width:100%;max-width:1000px;border:1px solid var(--border);background:var(--surface);overflow:hidden;border-radius:4px;transition:background .4s}
+.pipe-h{padding:12px 20px;border-bottom:1px solid var(--border);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;justify-content:space-between}
+.pipe-b{display:grid;grid-template-columns:repeat(6,1fr)}
+.ps{border-right:1px solid var(--border);padding:18px 8px;text-align:center;position:relative;transition:all .5s;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ps:last-child{border-right:none}
+.ps.act{background:var(--accent2)}
+.ps.act .pi{color:var(--accent-b);opacity:1}
+.ps.act .pn{color:var(--accent-b)}
+.ps.dn .pck{opacity:1}
+.pi{font-size:9px;color:var(--t2);opacity:.2;white-space:pre;line-height:1.2;margin-bottom:8px;height:42px;display:flex;align-items:center;transition:all .5s}
+[data-theme="light"] .pi{opacity:.35}
+.pn{font-size:11px;font-weight:500;margin-bottom:3px;transition:color .5s}
+.pd{font-size:10px;color:var(--t3)}
+.pck{position:absolute;top:6px;right:6px;font-size:10px;color:var(--green);opacity:0;transition:opacity .3s}
+.pa{position:absolute;right:-5px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:9px;z-index:2}
 
 /* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
-.stat{padding:2.25rem 3rem;border-right:1px solid var(--border);transition:background .25s;cursor:default}
-.stat:last-child{border-right:none}
-.stat:hover{background:rgba(26,58,42,.03)}
-.stat-n{font-family:var(--serif);font-size:2.75rem;font-style:italic;color:var(--ink);line-height:1;margin-bottom:.4rem;letter-spacing:-.02em}
-.stat-l{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
-
-/* SECTIONS */
-.sec{padding:6rem 3rem;max-width:1300px;margin:0 auto}
-.sec-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border)}
-.sec-n{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);letter-spacing:.1em;margin-bottom:.6rem}
-.sec-t{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.2rem);line-height:1.1}
-.sec-sub{font-size:.88rem;color:var(--ink-3);max-width:260px;text-align:right;line-height:1.75}
+.stats{padding:70px 40px;display:flex;justify-content:center}
+.stats-in{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);max-width:800px;width:100%;border-radius:4px;overflow:hidden}
+.stat{flex:1;background:var(--surface);padding:28px 20px;text-align:center;position:relative;transition:background .4s}
+.stat:hover{background:var(--surface2)}
+.stat-v{font-size:24px;font-weight:300;color:var(--accent-b);margin-bottom:4px}
+.stat-l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:2px}
+.stat-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transition:transform 1.5s ease;transform-origin:left}
+.stat.vis .stat-bar{transform:scaleX(1)}
 
 /* FEATURES */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border)}
-.feat{padding:2.5rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s}
-.feat:hover{background:rgba(13,13,13,.02)}
-.feat:nth-child(3n){border-right:none}
-.feat:nth-child(n+4){border-bottom:none}
-.feat::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--accent);transition:width .45s cubic-bezier(.22,1,.36,1)}
-.feat:hover::after{width:100%}
-.feat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
-.feat-tag{font-family:var(--mono);font-size:.66rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:.4rem}
-.feat-tag::before{content:'';display:inline-block;width:14px;height:1px;background:var(--accent)}
-.feat-num{font-family:var(--mono);font-size:.6rem;color:rgba(13,13,13,.18)}
-.feat-t{font-family:var(--serif);font-size:1.3rem;margin-bottom:.7rem;line-height:1.2}
-.feat-d{font-size:.87rem;color:var(--ink-2);line-height:1.75}
+.features{padding:100px 40px}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:1000px;margin:0 auto;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.fc2{background:var(--surface);padding:32px 24px;transition:all .4s;position:relative;overflow:hidden;cursor:default}
+.fc2::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transform:scaleX(0);transition:transform .5s}
+.fc2:hover::before{transform:scaleX(1)}
+.fc2:hover{background:var(--surface2)}
+.fc2:hover .fa{opacity:.18}
+.fa{position:absolute;top:10px;right:10px;font-size:9px;color:var(--accent);opacity:.06;white-space:pre;line-height:1.2;transition:opacity .4s}
+[data-theme="light"] .fa{opacity:.1}
+.fi{font-size:11px;color:var(--accent-b);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.fc2 h3{font-size:14px;font-weight:500;margin-bottom:8px}
+.fc2 p{font-size:12px;color:var(--t2);line-height:1.7}
 
-/* MARQUEE */
-.marquee-strip{background:var(--ink);overflow:hidden;padding:1rem 0}
-.marquee{display:flex;width:max-content;animation:tick 30s linear infinite}
-.marquee-item{font-family:var(--serif);font-size:1.5rem;font-style:italic;color:rgba(247,245,240,.1);padding:0 2rem;white-space:nowrap;transition:color .3s}
-.marquee-item:hover{color:rgba(200,245,160,.45)}
+/* EXAMPLES */
+.examples{padding:100px 40px;display:flex;flex-direction:column;align-items:center}
+.ex-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;justify-content:center}
+.ex-tab{padding:8px 16px;font-size:11px;letter-spacing:.5px;color:var(--t3);cursor:pointer;border:1px solid var(--border);border-radius:3px;transition:all .25s;font-family:var(--mono);background:transparent}
+.ex-tab:hover{border-color:var(--border-h);color:var(--t2)}
+.ex-tab.a{color:var(--accent-b);border-color:var(--accent);background:var(--accent2)}
+.ex-panel{display:none;width:100%;max-width:800px}
+.ex-panel.vis{display:block}
+.ex-block{border:1px solid var(--border);background:var(--surface);border-radius:4px;overflow:hidden;transition:background .4s}
+.ex-inner-tabs{display:flex;border-bottom:1px solid var(--border)}
+.ex-inner-tab{padding:10px 18px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);cursor:pointer;border-right:1px solid var(--border);transition:all .2s;font-family:var(--mono);background:transparent;border-top:none;border-bottom:none;border-left:none}
+.ex-inner-tab.a{color:var(--accent-b);background:var(--accent2)}
+.ex-inner-tab:hover:not(.a){color:var(--t2);background:var(--accent3)}
+.ex-code{padding:24px;font-size:12px;line-height:1.8;display:none}
+.ex-code.vis{display:block}
+.ex-code .ln{color:var(--t3);user-select:none;display:inline-block;width:28px;text-align:right;margin-right:16px}
+.ex-desc{padding:14px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--t2);line-height:1.6}
 
-/* FARL */
-.farl-wrap{background:var(--ink);color:var(--bg);padding:6rem 3rem;position:relative;overflow:hidden}
-.farl-glow{position:absolute;bottom:-30%;left:-5%;width:50%;height:70%;background:radial-gradient(circle,rgba(200,245,160,.04) 0%,transparent 70%);pointer-events:none}
-.farl-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1.1fr;gap:5rem;align-items:start}
-.farl-t{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3.2rem);line-height:1.1;margin-bottom:2rem}
-.farl-p{font-size:.95rem;color:rgba(247,245,240,.6);line-height:1.85;margin-bottom:1.1rem}
-.farl-p strong{color:#C8F5A0;font-weight:400}
-.farl-link{font-family:var(--mono);font-size:.78rem;color:#C8F5A0;text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;margin-top:1.5rem;padding-bottom:1px;border-bottom:1px solid rgba(200,245,160,.3);transition:gap .2s}
-.farl-link:hover{gap:.6rem}
-.codes{display:flex;flex-direction:column;gap:1.25rem}
-.code-block{background:rgba(247,245,240,.04);border:1px solid rgba(247,245,240,.07);overflow:hidden;transition:border-color .2s}
-.code-block:hover{border-color:rgba(247,245,240,.13)}
-.code-lbl{font-family:var(--mono);font-size:.65rem;color:rgba(200,245,160,.4);text-transform:uppercase;letter-spacing:.1em;padding:.55rem 1.1rem;border-bottom:1px solid rgba(247,245,240,.06)}
-.code-block pre{font-family:var(--mono);font-size:.78rem;line-height:1.8;color:rgba(247,245,240,.65);padding:1rem 1.1rem;white-space:pre-wrap}
-.ck{color:#7DD3FC}.ca{color:#FCA5A5}.cn{color:#FCD34D}.cp{color:#C8F5A0}
+/* USE CASES */
+.ucs{display:flex;gap:12px;max-width:1100px;width:100%;overflow-x:auto;padding-bottom:12px;scrollbar-width:none}
+.ucs::-webkit-scrollbar{display:none}
+.uc{min-width:190px;flex:1;border:1px solid var(--border);background:var(--surface);padding:22px;transition:all .4s;border-radius:4px}
+.uc:hover{border-color:var(--border-h);background:var(--surface2);transform:translateY(-2px)}
+.uc:hover .ua{opacity:.4}
+.ua{font-size:10px;color:var(--accent);opacity:.15;margin-bottom:14px;line-height:1.2;white-space:pre;transition:opacity .4s}
+[data-theme="light"] .ua{opacity:.25}
+.uc h4{font-size:13px;font-weight:500;margin-bottom:6px}
+.uc p{font-size:11px;color:var(--t2);line-height:1.6}
 
-/* API */
-.api-wrap{padding:6rem 3rem;border-top:1px solid var(--border)}
-.api-inner{max-width:1300px;margin:0 auto}
-.api-t{width:100%;border-collapse:collapse;margin-top:3rem;font-family:var(--mono);font-size:.78rem}
-.api-t th{text-align:left;padding:.8rem 1.25rem;color:var(--ink-3);text-transform:uppercase;font-size:.65rem;letter-spacing:.08em;border-bottom:1px solid var(--border);font-weight:400}
-.api-t td{padding:.85rem 1.25rem;border-bottom:1px solid var(--border);vertical-align:middle}
-.api-t tr:last-child td{border-bottom:none}
-.api-t tbody tr:hover td{background:rgba(13,13,13,.02)}
-.m{display:inline-block;padding:.12rem .45rem;font-size:.64rem;font-weight:500;border-radius:2px}
-.mg{background:rgba(26,58,42,.09);color:var(--accent)}
-.mp{background:rgba(147,197,253,.12);color:#1e40af}
-.ep{color:var(--accent)}.ed{color:var(--ink-3);font-family:var(--sans);font-size:.85rem}
+/* CTA */
+.cta{padding:120px 40px;text-align:center;position:relative;overflow:hidden}
+.cta h2{font-size:clamp(20px,3vw,30px);font-weight:300;margin-bottom:12px}
+.cta h2 em{font-style:normal;color:var(--accent-b);font-weight:500}
+.cta-sub{color:var(--t2);font-size:13px;margin-bottom:40px}
+.cta-bg{position:absolute;inset:0;pointer-events:none;opacity:.025;font-size:10px;line-height:1.3;color:var(--accent);overflow:hidden;display:flex;align-items:center;justify-content:center}
 
-/* INSTALL */
-.install-wrap{background:var(--accent);color:var(--bg);padding:6rem 3rem}
-.install-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:5rem;margin-top:4rem}
-.steps{display:flex;flex-direction:column;gap:2rem}
-.step{display:flex;gap:1.5rem;align-items:flex-start}
-.step-n{font-family:var(--serif);font-size:2rem;font-style:italic;color:var(--green);line-height:1;flex-shrink:0;width:2rem}
-.step-h{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.35rem}
-.step-p{font-size:.87rem;color:rgba(247,245,240,.55);line-height:1.7}
-.install-code{background:rgba(0,0,0,.22);padding:1.75rem 2rem;border-radius:2px}
-.install-code pre{font-family:var(--mono);font-size:.78rem;line-height:2;color:rgba(247,245,240,.65)}
-.ic{color:var(--green)}.icc{color:rgba(200,245,160,.3)}
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--t3)}
+footer a{color:var(--t2);text-decoration:none;transition:color .2s}
+footer a:hover{color:var(--accent-b)}
+.scramble{display:inline}
 
-/* FOOTER */
-footer{padding:2.25rem 3rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.f-logo{font-family:var(--mono);font-size:.85rem;color:var(--ink-3)}
-.f-links{display:flex;gap:2rem}
-.f-links a{font-family:var(--mono);font-size:.7rem;color:var(--ink-3);text-decoration:none;text-transform:uppercase;letter-spacing:.05em;transition:color .2s}
-.f-links a:hover{color:var(--ink)}
-.f-copy{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);opacity:.6}
-
-/* REVEAL */
-.rv{opacity:0;transform:translateY(20px);transition:opacity .65s ease,transform .65s cubic-bezier(.22,1,.36,1)}
-.rv.v{opacity:1;transform:translateY(0)}
-
-/* ── TABLET (max 1024px) ── */
-@media(max-width:1024px){
-  .hero-title{font-size:clamp(3rem,5vw,4.5rem)}
-  .feat-grid{grid-template-columns:repeat(2,1fr)}
-  .feat:nth-child(2n){border-right:none}
-  .feat:nth-child(3){border-right:1px solid var(--border)}
-  .feat:nth-child(n+5){border-bottom:none}
-  .farl-inner{gap:3rem}
-  .install-inner{gap:3rem}
-  .sec{padding:5rem 2rem}
-  .farl-wrap,.api-wrap,.install-wrap{padding:5rem 2rem}
-  .stats{gap:0}
-  .stat{padding:2rem 2rem}
-}
-
-/* ── MOBILE (max 768px) ── */
 @media(max-width:768px){
-  nav{padding:1rem 1.25rem}
-  .nav-links{display:none}
-
-  /* hamburger menu button */
-  .nav-menu-btn{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-    cursor:pointer;
-    padding:.3rem;
-    background:none;
-    border:none;
-  }
-  .nav-menu-btn span{
-    display:block;
-    width:22px;height:1.5px;
-    background:var(--ink);
-    transition:all .25s;
-  }
-
-  .hero{grid-template-columns:1fr;min-height:100svh}
-  .hero-right{display:none}
-  .hero-left{padding:5.5rem 1.25rem 3.5rem}
-  .hero-watermark{font-size:7rem;bottom:-1.5rem;left:-1rem;opacity:.6}
-  .hero-title{font-size:clamp(2.8rem,11vw,4rem);margin-bottom:1.5rem}
-  .hero-desc{font-size:.92rem;margin-bottom:2rem}
-  .hero-btns{flex-direction:column;gap:.75rem}
-  .btn-p,.btn-g{width:100%;justify-content:center;padding:.85rem 1.25rem}
-
-  .ticker-wrap{padding:.7rem 0}
-  .tick-item{padding:0 1.25rem;font-size:.65rem}
-
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .stat{padding:1.5rem 1.25rem;border-right:1px solid var(--border)}
-  .stat:nth-child(2n){border-right:none}
-  .stat:nth-child(n+3){border-top:1px solid var(--border)}
-  .stat-n{font-size:2.25rem}
-  .stat-l{font-size:.62rem}
-
-  .sec{padding:3.5rem 1.25rem}
-  .sec-hd{flex-direction:column;align-items:flex-start;gap:.75rem;margin-bottom:2.5rem}
-  .sec-sub{text-align:left;max-width:100%}
-  .sec-t{font-size:1.9rem}
-
-  .feat-grid{grid-template-columns:1fr}
-  .feat{border-right:none!important;border-bottom:1px solid var(--border)!important;padding:1.75rem}
-  .feat:last-child{border-bottom:none!important}
-  .feat-t{font-size:1.2rem}
-
-  .marquee-strip{padding:.75rem 0}
-  .marquee-item{font-size:1.1rem;padding:0 1.25rem}
-
-  .farl-wrap{padding:3.5rem 1.25rem}
-  .farl-inner{grid-template-columns:1fr;gap:2rem}
-  .farl-t{font-size:1.9rem;margin-bottom:1.25rem}
-  .farl-p{font-size:.88rem}
-  .code-block pre{font-size:.74rem}
-
-  .api-wrap{padding:3.5rem 1.25rem}
-  .api-t{font-size:.72rem}
-  .api-t th,.api-t td{padding:.6rem .6rem}
-  .api-t th:last-child,.api-t td:last-child{display:none}
-
-  .install-wrap{padding:3.5rem 1.25rem}
-  .install-inner{grid-template-columns:1fr;gap:2rem;margin-top:2rem}
-  .install-code{padding:1.25rem}
-  .install-code pre{font-size:.72rem;line-height:1.8}
-
-  footer{flex-direction:column;gap:1rem;text-align:center;padding:1.75rem 1.25rem}
-  .f-links{flex-wrap:wrap;justify-content:center;gap:1rem}
-}
-
-/* ── SMALL MOBILE (max 390px) ── */
-@media(max-width:390px){
-  .hero-title{font-size:clamp(2.3rem,9.5vw,2.8rem)}
-  .hero-left{padding:5rem 1rem 3rem}
-  .stat-n{font-size:1.9rem}
-  .sec-t,.farl-t{font-size:1.65rem}
-  .feat-t{font-size:1.1rem}
-  .editor-code{font-size:.68rem}
+  nav{padding:12px 20px}.nlinks{display:none}
+  .hero{padding:0}
+  .fg{grid-template-columns:1fr}
+  .ledger-b{grid-template-columns:1fr}
+  .ledger-c{border-right:none;border-bottom:1px solid var(--border)}
+  .stats-in{flex-direction:column}
+  .sw,.features,.examples{padding:60px 20px}
+  .fc{display:none}
+  .pipe-b{grid-template-columns:repeat(3,1fr)}.pa{display:none}
+  .hud{display:none}
+  .hblocks{display:none}
 }
 </style>
 </head>
-<body class="lang-en">
+<body>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">corren<span class="dot">.</span></a>
-  <ul class="nav-links">
-    <li><a href="#features"><span class="en">Features</span><span class="fr">Fonctionnalités</span></a></li>
-    <li><a href="/docs.html"><span class="en">Docs</span><span class="fr">Docs</span></a></li>
-    <li><a href="#api">API</a></li>
-    <li><a href="#install"><span class="en">Install</span><span class="fr">Installer</span></a></li>
-    <li><a href="https://github.com/amezianechayer/corren" class="nav-cta">GitHub →</a></li>
-  </ul>
-  <button class="nav-menu-btn" style="display:none" onclick="toggleMenu()" id="menuBtn"><span></span><span></span><span></span></button>
-  <div class="lang-toggle">
-    <button class="lang-btn active" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" onclick="setLang('fr')">FR</button>
+  <a href="#" class="nl">
+    <svg width="38" height="28" viewBox="0 0 38 28" fill="none">
+      <rect class="lb1" x="0" y="0" width="9" height="28" rx="4.5" fill="var(--logo1)"/>
+      <rect class="lb2" x="13" y="4" width="9" height="20" rx="4.5" fill="var(--logo2)"/>
+      <rect class="lb3" x="27" y="8" width="9" height="12" rx="4.5" fill="var(--logo3)"/>
+    </svg>
+    <span>Corren</span>
+  </a>
+  <div class="nr">
+    <div class="nlinks">
+      <a href="#product">Produit</a>
+      <a href="#features">Fonctionnalités</a>
+      <a href="#usecases">Cas d'usage</a>
+      <a href="https://corren.io/docs" target="_blank">Docs</a>
+    </div>
+    <button class="tbtn" id="themeToggle">◐ Theme</button>
+    <button class="ncta">Accès anticipé →</button>
   </div>
 </nav>
 
+<!-- HERO with iso3D background -->
 <section class="hero">
-  <div class="hero-left">
-    <div class="hero-watermark">corren</div>
-    <div class="hero-eyebrow"><span class="line"></span>v1.0.0-alpha</div>
-    <h1 class="hero-title">
-      <span class="tl en">Programmable</span>
-      <span class="tl en"><em>financial</em></span>
-      <span class="tl en">ledger</span>
-      <span class="tl fr">Registre</span>
-      <span class="tl fr"><em>financier</em></span>
-      <span class="tl fr">programmable</span>
-    </h1>
-    <p class="hero-desc">
-      <span class="en">Corren provides atomic multi-posting transactions, programmable in FaRl — a dedicated language for money movements. Build financial apps safely and reliably.</span>
-      <span class="fr">Corren offre des transactions multi-postings atomiques, programmables en FaRl — un langage dédié aux mouvements de fonds.</span>
-    </p>
-    <div class="hero-btns">
-      <a href="/docs.html" class="btn-p"><span class="en">Get started →</span><span class="fr">Démarrer →</span></a>
-      <a href="https://github.com/amezianechayer/corren" class="btn-g"><span class="en">View on GitHub</span><span class="fr">Voir sur GitHub</span></a>
+  <canvas id="isoCanvas"></canvas>
+  <div class="hero-overlay"></div>
+
+  <!-- HUD TL -->
+  <div class="hud hud-tl">
+    <div class="hud-label">Ledger engine</div>
+    <div class="hud-val" id="hudTx">— TX</div>
+    <div class="hud-bar"><div class="hud-fill" id="hudFill" style="width:0%"></div></div>
+  </div>
+  <!-- Status pill TR -->
+  <div class="hud hud-tr">
+    <div class="spill">
+      <div class="sd"></div>
+      <span id="sTxt">initialising</span>
     </div>
   </div>
 
-  <div class="hero-right">
-    <div class="hero-vertical" id="vtext">
-      <div class="vw en">Make</div>
-      <div class="vw en">Peace</div>
-      <div class="vw en">With Your</div>
-      <div class="vw en">Ledger</div>
-      <div class="vw fr">Faites</div>
-      <div class="vw fr">la paix</div>
-      <div class="vw fr">avec votre</div>
-      <div class="vw fr">registre</div>
+  <!-- Floating ledger blocks -->
+  <div class="hblocks">
+    <div class="hb" style="top:14%;left:5%;animation-duration:10s"><div class="hb-v">@alice</div><div class="hb-s">+5 000 DA</div></div>
+    <div class="hb" style="top:18%;right:7%;animation-duration:12s;animation-delay:-4s"><div class="hb-v">balanced ✓</div><div class="hb-s">0 errors</div></div>
+    <div class="hb" style="top:62%;left:4%;animation-duration:14s;animation-delay:-6s"><div class="hb-v">[DZD.2 10000]</div><div class="hb-s">monetary</div></div>
+    <div class="hb" style="top:72%;right:5%;animation-duration:11s;animation-delay:-2s"><div class="hb-v">90/100 → @vendeur</div><div class="hb-s">allotment</div></div>
+    <div class="hb" style="top:9%;right:22%;animation-duration:15s;animation-delay:-8s"><div class="hb-v">DR │ CR</div><div class="hb-s">double-entrée</div></div>
+    <div class="hb" style="top:52%;left:14%;animation-duration:13s;animation-delay:-3s"><div class="hb-v">@world → @banque</div><div class="hb-s">émission</div></div>
+    <div class="hb" style="bottom:18%;left:28%;animation-duration:16s;animation-delay:-9s"><div class="hb-v">atomic ✓</div><div class="hb-s">tout ou rien</div></div>
+    <div class="hb" style="bottom:22%;right:16%;animation-duration:12s;animation-delay:-1s"><div class="hb-v">remaining → $seller</div><div class="hb-s">allotment</div></div>
+  </div>
+
+  <!-- Hero text -->
+  <div class="hcontent">
+    <div class="hbadge"><span class="dot"></span><span>Algérie · MENA · Afrique</span></div>
+    <h1><span class="scramble" data-text="Infrastructure">Infrastructure</span><br><span class="scramble" data-text="financière">financière</span> <strong class="scramble" data-text="programmable.">programmable.</strong></h1>
+    <p class="hsub">Composez n'importe quel flux financier, transformez-le en code, intégrez-le dans votre produit. Ne vous trompez plus jamais de solde.</p>
+    <div class="hbtns"><a href="#" class="btn-p">Commencer →</a><a href="#product" class="btn-g">Voir la démo</a></div>
+  </div>
+  <div class="scrl"><span>Scroll</span></div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-w"><div class="ticker" id="ticker"></div></div>
+
+<!-- TERMINAL -->
+<section class="sw reveal" id="product">
+  <div class="sl">Terminal</div>
+  <h2 class="st">Démarrez en <em class="scramble" data-text="quelques secondes.">quelques secondes.</em></h2>
+  <div class="terminal"><div class="term-bar"><span class="td"></span><span class="td"></span><span class="td"></span><span class="term-title">corren — bash</span></div><div class="term-body" id="termBody"></div></div>
+</section>
+
+<!-- LEDGER -->
+<section class="sw reveal">
+  <div class="sl">Ledger</div>
+  <h2 class="st">Un ledger pour <em class="scramble" data-text="ingénieurs.">ingénieurs.</em></h2>
+  <div class="ledger">
+    <div class="ledger-h"><span>corren — ledger interactif</span><span class="st-dot">en cours d'exécution</span></div>
+    <div class="ledger-b">
+      <div class="ledger-c"><div class="scanl"></div><pre id="farlCode"></pre></div>
+      <div class="ledger-v"><div class="ledger-vt">Comptes · Soldes temps réel</div><div id="accounts"></div></div>
     </div>
-    <div class="editor">
-      <div class="editor-bar">
-        <div class="ed-dot ed-r"></div><div class="ed-dot ed-y"></div><div class="ed-dot ed-g"></div>
-        <span class="editor-title">vente.farl</span>
-        <span class="editor-status"><span class="ed-ok"></span><span class="en">No errors</span><span class="fr">Aucune erreur</span></span>
-      </div>
-      <div class="editor-body">
-        <div class="line-nums">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10</div>
-        <div class="editor-code"><span class="eco"><span class="en"># Payment with revenue split</span><span class="fr"># Paiement avec partage de revenus</span></span>
-<span class="ek">transfer</span> [<span class="en2">DZD.2</span> <span class="en2">5000</span>] (
-  <span class="ek">from</span> <span class="ea">@client:ameziane</span>
-  <span class="ek">to</span> {
-    <span class="ep2">90/100</span> <span class="ek">to</span> <span class="ea">@vendeur:yanis</span>
-    <span class="ep2">10/100</span> <span class="ek">to</span> <span class="ea">@plateforme:commission</span>
-  }
-)</div>
-      </div>
-      <div class="exec-out">
-        <span class="exec-cmd">$ corren exec quickstart vente.farl</span>
-        <span class="exec-ok">200 {"ok":true}</span><span class="cursor"></span>
-      </div>
+  </div>
+  <div class="txf reveal">
+    <div class="txf-t">Flux de transaction</div>
+    <div class="fc" id="flowCanvas">
+      <div class="fn" id="fn0" style="left:1%;top:70px"><span class="fn-name">@world</span><div class="ns"><span class="fn-sub">émission</span></div></div>
+      <div class="fn" id="fn1" style="left:17%;top:70px"><span class="fn-name">@banque</span><div class="ns"><span class="fn-sub">réserve</span></div></div>
+      <div class="fn" id="fn2" style="left:35%;top:70px"><span class="fn-name">@wallet:alice</span><div class="ns"><span class="fn-sub">utilisateur</span></div></div>
+      <div class="fn" id="fn3" style="left:56%;top:20px"><span class="fn-name">@chauffeur</span><div class="ns"><span class="fn-sub">90% · yanis</span></div></div>
+      <div class="fn" id="fn4" style="left:56%;top:125px"><span class="fn-name">@plateforme</span><div class="ns"><span class="fn-sub">10% · frais</span></div></div>
+      <div class="fn" id="fn5" style="left:80%;top:70px"><span class="fn-name">Settled ✓</span><div class="ns"><span class="fn-sub">payout</span></div></div>
+    </div>
+    <div class="txf-label" id="flowLabel"></div>
+    <div style="text-align:center;margin-top:8px;font-size:10px;color:var(--t3)" id="flowScenario"></div>
+  </div>
+</section>
+
+<!-- SPINNERS -->
+<div class="spr reveal">
+  <div class="asp"><pre id="sp1"></pre><div class="lb">Lexer</div></div>
+  <div class="asp"><pre id="sp2"></pre><div class="lb">Parser</div></div>
+  <div class="asp"><pre id="sp3"></pre><div class="lb">Compiler</div></div>
+  <div class="asp"><pre id="sp4"></pre><div class="lb">VM</div></div>
+</div>
+
+<!-- PIPELINE -->
+<section class="sw reveal" style="padding-top:70px">
+  <div class="sl">Architecture</div>
+  <h2 class="st">Du code FaRl au <em class="scramble" data-text="grand livre.">grand livre.</em></h2>
+  <div class="pipe">
+    <div class="pipe-h"><span>Pipeline d'exécution</span><span id="pipeS">idle</span></div>
+    <div class="pipe-b" id="pipeB">
+      <div class="ps"><div class="pi">┌────┐
+│.frl│
+│    │
+└────┘</div><div class="pn">Source</div><div class="pd">.farl</div><span class="pck">✓</span><span class="pa">▶</span></div>
+      <div class="ps"><div class="pi">T O K E N
+━━━━━━━━
+kw str num</div><div class="pn">Lexer</div><div class="pd">Tokens</div><span class="pck">✓</span><span class="pa">▶</span></div>
+      <div class="ps"><div class="pi">    ◇
+   ╱ ╲
+  ◇   ◇
+ ╱ ╲
+◇   ◇</div><div class="pn">Parser</div><div class="pd">AST</div><span class="pck">✓</span><span class="pa">▶</span></div>
+      <div class="ps"><div class="pi">0x00 PUSH
+0x01 LOAD
+0x02 XFER
+0x03 HALT</div><div class="pn">Compiler</div><div class="pd">Bytecode</div><span class="pck">✓</span><span class="pa">▶</span></div>
+      <div class="ps"><div class="pi">[▓▓▓▓▓▓]
+│stack │
+│frame │
+[══════]</div><div class="pn">VM</div><div class="pd">Execution</div><span class="pck">✓</span><span class="pa">▶</span></div>
+      <div class="ps"><div class="pi">╔══════╗
+║DR  CR║
+║──────║
+╚══════╝</div><div class="pn">Ledger</div><div class="pd">Commit</div><span class="pck">✓</span></div>
     </div>
   </div>
 </section>
 
-<div class="ticker-wrap">
-  <div class="ticker">
-    <span class="tick-item">Atomic Transactions</span><span class="tick-item">FaRl Language</span>
-    <span class="tick-item">Multi-ledger</span><span class="tick-item">SQLite & PostgreSQL</span>
-    <span class="tick-item">REST API</span><span class="tick-item">Open Source</span><span class="tick-item">DZD Native</span>
-    <span class="tick-item">Atomic Transactions</span><span class="tick-item">FaRl Language</span>
-    <span class="tick-item">Multi-ledger</span><span class="tick-item">SQLite & PostgreSQL</span>
-    <span class="tick-item">REST API</span><span class="tick-item">Open Source</span><span class="tick-item">DZD Native</span>
+<!-- STATS -->
+<div class="stats reveal">
+  <div class="stats-in">
+    <div class="stat"><div class="stat-v">Go</div><div class="stat-l">Runtime natif</div><div class="stat-bar"></div></div>
+    <div class="stat"><div class="stat-v">SQLite</div><div class="stat-l">ou PostgreSQL</div><div class="stat-bar"></div></div>
+    <div class="stat"><div class="stat-v">Multi</div><div class="stat-l">DZD · EUR · USD</div><div class="stat-bar"></div></div>
+    <div class="stat"><div class="stat-v">Atomic</div><div class="stat-l">Tout ou rien</div><div class="stat-bar"></div></div>
   </div>
 </div>
 
-<div class="stats">
-  <div class="stat rv"><div class="stat-n">∞</div><div class="stat-l"><span class="en">Ledgers per instance</span><span class="fr">Registres par instance</span></div></div>
-  <div class="stat rv"><div class="stat-n"><em>2</em></div><div class="stat-l"><span class="en">Storage drivers</span><span class="fr">Moteurs de stockage</span></div></div>
-  <div class="stat rv"><div class="stat-n">100%</div><div class="stat-l"><span class="en">Atomic transactions</span><span class="fr">Transactions atomiques</span></div></div>
-  <div class="stat rv"><div class="stat-n">DZD</div><div class="stat-l"><span class="en">Native asset support</span><span class="fr">Support natif du DZD</span></div></div>
-</div>
-
-<div style="border-bottom:1px solid var(--border)">
-<div class="sec" id="features">
-  <div class="sec-hd rv">
-    <div><div class="sec-n">01</div><h2 class="sec-t"><span class="en">Why Corren</span><span class="fr">Pourquoi Corren</span></h2></div>
-    <p class="sec-sub"><span class="en">Built for financial developers who need precision, not complexity.</span><span class="fr">Conçu pour les développeurs financiers qui ont besoin de précision.</span></p>
+<!-- FEATURES -->
+<section class="features reveal" id="features">
+  <div style="text-align:center;margin-bottom:60px">
+    <div class="sl">Fonctionnalités</div>
+    <h2 class="st">Tout ce dont vos <em class="scramble" data-text="agents financiers">agents financiers</em> ont besoin.</h2>
   </div>
-  <div class="feat-grid">
-    <div class="feat rv">
-      <div class="feat-top"><span class="feat-tag"><span class="en">Atomic</span><span class="fr">Atomicité</span></span><span class="feat-num">01</span></div>
-      <h3 class="feat-t"><span class="en">Multi-posting transactions</span><span class="fr">Transactions multi-postings</span></h3>
-      <p class="feat-d"><span class="en">Every transaction is all-or-nothing. No partial states, no inconsistent balances. Ever.</span><span class="fr">Chaque transaction est tout ou rien. Aucun état partiel, aucune balance incohérente.</span></p>
-    </div>
-    <div class="feat rv">
-      <div class="feat-top"><span class="feat-tag">FaRl</span><span class="feat-num">02</span></div>
-      <h3 class="feat-t"><span class="en">Programmable scripts</span><span class="fr">Scripts programmables</span></h3>
-      <p class="feat-d"><span class="en">FaRl is a dedicated language for money movements. Express complex flows in a few readable lines.</span><span class="fr">FaRl est un langage dédié aux mouvements de fonds. Exprimez des flux complexes en quelques lignes.</span></p>
-    </div>
-    <div class="feat rv">
-      <div class="feat-top"><span class="feat-tag"><span class="en">Storage</span><span class="fr">Stockage</span></span><span class="feat-num">03</span></div>
-      <h3 class="feat-t">SQLite &amp; PostgreSQL</h3>
-      <p class="feat-d"><span class="en">Start with SQLite locally, scale to PostgreSQL in production. Zero code changes required.</span><span class="fr">Démarrez avec SQLite localement, passez à PostgreSQL en production. Zéro changement.</span></p>
-    </div>
-    <div class="feat rv">
-      <div class="feat-top"><span class="feat-tag">REST API</span><span class="feat-num">04</span></div>
-      <h3 class="feat-t"><span class="en">Simple HTTP API</span><span class="fr">API HTTP simple</span></h3>
-      <p class="feat-d"><span class="en">A clean REST API to submit scripts, query balances, and list transactions from any language.</span><span class="fr">Une API HTTP propre pour soumettre des scripts et consulter les soldes depuis n'importe quel langage.</span></p>
-    </div>
-    <div class="feat rv">
-      <div class="feat-top"><span class="feat-tag"><span class="en">Multi-ledger</span><span class="fr">Multi-registres</span></span><span class="feat-num">05</span></div>
-      <h3 class="feat-t"><span class="en">Isolated ledgers</span><span class="fr">Registres isolés</span></h3>
-      <p class="feat-d"><span class="en">Run multiple independent ledgers in a single instance. Each with its own accounts and history.</span><span class="fr">Plusieurs registres indépendants dans une seule instance. Chacun avec ses propres comptes.</span></p>
-    </div>
-    <div class="feat rv">
-      <div class="feat-top"><span class="feat-tag">CLI</span><span class="feat-num">06</span></div>
-      <h3 class="feat-t"><span class="en">Powerful CLI</span><span class="fr">CLI puissant</span></h3>
-      <p class="feat-d"><span class="en">Execute scripts, initialize storage, and manage configuration directly from the terminal.</span><span class="fr">Exécutez des scripts et gérez la configuration depuis le terminal.</span></p>
-    </div>
+  <div class="fg">
+    <div class="fc2"><div class="fa">╔═══╗
+║ F ║
+╚═══╝</div><div class="fi">→ FaRl</div><h3>Langage dédié</h3><p>Un DSL conçu pour les flux financiers. Déclarez, compilez, exécutez.</p></div>
+    <div class="fc2"><div class="fa">DR │ CR
+───┼───
+ + │  -</div><div class="fi">→ Double-entrée</div><h3>Comptabilité stricte</h3><p>Chaque transaction est en double-entrée. Les soldes sont justes par construction.</p></div>
+    <div class="fc2"><div class="fa">DZD.2
+EUR.2
+USD.2</div><div class="fi">→ Multi-devise</div><h3>DZD, EUR, USD...</h3><p>Support natif multi-devises avec précision configurable.</p></div>
+    <div class="fc2"><div class="fa">PUSH
+LOAD
+XFER
+HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>FaRl compilé en bytecode, exécuté dans une VM Go embarquée.</p></div>
+    <div class="fc2"><div class="fa">from {
+  @a
+  @b
+  @world
+}</div><div class="fi">→ Cascades</div><h3>Sources ordonnées</h3><p>Cascade de sources avec max et @world en fallback.</p></div>
+    <div class="fc2"><div class="fa">to {
+ 90%  → A
+ rem  → B
+}</div><div class="fi">→ Splits</div><h3>Allotment natif</h3><p>Portions, remaining, destinations ordonnées. Rounding sans perte.</p></div>
   </div>
-</div>
-</div>
+</section>
 
-<div class="marquee-strip">
-  <div class="marquee">
-    <span class="marquee-item">Build Fast</span><span class="marquee-item">Track Every Cent</span>
-    <span class="marquee-item">Trust Your Ledger</span><span class="marquee-item">Write FaRl</span>
-    <span class="marquee-item">Deploy Anywhere</span><span class="marquee-item">Build Fast</span>
-    <span class="marquee-item">Track Every Cent</span><span class="marquee-item">Trust Your Ledger</span>
-    <span class="marquee-item">Write FaRl</span><span class="marquee-item">Deploy Anywhere</span>
+<!-- EXAMPLES -->
+<section class="examples reveal">
+  <div class="sl">Exemples</div>
+  <h2 class="st" style="margin-bottom:32px">Du <em class="scramble" data-text="code réel.">code réel.</em></h2>
+  <div class="ex-tabs">
+    <button class="ex-tab a" data-ex="0">Marketplace split</button>
+    <button class="ex-tab" data-ex="1">Source cascade</button>
   </div>
-</div>
-
-<section class="farl-wrap" id="farl">
-  <div class="farl-glow"></div>
-  <div style="max-width:1300px;margin:0 auto">
-    <div style="font-family:var(--mono);font-size:.68rem;color:rgba(200,245,160,.35);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">02</div>
-    <h2 class="farl-t rv"><span class="en">The FaRl language</span><span class="fr">Le langage FaRl</span></h2>
-    <div class="farl-inner">
-      <div class="rv">
-        <p class="farl-p"><span class="en"><strong>FaRl</strong> (Financial accounting Rule Language) is the scripting language built into Corren. Designed to be readable, safe, and expressive for financial use cases.</span><span class="fr"><strong>FaRl</strong> (Financial accounting Rule Language) est le langage de script intégré à Corren. Conçu pour être lisible, sûr et expressif.</span></p>
-        <p class="farl-p"><span class="en">Every <strong>transfer</strong> is validated before execution. Insufficient balances and allocation errors are caught at compile time — not at runtime.</span><span class="fr">Chaque <strong>transfer</strong> est validé avant exécution. Les erreurs sont détectées à la compilation.</span></p>
-        <p class="farl-p"><span class="en"><strong>@world</strong> is a special account representing money creation — like a central bank. It has no balance limit.</span><span class="fr"><strong>@world</strong> est un compte spécial représentant la création monétaire — sans limite de solde.</span></p>
-        <a href="/docs.html" class="farl-link"><span class="en">Read the full docs →</span><span class="fr">Lire la documentation →</span></a>
+  <div class="ex-panel vis" data-panel="0">
+    <div class="ex-block">
+      <div class="ex-inner-tabs" data-group="0">
+        <button class="ex-inner-tab a" data-it="0-0">marketplace.farl</button>
+        <button class="ex-inner-tab" data-it="0-1">corren run</button>
+        <button class="ex-inner-tab" data-it="0-2">HTTP API</button>
       </div>
-      <div class="codes rv">
-        <div class="code-block">
-          <div class="code-lbl"><span class="en">Simple transfer</span><span class="fr">Transfer simple</span></div>
-          <pre><span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">10000</span>] (
-  <span class="ck">from</span> <span class="ca">@world</span>
-  <span class="ck">to</span> <span class="ca">@banque:reserve</span>
-)</pre>
-        </div>
-        <div class="code-block">
-          <div class="code-lbl"><span class="en">Revenue splitting</span><span class="fr">Partage de revenus</span></div>
-          <pre><span class="ck">transfer</span> [<span class="cn">DZD.2</span> <span class="cn">5000</span>] (
-  <span class="ck">from</span> <span class="ca">@client:ameziane</span>
-  <span class="ck">to</span> {
-    <span class="cp">90/100</span> <span class="ck">to</span> <span class="ca">@vendeur:yanis</span>
-    <span class="cp">10/100</span> <span class="ck">to</span> <span class="ca">@plateforme:commission</span>
-  }
-)</pre>
-        </div>
-        <div class="code-block">
-          <div class="code-lbl"><span class="en">With variables</span><span class="fr">Avec variables</span></div>
-          <pre><span class="ck">var</span> $montant: <span class="cn">monetary</span>
-<span class="ck">var</span> $dest: <span class="cn">account</span>
-<span class="ck">transfer</span> $montant (
-  <span class="ck">from</span> <span class="ca">@world</span>
-  <span class="ck">to</span> $dest
-)</pre>
-        </div>
+      <div class="ex-code vis" data-ic="0-0"><pre><span class="ln"> 1</span><span style="color:var(--t3)">// Paiement client → compte de vente</span>
+<span class="ln"> 2</span><span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">5000</span>] (
+<span class="ln"> 3</span>  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@client:ameziane</span>
+<span class="ln"> 4</span>  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@courses:0587:paiement</span>
+<span class="ln"> 5</span>)
+<span class="ln"> 6</span>
+<span class="ln"> 7</span><span style="color:var(--t3)">// Split : 90% chauffeur, 10% plateforme</span>
+<span class="ln"> 8</span><span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">5000</span>] (
+<span class="ln"> 9</span>  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@courses:0587:paiement</span>
+<span class="ln">10</span>  <span style="color:var(--code-kw)">to</span> {
+<span class="ln">11</span>    <span style="color:var(--code-num)">90/100</span>  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@chauffeur:yanis</span>
+<span class="ln">12</span>    <span style="color:var(--code-num)">10/100</span>  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@plateforme:frais</span>
+<span class="ln">13</span>  }
+<span class="ln">14</span>)
+<span class="ln">15</span>
+<span class="ln">16</span><span style="color:var(--code-kw)">set transaction metadata</span> <span style="color:var(--code-str)">"reference"</span> = <span style="color:var(--code-str)">"COURSE-0587"</span></pre></div>
+      <div class="ex-code" data-ic="0-1"><pre><span style="color:var(--code-str)">$</span> corren run market marketplace.farl
+
+<span style="color:var(--t3)">  Lexing...     ✓  18 tokens</span>
+<span style="color:var(--t3)">  Parsing...    ✓  2 transfers, 1 set</span>
+<span style="color:var(--t3)">  Compiling...  ✓  16 instructions</span>
+<span style="color:var(--t3)">  Executing...</span>
+<span style="color:var(--t3)">    @client:ameziane → @courses:0587 [DZD.2 5000]</span>
+<span style="color:var(--t3)">    @courses:0587 → 90% @chauffeur + 10% @plateforme</span>
+
+<span style="color:var(--green)">  ✓ 200 {"ok":true}</span></pre></div>
+      <div class="ex-code" data-ic="0-2"><pre><span style="color:var(--code-str)">$</span> curl -X POST http://localhost:3068/market/script \
+  -H <span style="color:var(--code-str)">"Content-Type: application/json"</span> \
+  -d <span style="color:var(--code-str)">'{"plain":"transfer [DZD.2 5000] (\n  from @client:ameziane\n  to @courses:0587:paiement\n)\n\ntransfer [DZD.2 5000] (\n  from @courses:0587:paiement\n  to {\n    90/100 to @chauffeur:yanis\n    10/100 to @plateforme:frais\n  }\n)","vars":{}}'</span>
+
+<span style="color:var(--green)">200 {"ok":true}</span></pre></div>
+      <div class="ex-desc">Marketplace VTC — paiement client splité automatiquement entre chauffeur (90%) et plateforme (10%).</div>
+    </div>
+  </div>
+  <div class="ex-panel" data-panel="1">
+    <div class="ex-block">
+      <div class="ex-inner-tabs" data-group="1">
+        <button class="ex-inner-tab a" data-it="1-0">cascade.farl</button>
+        <button class="ex-inner-tab" data-it="1-1">corren run</button>
+        <button class="ex-inner-tab" data-it="1-2">HTTP API</button>
       </div>
+      <div class="ex-code vis" data-ic="1-0"><pre><span class="ln"> 1</span><span style="color:var(--t3)">// Cascade : wallet d'abord, puis crédit, puis @world</span>
+<span class="ln"> 2</span><span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">3000</span>] (
+<span class="ln"> 3</span>  <span style="color:var(--code-kw)">from</span> {
+<span class="ln"> 4</span>    <span style="color:var(--code-str)">@wallet:ameziane</span>    <span style="color:var(--t3)">// balance: 1000 → utilisé first</span>
+<span class="ln"> 5</span>    <span style="color:var(--code-str)">@credit:ameziane</span>    <span style="color:var(--t3)">// balance: 2000 → utilisé next</span>
+<span class="ln"> 6</span>    <span style="color:var(--code-str)">@world</span>              <span style="color:var(--t3)">// fallback illimité</span>
+<span class="ln"> 7</span>  }
+<span class="ln"> 8</span>  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@commande:0089</span>
+<span class="ln"> 9</span>)
+<span class="ln">10</span>
+<span class="ln">11</span><span style="color:var(--t3)">// Résultat : 1000 wallet + 2000 credit = 3000</span></pre></div>
+      <div class="ex-code" data-ic="1-1"><pre><span style="color:var(--code-str)">$</span> corren run bank cascade.farl
+
+<span style="color:var(--t3)">  Lexing...     ✓  14 tokens</span>
+<span style="color:var(--t3)">  Parsing...    ✓  1 transfer (cascade source)</span>
+<span style="color:var(--t3)">  Compiling...  ✓  12 instructions</span>
+<span style="color:var(--t3)">  Executing...</span>
+<span style="color:var(--t3)">    @wallet:ameziane  → drained 1000</span>
+<span style="color:var(--t3)">    @credit:ameziane  → drained 2000</span>
+<span style="color:var(--t3)">    @world            → not needed</span>
+
+<span style="color:var(--green)">  ✓ 200 {"ok":true}</span></pre></div>
+      <div class="ex-code" data-ic="1-2"><pre><span style="color:var(--code-str)">$</span> curl -X POST http://localhost:3068/bank/script \
+  -H <span style="color:var(--code-str)">"Content-Type: application/json"</span> \
+  -d <span style="color:var(--code-str)">'{"plain":"transfer [DZD.2 3000] (\n  from {\n    @wallet:ameziane\n    @credit:ameziane\n    @world\n  }\n  to @commande:0089\n)","vars":{}}'</span>
+
+<span style="color:var(--green)">200 {"ok":true}</span></pre></div>
+      <div class="ex-desc">Banque — cascade ordonnée : wallet drainé en premier, crédit ensuite, @world en fallback si nécessaire.</div>
     </div>
   </div>
 </section>
 
-<section class="api-wrap" id="api">
-  <div class="api-inner">
-    <div class="sec-hd rv">
-      <div><div class="sec-n">03</div><h2 class="sec-t"><span class="en">REST API</span><span class="fr">API REST</span></h2></div>
-      <p class="sec-sub"><span class="en">All operations available via a simple HTTP API.</span><span class="fr">Toutes les opérations via une API HTTP simple.</span></p>
-    </div>
-    <table class="api-t rv">
-      <thead><tr><th><span class="en">Method</span><span class="fr">Méthode</span></th><th>Endpoint</th><th><span class="en">Description</span><span class="fr">Description</span></th></tr></thead>
-      <tbody>
-        <tr><td><span class="m mg">GET</span></td><td class="ep">/:ledger/stats</td><td class="ed"><span class="en">Ledger statistics</span><span class="fr">Statistiques du registre</span></td></tr>
-        <tr><td><span class="m mg">GET</span></td><td class="ep">/:ledger/transactions</td><td class="ed"><span class="en">List transactions</span><span class="fr">Lister les transactions</span></td></tr>
-        <tr><td><span class="m mp">POST</span></td><td class="ep">/:ledger/transactions</td><td class="ed"><span class="en">Create a manual transaction</span><span class="fr">Créer une transaction manuelle</span></td></tr>
-        <tr><td><span class="m mp">POST</span></td><td class="ep">/:ledger/script</td><td class="ed"><span class="en">Execute a FaRl script</span><span class="fr">Exécuter un script FaRl</span></td></tr>
-        <tr><td><span class="m mg">GET</span></td><td class="ep">/:ledger/accounts</td><td class="ed"><span class="en">List accounts</span><span class="fr">Lister les comptes</span></td></tr>
-        <tr><td><span class="m mg">GET</span></td><td class="ep">/:ledger/accounts/:address</td><td class="ed"><span class="en">Account balance and info</span><span class="fr">Solde et infos d'un compte</span></td></tr>
-      </tbody>
-    </table>
+<!-- USE CASES -->
+<section class="sw reveal" id="usecases">
+  <div class="sl">Cas d'usage</div>
+  <h2 class="st" style="margin-bottom:48px">Construisez comme des <em class="scramble" data-text="LEGO.">LEGO.</em></h2>
+  <div class="ucs">
+    <div class="uc"><div class="ua">╔══╗
+║$$║
+╚══╝</div><h4>Wallets</h4><p>Soldes utilisateur, rechargement, P2P.</p></div>
+    <div class="uc"><div class="ua">90% → A
+10% → B</div><h4>Marketplace</h4><p>Splits vendeur/plateforme.</p></div>
+    <div class="uc"><div class="ua">from {
+  @a
+  @b
+  @world
+}</div><h4>Néobanques</h4><p>Cascade ordonnée avec fallback.</p></div>
+    <div class="uc"><div class="ua">[DZD.2]
+[EUR.2]
+[USD.2]</div><h4>Multi-devise</h4><p>Précision configurable par actif.</p></div>
+    <div class="uc"><div class="ua">set tx
+ meta
+ "ref"</div><h4>Metadata</h4><p>Read/write sur comptes et TX.</p></div>
+    <div class="uc"><div class="ua">atomic
+ ✓ all
+ ✗ none</div><h4>Atomicité</h4><p>Tout ou rien. Jamais d'état partiel.</p></div>
   </div>
 </section>
 
-<section class="install-wrap" id="install">
-  <div style="max-width:1300px;margin:0 auto">
-    <div style="font-family:var(--mono);font-size:.68rem;color:rgba(200,245,160,.35);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem">04</div>
-    <h2 class="sec-t rv" style="color:var(--bg)"><span class="en">Get started</span><span class="fr">Démarrer</span></h2>
-    <div class="install-inner">
-      <div class="steps rv">
-        <div class="step"><div class="step-n">1</div><div><div class="step-h"><span class="en">Install</span><span class="fr">Installer</span></div><p class="step-p"><span class="en">Build from source or download the binary from the releases page.</span><span class="fr">Compilez depuis les sources ou téléchargez le binaire.</span></p></div></div>
-        <div class="step"><div class="step-n">2</div><div><div class="step-h"><span class="en">Configure</span><span class="fr">Configurer</span></div><p class="step-p"><span class="en">Initialize the config file. SQLite by default, PostgreSQL for production.</span><span class="fr">Initialisez le fichier de configuration. SQLite par défaut.</span></p></div></div>
-        <div class="step"><div class="step-n">3</div><div><div class="step-h"><span class="en">Run</span><span class="fr">Lancer</span></div><p class="step-p"><span class="en">Start the server and execute your first FaRl script.</span><span class="fr">Démarrez le serveur et exécutez votre premier script FaRl.</span></p></div></div>
-      </div>
-      <div class="install-code rv">
-        <pre><span class="icc"># Build from source</span>
-<span class="ic">git clone https://github.com/amezianechayer/corren</span>
-<span class="ic">cd corren && go build -o corren .</span>
-<span class="ic">sudo mv corren /usr/local/bin/</span>
-
-<span class="icc"># Initialize and start</span>
-<span class="ic">corren config init</span>
-<span class="ic">corren server start</span>
-
-<span class="icc"># Execute your first script</span>
-<span class="ic">corren exec quickstart script.farl</span>
-<span style="color:rgba(200,245,160,.6)">200 {"ok":true}</span></pre>
-      </div>
-    </div>
+<!-- CTA -->
+<section class="cta reveal">
+  <div class="cta-bg" id="ctaBg"></div>
+  <h2>Personne ne construit sa propre base de données.<br>Pourquoi construire celle de votre <em class="scramble" data-text="argent ?">argent ?</em></h2>
+  <p class="cta-sub">Corren gère les soldes. Vous construisez le produit.</p>
+  <div style="display:flex;gap:12px;justify-content:center;position:relative;z-index:1">
+    <a href="#" class="btn-p">Demander un accès →</a>
+    <a href="https://corren.io/docs" class="btn-g" target="_blank">Documentation</a>
   </div>
 </section>
 
 <footer>
-  <div class="f-logo">corren<span style="color:var(--accent);font-family:var(--serif);font-style:italic">.</span>io</div>
-  <div class="f-links">
-    <a href="/docs.html">Docs</a>
-    <a href="/grammar.html">Grammar</a>
+  <span>© Corren 2026</span>
+  <div style="display:flex;gap:20px">
+    <a href="https://corren.io/docs">Docs</a>
     <a href="https://github.com/amezianechayer/corren">GitHub</a>
-    <a href="https://github.com/amezianechayer/corren-vm">corren-vm</a>
+    <a href="#">Contact</a>
   </div>
-  <div class="f-copy">© 2026 · <span style="font-style:italic;font-family:var(--serif)">Created by Ameziane Chayer</span></div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-function setLang(lang) {
-  document.body.className = 'lang-' + lang;
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
+// ═══════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════
+const CH='01#@$%&?!*+=-_/\\|{}[]<>~^:.';
+const RC=()=>CH[Math.floor(Math.random()*CH.length)];
+function easeOut(t){return 1-Math.pow(1-t,3)}
+function easeIO(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
+
+// ═══════════════════════════════════════════════
+//  THEME
+// ═══════════════════════════════════════════════
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const h=document.documentElement,n=h.dataset.theme==='dark'?'light':'dark';
+  h.dataset.theme=n;localStorage.setItem('theme',n);
+});
+if(localStorage.getItem('theme'))document.documentElement.dataset.theme=localStorage.getItem('theme');
+
+// ═══════════════════════════════════════════════
+//  SCRAMBLE
+// ═══════════════════════════════════════════════
+class Scr{
+  constructor(e){this.e=e;this.t=e.dataset.text||e.textContent;this.q=[];this.f=0}
+  start(){this.q=[];for(let i=0;i<this.t.length;i++){const s=Math.floor(Math.random()*18),e=s+Math.floor(Math.random()*22)+8;this.q.push({to:this.t[i],s,e})}this.f=0;this._s()}
+  _s(){let o='',d=0;for(const q of this.q){if(this.f>=q.e){d++;o+=q.to}else if(this.f>=q.s)o+=`<span style="color:var(--t3)">${RC()}</span>`;else o+=`<span style="color:var(--t4)">${RC()}</span>`}this.e.innerHTML=o;if(d<this.q.length)requestAnimationFrame(()=>{this.f++;this._s()})}
+}
+const sO=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){new Scr(e.target).start();sO.unobserve(e.target)}})},{threshold:.5});
+document.querySelectorAll('.scramble').forEach(e=>sO.observe(e));
+document.querySelectorAll('.fc2 h3,.uc h4').forEach(h=>{const o=h.textContent;h.addEventListener('mouseenter',()=>{let f=0;const iv=setInterval(()=>{let s='';for(let i=0;i<o.length;i++)s+=(f>i*.7)?o[i]:RC();h.textContent=s;f++;if(f>10+o.length){clearInterval(iv);h.textContent=o}},35)})});
+
+// ═══════════════════════════════════════════════
+//  REVEAL
+// ═══════════════════════════════════════════════
+const rO=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');rO.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(e=>rO.observe(e));
+
+// ═══════════════════════════════════════════════
+//  TICKER
+// ═══════════════════════════════════════════════
+const tI=['<em>→</em> Double-entrée','<em>→</em> Multi-devise','<em>→</em> FaRl DSL','<em>→</em> VM Go','<em>→</em> Atomicité','<em>→</em> Cascades','<em>→</em> @world','<em>→</em> Allotment','<em>→</em> Metadata','<em>→</em> HTTP API','<em>→</em> CLI'];
+document.getElementById('ticker').innerHTML=Array(3).fill(tI.map(t=>`<span>${t}</span>`).join('')).join('');
+
+// ═══════════════════════════════════════════════
+//  TERMINAL
+// ═══════════════════════════════════════════════
+const tLines=[
+  {t:'p',x:'git clone https://github.com/amezianechayer/corren',d:600},
+  {t:'o',x:"Cloning into 'corren'...",d:350},
+  {t:'k',x:'done.',d:200},
+  {t:'p',x:'cd corren && go build -o corren .',d:500},
+  {t:'d',x:'go: downloading dependencies...',d:400},
+  {t:'k',x:'Build complete.',d:200},
+  {t:'p',x:'sudo mv corren /usr/local/bin/',d:300},
+  {t:'p',x:'corren server start',d:450},
+  {t:'o',x:'  Storage: sqlite  ~/.corren/data',d:180},
+  {t:'o',x:'  HTTP:    127.0.0.1:3068',d:180},
+  {t:'k',x:'  ✓ Server running',d:350},
+  {t:'p',x:'corren run market marketplace.farl',d:500},
+  {t:'o',x:'  Lexing...     ✓  18 tokens',d:180},
+  {t:'o',x:'  Parsing...    ✓  2 transfers, 1 set',d:180},
+  {t:'o',x:'  Compiling...  ✓  16 instructions',d:180},
+  {t:'o',x:'  Executing...',d:220},
+  {t:'o',x:'    @client:ameziane → @courses:0587 [DZD.2 5000]',d:180},
+  {t:'o',x:'    @courses:0587 → 90% @chauffeur + 10% @plateforme',d:180},
+  {t:'k',x:'  ✓ 200 {"ok":true}',d:300},
+  {t:'p',x:'curl localhost:3068/market/accounts/@chauffeur:yanis',d:450},
+  {t:'k',x:'  {"address":"@chauffeur:yanis","balances":{"DZD.2":4500}}',d:0},
+];
+const tB=document.getElementById('termBody');let tSt=false;
+new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting&&!tSt){tSt=true;doTerm(0)}})},{threshold:.3}).observe(tB);
+function doTerm(i){
+  if(i>=tLines.length){const c=document.createElement('span');c.className='tcur';tB.appendChild(c);setTimeout(()=>{tB.innerHTML='';doTerm(0)},4000);return}
+  const l=tLines[i],d=document.createElement('div');d.className='tl';
+  if(l.t==='p')d.innerHTML=`<span class="tp">❯</span> <span class="tc">${l.x}</span>`;
+  else d.innerHTML=`<span class="${{p:'tp',o:'to',k:'tok',d:'tdm'}[l.t]}">${l.x}</span>`;
+  tB.appendChild(d);tB.scrollTop=tB.scrollHeight;
+  setTimeout(()=>doTerm(i+1),l.d+130);
+}
+
+// ═══════════════════════════════════════════════
+//  LEDGER — 2 scenarios
+// ═══════════════════════════════════════════════
+const scenarios=[
+  {name:'MARKETPLACE · VTC',
+   accounts:[{name:'@banque:reserve',bal:0,max:30000},{name:'@wallet:alice',bal:0,max:20000},{name:'@chauffeur:yanis',bal:0,max:10000},{name:'@plateforme:frais',bal:0,max:2000}],
+   nodes:[{name:'@world',sub:'émission',left:'1%',top:'75px'},{name:'@banque',sub:'réserve',left:'17%',top:'75px'},{name:'@wallet:alice',sub:'utilisateur',left:'35%',top:'75px'},{name:'@chauffeur',sub:'90% · yanis',left:'56%',top:'25px'},{name:'@plateforme',sub:'10% · frais',left:'56%',top:'130px'},{name:'Settled ✓',sub:'payout',left:'82%',top:'75px'}],
+   steps:[
+     {lbl:'Émission @world → @banque:reserve [30 000 DA]',code:`<span style="color:var(--t3)">// 1. Émission initiale</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">30000</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@world</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@banque:reserve</span>\n)`,ch:{'@banque:reserve':30000},fl:[0,1]},
+     {lbl:'Recharge @banque → @wallet:alice [20 000 DA]',code:`<span style="color:var(--t3)">// 2. Recharge wallet</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">20000</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@banque:reserve</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@wallet:alice</span>\n)`,ch:{'@banque:reserve':-20000,'@wallet:alice':20000},fl:[1,2]},
+     {lbl:'Split 90% → @chauffeur · 10% → @plateforme',code:`<span style="color:var(--t3)">// 3. Paiement avec split</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">10000</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@wallet:alice</span>\n  <span style="color:var(--code-kw)">to</span> {\n    <span style="color:var(--code-num)">90/100</span> <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@chauffeur:yanis</span>\n    <span style="color:var(--code-num)">10/100</span> <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@plateforme:frais</span>\n  }\n)`,ch:{'@wallet:alice':-10000,'@chauffeur:yanis':9000,'@plateforme:frais':1000},fl:[2,3,4]},
+     {lbl:'Payout @chauffeur → @world [transfer all]',code:`<span style="color:var(--t3)">// 4. Payout chauffeur</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">*</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@chauffeur:yanis</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@world</span>\n)\n\n<span style="color:var(--code-kw)">set transaction metadata</span>\n  <span style="color:var(--code-str)">"ref"</span> = <span style="color:var(--code-str)">"PAY-2026-001"</span>`,ch:{'@chauffeur:yanis':-9000},fl:[3,5]},
+   ]},
+  {name:'BANQUE · CASCADE',
+   accounts:[{name:'@wallet:ameziane',bal:1000,max:3000},{name:'@credit:ameziane',bal:2000,max:3000},{name:'@commande:0089',bal:0,max:3000},{name:'@vendeur:yanis',bal:0,max:3000}],
+   nodes:[{name:'@wallet',sub:'1 000 DA',left:'1%',top:'75px'},{name:'@credit',sub:'2 000 DA',left:'18%',top:'75px'},{name:'@world',sub:'non utilisé',left:'35%',top:'75px'},{name:'@commande',sub:'destination',left:'53%',top:'75px'},{name:'@vendeur',sub:'bénéficiaire',left:'70%',top:'75px'},{name:'Settled ✓',sub:'réconcilié',left:'87%',top:'75px'}],
+   steps:[
+     {lbl:'@wallet drainé en 1er → 1 000 DA vers @commande',code:`<span style="color:var(--t3)">// Cascade ordonnée</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">3000</span>] (\n  <span style="color:var(--code-kw)">from</span> {\n    <span style="color:var(--code-str)">@wallet:ameziane</span>  <span style="color:var(--t3)">// ← drainé 1er</span>\n    <span style="color:var(--code-str)">@credit:ameziane</span>  <span style="color:var(--t3)">// ← drainé 2ème</span>\n    <span style="color:var(--code-str)">@world</span>            <span style="color:var(--t3)">// ← fallback</span>\n  }\n  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@commande:0089</span>\n)`,ch:{'@wallet:ameziane':-1000,'@commande:0089':1000},fl:[0,3]},
+     {lbl:'@credit drainé ensuite → 2 000 DA vers @commande',code:`<span style="color:var(--t3)">// @wallet épuisé (1 000 drainé)</span>\n<span style="color:var(--t3)">// @credit prend le relais (2 000 drainé)</span>\n<span style="color:var(--t3)">// @world non utilisé (montant atteint)</span>\n<span style="color:var(--t3)">// ─────────────────────────────────</span>\n<span style="color:var(--t3)">// 1 000 + 2 000 = 3 000 DA  ✓</span>`,ch:{'@credit:ameziane':-2000,'@commande:0089':2000},fl:[1,3]},
+     {lbl:'@commande → @vendeur [transfer all]',code:`<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">*</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@commande:0089</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@vendeur:yanis</span>\n)`,ch:{'@commande:0089':-3000,'@vendeur:yanis':3000},fl:[3,4]},
+     {lbl:'✓ Tous les soldes réconciliés',code:`<span style="color:var(--green)">// ✓ @wallet:ameziane    0 DA  (drainé)</span>\n<span style="color:var(--green)">// ✓ @credit:ameziane    0 DA  (drainé)</span>\n<span style="color:var(--green)">// ✓ @world              —     (non utilisé)</span>\n<span style="color:var(--green)">// ✓ @commande:0089      0 DA  (transféré)</span>\n<span style="color:var(--green)">// ✓ @vendeur:yanis  3 000 DA  (reçu)</span>`,ch:{},fl:[4,5]},
+   ]},
+];
+const aE=document.getElementById('accounts'),cE=document.getElementById('farlCode'),fL=document.getElementById('flowLabel'),fSc=document.getElementById('flowScenario');
+let fN=document.querySelectorAll('.fn'),curSc=0,curSt=0,curAcc=[];
+function rA(){let h='';for(const a of curAcc){const p=Math.min(100,Math.abs(a.bal)/a.max*100);h+=`<div class="ar" data-n="${a.name}" style="padding-left:4px"><span class="an">${a.name}</span><span class="ab">${a.bal===0?'0':a.bal.toLocaleString('fr-DZ')+' DA'}</span><div class="abar"><div class="abf" style="width:${p}%"></div></div></div>`}aE.innerHTML=h}
+function setFN(sc){fN.forEach((n,i)=>{const c=sc.nodes[i];n.querySelector('.fn-name').textContent=c.name;n.querySelector('.fn-sub').textContent=c.sub;n.style.left=c.left;n.style.top=c.top;n.classList.remove('act')});fSc.textContent='▸ '+sc.name}
+function initSc(sc){curAcc=sc.accounts.map(a=>({...a,bal:a.bal||0}));if(sc===scenarios[1]){curAcc[0].bal=1000;curAcc[1].bal=2000}setFN(sc);rA()}
+function runTx(){const sc=scenarios[curSc],step=sc.steps[curSt];if(curSt===0)initSc(sc);for(const[k,v]of Object.entries(step.ch)){const a=curAcc.find(x=>x.name===k);if(a)a.bal+=v}cE.innerHTML=step.code;rA();aE.querySelectorAll('.ar[data-n]').forEach(r=>{if(step.ch[r.dataset.n]){r.classList.add('act');setTimeout(()=>r.classList.remove('act'),1400)}});fN.forEach(n=>n.classList.remove('act'));fL.textContent=step.lbl;fL.classList.add('act');setTimeout(()=>fL.classList.remove('act'),3500);if(step.fl){step.fl.forEach((fi,i)=>setTimeout(()=>fN[fi].classList.add('act'),i*280));for(let i=0;i<step.fl.length-1;i++)setTimeout(()=>mkP(step.fl[i],step.fl[i+1]),i*320)}curSt++;if(curSt>=sc.steps.length){curSt=0;curSc=(curSc+1)%scenarios.length}}
+function mkP(fi,ti){const cv=document.getElementById('flowCanvas'),f=fN[fi],t=fN[ti];if(!f||!t)return;const p=document.createElement('div');p.style.cssText=`position:absolute;width:5px;height:5px;background:var(--accent);border-radius:50%;box-shadow:0 0 12px var(--accent),0 0 20px var(--accent-glow);z-index:10;transition:all .9s cubic-bezier(.4,0,.2,1);`;p.style.left=(f.offsetLeft+f.offsetWidth/2)+'px';p.style.top=(f.offsetTop+f.offsetHeight/2)+'px';cv.appendChild(p);requestAnimationFrame(()=>{p.style.left=(t.offsetLeft+t.offsetWidth/2)+'px';p.style.top=(t.offsetTop+t.offsetHeight/2)+'px'});setTimeout(()=>p.remove(),1100)}
+initSc(scenarios[0]);cE.innerHTML=`<span style="color:var(--t3)">// En attente...</span>\n<span style="color:var(--code-kw)">corren</span> run market ledger.farl`;
+setTimeout(()=>{runTx();setInterval(runTx,4200)},2000);
+
+// ═══ SPINNERS ═══
+const s1=['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'],s2=['┌──┐\n│  │\n└──┘','╔══╗\n║  ║\n└──┘','╔══╗\n║  ║\n╚══╝','╔══╗\n║✓ ║\n╚══╝'],s3=[']····[\n]····[',']·*··[\n]····[',']··*·[\n]·*··[',']····[\n]··*·['],s4=['[__________]','[████______]','[███████___]','[██████████]'];
+let si=0;setInterval(()=>{si++;document.getElementById('sp1').textContent=s1[si%s1.length]+' lexing';document.getElementById('sp2').textContent=s2[si%s2.length];document.getElementById('sp3').textContent=s3[si%s3.length];document.getElementById('sp4').textContent=s4[si%s4.length]},250);
+
+// ═══ PIPELINE ═══
+const stg=document.querySelectorAll('.ps');let pI=0,pR=false;const pSt=document.getElementById('pipeS');
+new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting&&!pR){pR=true;runPipe()}})},{threshold:.3}).observe(document.getElementById('pipeB'));
+function runPipe(){stg.forEach(s=>s.classList.remove('act','dn'));pI=0;pSt.textContent='running...';pSt.style.color='var(--accent-b)';stepP()}
+function stepP(){if(pI>0){stg[pI-1].classList.remove('act');stg[pI-1].classList.add('dn')}if(pI>=stg.length){pSt.textContent='✓ committed';pSt.style.color='var(--green)';setTimeout(runPipe,3000);return}stg[pI].classList.add('act');pI++;setTimeout(stepP,650)}
+
+// ═══ STATS ═══
+new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.stat').forEach(s=>s.classList.add('vis'))}})},{threshold:.5}).observe(document.querySelector('.stats'));
+
+// ═══ CTA BG ═══
+const cB=document.getElementById('ctaBg');function uCB(){let t='';for(let i=0;i<200;i++)t+=RC()+((i%80===79)?'\n':' ');cB.textContent=t}uCB();setInterval(uCB,180);
+
+// ═══ EXAMPLE TABS ═══
+document.querySelectorAll('.ex-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.ex-tab').forEach(t=>t.classList.remove('a'));tab.classList.add('a');document.querySelectorAll('.ex-panel').forEach(p=>p.classList.remove('vis'));document.querySelector(`[data-panel="${tab.dataset.ex}"]`).classList.add('vis')})});
+document.querySelectorAll('.ex-inner-tab').forEach(tab=>{tab.addEventListener('click',()=>{const g=tab.closest('.ex-block');g.querySelectorAll('.ex-inner-tab').forEach(t=>t.classList.remove('a'));tab.classList.add('a');g.querySelectorAll('.ex-code').forEach(c=>c.classList.remove('vis'));g.querySelector(`[data-ic="${tab.dataset.it}"]`).classList.add('vis')})});
+
+// ═══════════════════════════════════════════════════════════
+//  THREE.JS ISOMETRIC HERO ANIMATION
+// ═══════════════════════════════════════════════════════════
+const cvs=document.getElementById('isoCanvas');
+const sTxt=document.getElementById('sTxt'),hTx=document.getElementById('hudTx'),hFill=document.getElementById('hudFill');
+
+const scene=new THREE.Scene();
+const clock=new THREE.Clock();
+
+// Responsive resize
+function resize3(){
+  const W=cvs.parentElement.clientWidth,H=cvs.parentElement.clientHeight;
+  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const a=W/H;camera.left=-CAM_D*a;camera.right=CAM_D*a;camera.top=CAM_D;camera.bottom=-CAM_D;camera.updateProjectionMatrix();
+}
+const CAM_D=11;
+const camera=new THREE.OrthographicCamera(-CAM_D*1.7,CAM_D*1.7,CAM_D,-CAM_D,.1,300);
+camera.position.set(20,20,20);camera.lookAt(0,2,0);
+const renderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
+renderer.localClippingEnabled=true;renderer.setClearColor(0,0);
+resize3();window.addEventListener('resize',resize3);
+
+// Lights
+scene.add(new THREE.AmbientLight(0x8aaed8,.65));
+const sun=new THREE.DirectionalLight(0xffffff,.9);sun.position.set(15,22,12);scene.add(sun);
+const fill3=new THREE.DirectionalLight(0x3b82f6,.35);fill3.position.set(-12,5,-8);scene.add(fill3);
+
+// Scan plane (shows fill where y <= scanLevel)
+let scanLvl=-2;
+const scanPlane=new THREE.Plane(new THREE.Vector3(0,-1,0),-2);
+
+// Box factory
+function isoBox(w,h,d,solidColor,wireOpacity=.45,fillOpacity=.9){
+  const g=new THREE.Group();const geo=new THREE.BoxGeometry(w,h,d);
+  const fill=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:solidColor,shininess:25,transparent:true,opacity:fillOpacity,clippingPlanes:[scanPlane]}));
+  g.add(fill);
+  const wire=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0x60a5fa,transparent:true,opacity:wireOpacity}));
+  g.add(wire);
+  g.userData={fillMat:fill.material,wireMat:wire.material,h};
+  return g;
+}
+
+// Platform
+(()=>{
+  const g=new THREE.Group();const t=0.22,w=20,d=14;
+  g.add(new THREE.Mesh(new THREE.BoxGeometry(w,t,d),new THREE.MeshPhongMaterial({color:0x050c1a,opacity:.95,transparent:true})));
+  g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,t,d)),new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:.18})));
+  // Corner accents
+  [[w/2-.5,-d/2+.5],[w/2-.5,d/2-.5],[-w/2+.5,-d/2+.5],[-w/2+.5,d/2-.5]].forEach(([ax,az])=>{
+    const am=new THREE.MeshPhongMaterial({color:0x3b82f6});
+    const m1=new THREE.Mesh(new THREE.BoxGeometry(.7,t+.02,.15),am);m1.position.set(ax,0,az);g.add(m1);
+    const m2=new THREE.Mesh(new THREE.BoxGeometry(.15,t+.02,.7),am.clone());m2.position.set(ax,0,az);g.add(m2);
   });
-  restartVtext();
-}
+  // Grid lines
+  const lm=new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:.06});
+  for(let z=-6;z<=6;z+=2){const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-w/2,t/2+.01,z),new THREE.Vector3(w/2,t/2+.01,z)]),lm.clone());g.add(ln)}
+  for(let x=-9;x<=9;x+=2){const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,t/2+.01,-d/2),new THREE.Vector3(x,t/2+.01,d/2)]),lm.clone());g.add(ln)}
+  scene.add(g);
+})();
 
-function restartVtext() {
-  const isEn = document.body.classList.contains('lang-en');
-  const words = document.querySelectorAll('#vtext .vw');
-  const visible = Array.from(words).filter(w =>
-    (isEn && w.classList.contains('en')) || (!isEn && w.classList.contains('fr'))
-  );
-  let i = 0;
-  words.forEach(w => w.classList.remove('active'));
-  function step() {
-    words.forEach(w => w.classList.remove('active'));
-    if (visible[i]) visible[i].classList.add('active');
-    i = (i + 1) % visible.length;
-  }
-  step();
-  if (window._vt) clearInterval(window._vt);
-  window._vt = setInterval(step, 700);
-}
-restartVtext();
+// Central CORREN ledger block
+const LEDGER_H=6;
+const ledger=isoBox(3,LEDGER_H,3,0x0a1a40,.6,.9);
+ledger.position.set(0,.11+LEDGER_H/2,0);ledger.scale.y=0;
+scene.add(ledger);
 
-// Show hamburger on mobile
-if(window.innerWidth <= 768) {
-  document.getElementById('menuBtn').style.display = 'flex';
-}
-window.addEventListener('resize', () => {
-  const btn = document.getElementById('menuBtn');
-  if(btn) btn.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+// Logo bars on top
+const logoH=[1.6,1.1,.7],logoBars=[];
+logoH.forEach((h,i)=>{
+  const b=isoBox(.55,h,.55,[0x3b82f6,0x2563eb,0x1e40af][i],.65,.95);
+  b.position.set([-0.85,.15,1][i],.11+LEDGER_H+h/2,0);b.scale.y=0;
+  scene.add(b);logoBars.push({mesh:b,h});
 });
 
-function toggleMenu() {
-  const links = document.querySelector('.nav-links');
-  const open = links.style.display === 'flex';
-  links.style.display = open ? '' : 'flex';
-  links.style.flexDirection = 'column';
-  links.style.position = 'fixed';
-  links.style.top = '62px';
-  links.style.left = '0';
-  links.style.right = '0';
-  links.style.background = 'rgba(247,245,240,.97)';
-  links.style.padding = '1.5rem';
-  links.style.gap = '1.25rem';
-  links.style.borderBottom = '1px solid rgba(13,13,13,.08)';
-  links.style.backdropFilter = 'blur(20px)';
-  links.style.zIndex = '150';
-  if(open) { links.removeAttribute('style'); }
+// Node configs
+const nodeCfgs=[
+  {x:-6.5,z:-2.5,w:2.4,h:4.2,d:2.4,c:0x071020,delay:.15,lbl:'@world'},
+  {x:-6,z:2.5,w:1.8,h:3.0,d:1.8,c:0x060e1c,delay:.5,lbl:'@client'},
+  {x:6,z:-3,w:2.1,h:4.0,d:2.1,c:0x071020,delay:.35,lbl:'@banque'},
+  {x:6,z:.5,w:1.7,h:2.8,d:1.7,c:0x060e1c,delay:.65,lbl:'@wallet:alice'},
+  {x:5.5,z:3.5,w:1.4,h:2.1,d:1.4,c:0x050b18,delay:.9,lbl:'@plateforme'},
+];
+nodeCfgs.forEach(cfg=>{
+  const bx=isoBox(cfg.w,cfg.h,cfg.d,cfg.c,.38,.88);
+  bx.position.set(cfg.x,.11+cfg.h/2,cfg.z);bx.scale.y=0;
+  bx.userData.delay=cfg.delay;bx.userData.baseY=.11+cfg.h/2;bx.userData.lbl=cfg.lbl;
+  scene.add(bx);cfg.mesh=bx;
+  // Label sprite
+  const cv2=document.createElement('canvas');cv2.width=256;cv2.height=56;
+  const ctx=cv2.getContext('2d');ctx.font='14px JetBrains Mono,monospace';ctx.fillStyle='#60a5fa';ctx.textAlign='center';ctx.fillText(cfg.lbl,128,36);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv2),transparent:true,opacity:0}));
+  sp.scale.set(2.6,.55,1);sp.position.set(cfg.x,.11+cfg.h+.6,cfg.z);scene.add(sp);cfg.sprite=sp;
+});
+const ledgerLabel=(()=>{const cv2=document.createElement('canvas');cv2.width=256;cv2.height=56;const ctx=cv2.getContext('2d');ctx.font='bold 18px JetBrains Mono,monospace';ctx.fillStyle='#93c5fd';ctx.textAlign='center';ctx.fillText('CORREN',128,38);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv2),transparent:true,opacity:0}));sp.scale.set(2.8,.58,1);sp.position.set(0,.11+LEDGER_H+3.2,0);scene.add(sp);return sp})();
+
+// Connection curves
+function makeCurve(p1,ctrl,p2,op=.14){
+  const pts=new THREE.QuadraticBezierCurve3(new THREE.Vector3(...p1),new THREE.Vector3(...ctrl),new THREE.Vector3(...p2)).getPoints(60);
+  const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:op}));
+  return l;
+}
+[makeCurve([-6.5,2.2,-2.5],[-3,.4,-1],[0,3,0]),makeCurve([-6,1.7,2.5],[-3,.4,1],[0,3,0]),makeCurve([0,3,0],[3,.4,-2],[6,2,- 3]),makeCurve([0,3,0],[3,.4,.2],[6,1.5,.5]),makeCurve([0,3,0],[2.5,.4,2],[5.5,1.2,3.5])].forEach(l=>scene.add(l));
+
+// Particles
+class Pt{
+  constructor(p1,c,p2,color=0x60a5fa){
+    const cv=new THREE.QuadraticBezierCurve3(new THREE.Vector3(...p1),new THREE.Vector3(...c),new THREE.Vector3(...p2));
+    this.cv=cv;this.t=0;this.sp=.004+Math.random()*.002;this.active=false;
+    this.m=new THREE.Mesh(new THREE.SphereGeometry(.09,8,8),new THREE.MeshBasicMaterial({color}));
+    const gm=new THREE.Mesh(new THREE.SphereGeometry(.17,8,8),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.28}));
+    this.m.add(gm);scene.add(this.m);this.m.visible=false;
+    this.trail=Array.from({length:4},(_,i)=>{const tm=new THREE.Mesh(new THREE.SphereGeometry(.07-i*.012,6,6),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.35-i*.07}));scene.add(tm);tm.visible=false;return tm});
+  }
+  start(delay=0){setTimeout(()=>{this.t=0;this.active=true;this.m.visible=true;this.trail.forEach(t=>t.visible=true)},delay)}
+  update(){if(!this.active)return;this.t+=this.sp;if(this.t>=1){this.active=false;this.m.visible=false;this.trail.forEach(t=>t.visible=false);return}this.m.position.copy(this.cv.getPoint(this.t));this.trail.forEach((t,i)=>{t.position.copy(this.cv.getPoint(Math.max(0,this.t-(i+1)*.04)))})}
+}
+const ptConfigs=[
+  [[-6.5,2.2,-2.5],[-3,.4,-1],[0,3,0]],[[-6,1.7,2.5],[-3,.4,1],[0,3,0]],
+  [[0,3,0],[3,.4,-2],[6,2,-3]],[[0,3,0],[3,.4,.2],[6,1.5,.5]],[[0,3,0],[2.5,.4,2],[5.5,1.2,3.5]],
+];
+const pts=ptConfigs.flatMap(([p1,c,p2])=>[new Pt(p1,c,p2),new Pt(p1,c,p2),new Pt(p1,c,p2)]);
+
+// Scan glow plane
+const sgMat=new THREE.MeshBasicMaterial({color:0x60a5fa,transparent:true,opacity:0,side:THREE.DoubleSide});
+const sgMesh=new THREE.Mesh(new THREE.PlaneGeometry(24,.05),sgMat);sgMesh.rotation.x=Math.PI/2;scene.add(sgMesh);
+
+// Build list
+const buildList=[
+  {m:ledger,delay:.6,H:LEDGER_H,baseY:.11+LEDGER_H/2},
+  ...logoBars.map((b,i)=>({m:b.mesh,delay:1.6+i*.2,H:b.h,baseY:.11+LEDGER_H+b.h/2})),
+  ...nodeCfgs.map(c=>({m:c.mesh,delay:c.delay,H:c.h,baseY:.11+c.h/2})),
+];
+
+// Animation state
+let state=0,stTimer=0,txCnt=0;
+const stDur=[3.5,.5,2.5,5,1.5,1];
+const stLbl=['building','ready','scanning','processing','committed ✓','resetting'];
+
+function launchTxBurst(){
+  pts[0].start(0);pts[3].start(200);pts[6].start(800);pts[7].start(900);pts[8].start(1000);
+  txCnt++;hTx.textContent=txCnt+' TX';hFill.style.width=Math.min(100,txCnt*8)+'%';
 }
 
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('v'), i * 70);
-      obs.unobserve(e.target);
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=clock.getDelta();stTimer+=dt;
+  const t=Math.min(stTimer/stDur[state],1);
+  sTxt.textContent=stLbl[state];
+
+  if(state===0){
+    buildList.forEach(({m,delay,H,baseY})=>{const lt=Math.max(0,(stTimer-delay)/1.5);m.scale.y=easeOut(Math.min(lt,1));m.position.y=baseY+(m.scale.y-1)*H*.5});
+    if(t>=1){state=1;stTimer=0}
+  }
+  else if(state===1){if(t>=1){state=2;stTimer=0;scanLvl=-2;scanPlane.constant=scanLvl}}
+  else if(state===2){
+    const sy=-2+easeIO(t)*9.5;scanLvl=sy;scanPlane.constant=sy;
+    sgMesh.position.y=sy;sgMat.opacity=.3*Math.sin(t*Math.PI);
+    const sp=easeIO(t);nodeCfgs.forEach(c=>{if(c.sprite&&sy>c.h*.5)c.sprite.material.opacity=Math.min(.85,(sy-c.h*.5)*.9)});
+    if(sy>LEDGER_H*.6)ledgerLabel.material.opacity=Math.min(.9,(sy-LEDGER_H*.6)*.7);
+    if(t>=1){state=3;stTimer=0;sgMat.opacity=0}
+  }
+  else if(state===3){
+    if(stTimer<.3)launchTxBurst();
+    if(stTimer>1.9&&stTimer<2.1)launchTxBurst();
+    if(stTimer>3.6&&stTimer<3.9)launchTxBurst();
+    pts.forEach(p=>p.update());
+    const pulse=1+.025*Math.sin(stTimer*6);ledger.scale.x=pulse;ledger.scale.z=pulse;
+    logoBars.forEach(b=>{b.mesh.scale.x=pulse;b.mesh.scale.z=pulse});
+    if(t>=1){state=4;stTimer=0}
+  }
+  else if(state===4){
+    pts.forEach(p=>p.update());
+    if(t>=1){state=5;stTimer=0}
+  }
+  else if(state===5){
+    nodeCfgs.forEach(c=>{if(c.sprite)c.sprite.material.opacity*=.96});
+    ledgerLabel.material.opacity*=.96;
+    if(t>=1){
+      state=0;stTimer=0;scanLvl=-2;scanPlane.constant=-2;sgMat.opacity=0;
+      buildList.forEach(({m,H,baseY})=>{m.scale.set(1,0,1);m.position.y=baseY-H*.5});
+      nodeCfgs.forEach(c=>{if(c.sprite)c.sprite.material.opacity=0});ledgerLabel.material.opacity=0;
+      ledger.scale.x=1;ledger.scale.z=1;logoBars.forEach(b=>{b.mesh.scale.x=1;b.mesh.scale.z=1});
+      pts.forEach(p=>{p.active=false;p.m.visible=false;p.trail.forEach(t=>t.visible=false)});
     }
-  });
-}, { threshold: 0.08 });
-document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+  }
+  renderer.render(scene,camera);
+}
+animate();
+
+// Subtle mouse parallax
+let mx=0,my=0;
+document.addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2});
+setInterval(()=>{camera.position.x+=(20+mx*1.8-camera.position.x)*.025;camera.position.y+=(20-my*1.2-camera.position.y)*.025;camera.lookAt(0,2,0);camera.updateProjectionMatrix()},16);
 </script>
 </body>
 </html>

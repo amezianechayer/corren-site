@@ -1,499 +1,299 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FaRl Grammar Reference — Corren</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Corren — Grammar Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F7F5F0;--ink:#0D0D0D;--ink-2:#444440;--ink-3:#888780;--accent:#1A3A2A;--green:#C8F5A0;--border:rgba(13,13,13,.08);--border2:rgba(13,13,13,.14);--sidebar:260px;--mono:'DM Mono',monospace;--serif:'DM Serif Display',serif;--sans:'DM Sans',sans-serif}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--mono:'JetBrains Mono',monospace;--green:#4ade80}
+[data-theme="dark"]{--bg:#040810;--surface:#080d18;--surface2:#0c1220;--border:rgba(59,130,246,.12);--border-h:rgba(59,130,246,.22);--t1:#eef2ff;--t2:#8898b8;--t3:#3a4a6b;--t4:#1e2a40;--accent:#3b82f6;--accent-b:#60a5fa;--accent2:rgba(59,130,246,.08);--accent-glow:rgba(59,130,246,.12);--logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af}
+[data-theme="light"]{--bg:#f0f4ff;--surface:#fff;--surface2:#e8edf8;--border:rgba(37,99,235,.12);--border-h:rgba(37,99,235,.22);--t1:#0f1a2e;--t2:#4a5a7a;--t3:#9aa8c0;--t4:#d0d8e8;--accent:#2563eb;--accent-b:#3b82f6;--accent2:rgba(37,99,235,.07);--accent-glow:rgba(37,99,235,.1);--logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af}
+*{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;background:rgba(247,245,240,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px}
-.nav-logo{font-family:var(--mono);font-size:.95rem;font-weight:500;color:var(--ink);text-decoration:none;display:flex;align-items:baseline;gap:1px;letter-spacing:-.02em}
-.nav-logo .dot{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:1.1rem}
-.nav-right{display:flex;align-items:center;gap:1.5rem}
-.nav-right a{font-family:var(--mono);font-size:.75rem;color:var(--ink-3);text-decoration:none;letter-spacing:.04em;text-transform:uppercase;transition:color .2s}
-.nav-right a:hover{color:var(--ink)}
-.nav-cta{color:var(--bg)!important;background:var(--ink);padding:.38rem 1rem;border-radius:2px;transition:background .2s!important}
-.nav-cta:hover{background:var(--accent)!important}
-.layout{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh;padding-top:56px}
-.sidebar{position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;border-right:1px solid var(--border);padding:2rem 0;background:var(--bg);scrollbar-width:thin}
-.sb-section{margin-bottom:1.75rem}
-.sb-label{font-family:var(--mono);font-size:.62rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.12em;padding:.3rem 1.5rem .5rem;display:block}
-.sb-link{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.78rem;color:var(--ink-3);text-decoration:none;padding:.38rem 1.5rem;transition:all .15s;border-left:2px solid transparent}
-.sb-link:hover{color:var(--ink);background:rgba(13,13,13,.03)}
-.sb-link.active{color:var(--accent);border-left-color:var(--accent);background:rgba(26,58,42,.04)}
-.sb-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}
-.content{padding:3rem 4rem 6rem;max-width:900px}
-.doc-eyebrow{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
-.doc-eyebrow::before{content:'';display:inline-block;width:1.2rem;height:1px;background:var(--ink-3)}
-h1.doc-h1{font-family:var(--serif);font-size:2.8rem;line-height:1.05;letter-spacing:-.02em;margin-bottom:1rem}
-h1.doc-h1 em{font-style:italic;color:var(--accent)}
-.doc-lead{font-size:1rem;color:var(--ink-2);line-height:1.85;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
-h2.doc-h2{font-family:var(--serif);font-size:1.75rem;line-height:1.15;margin:3rem 0 1rem;scroll-margin-top:72px}
-h3.doc-h3{font-family:var(--sans);font-size:.95rem;font-weight:600;margin:2rem 0 .5rem;scroll-margin-top:72px}
-.doc-p{color:var(--ink-2);line-height:1.85;margin-bottom:.9rem;font-size:.93rem}
-.doc-p code{font-family:var(--mono);font-size:.8rem;background:rgba(13,13,13,.06);padding:.1rem .35rem;border-radius:2px;color:var(--accent)}
-hr.doc-hr{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+body{background:var(--bg);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.65;overflow-x:hidden;transition:background .4s}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--t4);border-radius:2px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:12px 32px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);height:52px;transition:all .4s}
+.nl{display:flex;align-items:center;gap:10px;font-weight:600;font-size:12px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:var(--t1)}
+.nl span{color:var(--logo2)}
+.nr{display:flex;gap:16px;align-items:center}
+.nr a{color:var(--t2);text-decoration:none;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:color .2s;padding:0 6px}
+.nr a:hover{color:var(--t1)}
+.tbtn{background:none;border:1px solid var(--border);color:var(--t2);font-family:var(--mono);font-size:11px;padding:5px 12px;cursor:pointer;border-radius:3px;transition:all .3s}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+.layout{display:flex;margin-top:52px}
+aside{width:240px;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;border-right:1px solid var(--border);padding:20px 0;scrollbar-width:thin;scrollbar-color:var(--t4) transparent}
+.sb-group{padding:0 16px;margin-bottom:20px}
+.sb-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.sb-link{display:block;padding:4px 8px;font-size:11px;color:var(--t2);text-decoration:none;border-radius:3px;transition:all .2s;border-left:2px solid transparent;margin-bottom:1px}
+.sb-link:hover{color:var(--t1);background:var(--accent2)}
+.sb-link.active{color:var(--accent-b);border-left-color:var(--accent);background:var(--accent2)}
+
+main{flex:1;padding:48px 64px;max-width:860px}
+.bc{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--t3);margin-bottom:32px}
+.bc a{color:var(--t2);text-decoration:none}
+.bc a:hover{color:var(--accent-b)}
+h1{font-size:26px;font-weight:500;margin-bottom:8px;letter-spacing:-.5px}
+.subtitle{font-size:13px;color:var(--t2);margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border);line-height:1.7}
+h2{font-size:16px;font-weight:500;margin:40px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);scroll-margin-top:70px;letter-spacing:-.3px}
+h2::before{content:'# ';color:var(--t3);font-size:12px}
+p{color:var(--t2);line-height:1.8;margin-bottom:14px;font-size:12px}
+code{background:var(--accent2);color:var(--accent-b);padding:2px 5px;border-radius:2px;font-size:11px;border:1px solid var(--border)}
 
 /* Grammar block */
-.grammar-block{background:var(--ink);border-radius:3px;overflow:hidden;margin:1.25rem 0}
-.grammar-bar{display:flex;align-items:center;padding:.5rem 1rem;background:rgba(247,245,240,.05);border-bottom:1px solid rgba(247,245,240,.06);gap:.75rem}
-.grammar-name{font-family:var(--mono);font-size:.8rem;color:rgba(200,245,160,.8);font-weight:500}
-.grammar-type{font-family:var(--mono);font-size:.62rem;color:rgba(247,245,240,.25);background:rgba(247,245,240,.06);padding:.1rem .4rem;border-radius:2px;margin-left:auto}
-.grammar-block pre{font-family:var(--mono);font-size:.8rem;line-height:1.9;color:rgba(247,245,240,.7);padding:1.1rem 1.5rem;overflow-x:auto;white-space:pre}
+.grammar{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin:16px 0}
+.grammar-header{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;border-bottom:1px solid var(--border);font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+.grammar pre{padding:18px;font-size:11px;line-height:1.9;color:var(--t2);overflow-x:auto}
+.grammar pre .nt{color:var(--accent-b)}   /* non-terminal */
+.grammar pre .t{color:var(--green)}        /* terminal/literal */
+.grammar pre .op{color:var(--t2)}          /* operator | * + ? */
+.grammar pre .cm{color:var(--t3);font-style:italic}  /* comment */
 
-/* EBNF syntax highlighting */
-.gr-rule{color:#C8F5A0}          /* rule names */
-.gr-term{color:#FCA5A5}          /* terminals / tokens */
-.gr-op{color:#7DD3FC}            /* operators | () [] */
-.gr-alt{color:rgba(247,245,240,.35)}  /* alternatives */
-.gr-comment{color:rgba(200,245,160,.3)}
+.copy-btn{background:none;border:1px solid var(--border);color:var(--t3);font-family:var(--mono);font-size:10px;padding:2px 8px;cursor:pointer;border-radius:3px;transition:all .2s}
+.copy-btn:hover{border-color:var(--accent-b);color:var(--accent-b)}
 
-/* Token table */
-.tok-table{width:100%;border-collapse:collapse;margin:1.25rem 0;font-size:.85rem}
-.tok-table th{text-align:left;font-family:var(--mono);font-size:.65rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;padding:.65rem 1rem;border-bottom:1px solid var(--border);font-weight:400}
-.tok-table td{padding:.65rem 1rem;border-bottom:1px solid var(--border);color:var(--ink-2);vertical-align:top}
-.tok-table tr:last-child td{border-bottom:none}
-.tok-table code{font-family:var(--mono);font-size:.78rem;color:var(--accent);background:rgba(26,58,42,.07);padding:.08rem .3rem;border-radius:2px}
-.tok-table .pat{font-family:var(--mono);font-size:.78rem;color:var(--ink-3)}
-.kw-badge{display:inline-block;font-family:var(--mono);font-size:.65rem;background:rgba(26,58,42,.1);color:var(--accent);padding:.08rem .35rem;border-radius:2px;margin:.1rem .1rem 0 0}
+hr{border:none;border-top:1px solid var(--border);margin:36px 0}
 
-.callout{padding:1rem 1.25rem;border-radius:0 3px 3px 0;margin:1.5rem 0;font-size:.9rem;line-height:1.7}
-.ci{background:rgba(26,58,42,.06);border-left:3px solid var(--accent)}
-.callout p{color:var(--ink-2);margin:0}
-.callout strong{color:var(--ink)}
-.cl{font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem;font-weight:500;color:var(--accent)}
+.doc-nav{display:flex;justify-content:space-between;margin-top:56px;padding-top:20px;border-top:1px solid var(--border)}
+.doc-nav-btn{display:flex;flex-direction:column;gap:3px;padding:12px 16px;border:1px solid var(--border);border-radius:4px;text-decoration:none;transition:all .3s;min-width:180px}
+.doc-nav-btn:hover{border-color:var(--accent);background:var(--accent2)}
+.dn-lbl{font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+.dn-title{font-size:12px;color:var(--t1);font-weight:500}
+.next{align-items:flex-end;margin-left:auto}
 
-.breadcrumb{font-family:var(--mono);font-size:.72rem;color:var(--ink-3);margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem}
-.breadcrumb a{color:var(--ink-3);text-decoration:none}
-.breadcrumb a:hover{color:var(--ink)}
-.breadcrumb span{opacity:.4}
-.doc-nav{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border)}
-.doc-nav a{font-family:var(--mono);font-size:.78rem;color:var(--ink-3);text-decoration:none;padding:1rem 1.25rem;border:1px solid var(--border);transition:all .2s;display:flex;flex-direction:column;gap:.25rem}
-.doc-nav a:hover{border-color:var(--ink);color:var(--ink)}
-.dn-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;opacity:.6}
-.doc-nav a.next{text-align:right}
-/* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;justify-content:space-between;font-size:11px;color:var(--t3)}
+footer a{color:var(--t2);text-decoration:none;transition:color .2s}
+footer a:hover{color:var(--accent-b)}
 
-.doc-eyebrow{animation:fadeIn .5s ease .1s both}
-h1.doc-h1{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .2s both}
-.doc-lead{animation:fadeUp .6s cubic-bezier(.22,1,.36,1) .35s both}
-
-.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1)}
-.rv.v{opacity:1;transform:translateY(0)}
-
-.grammar-block{transition:box-shadow .2s}
-.grammar-block:hover{box-shadow:0 0 0 1px rgba(200,245,160,.12)}
-
-.sb-link{transition:color .15s,background .15s,border-left-color .2s,padding-left .2s}
-.sb-link.active{padding-left:1.75rem}
-
-.tok-table tbody tr{transition:background .15s}
-.tok-table tbody tr:hover td{background:rgba(26,58,42,.04)}
-
-h2.doc-h2{position:relative;display:inline-block}
-h2.doc-h2::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--accent);transition:width .3s ease}
-h2.doc-h2:hover::after{width:100%}
-
-.kw-badge{transition:all .15s}
-.kw-badge:hover{background:rgba(26,58,42,.2);transform:translateY(-1px)}
-
-@media(max-width:900px){.layout{grid-template-columns:1fr}.sidebar{display:none}.content{padding:2rem 1.25rem 4rem;max-width:100%}h1.doc-h1{font-size:2rem}.grammar-block pre{font-size:.72rem}}
+@media(max-width:900px){aside{display:none}main{padding:24px 20px}}
 </style>
 </head>
 <body>
+
 <nav>
-  <a href="/" class="nav-logo">corren<span class="dot">.</span></a>
-  <div class="nav-right">
-    <a href="/docs.html">Docs</a>
-    <a href="/grammar.html">Grammar</a>
-    <a href="https://github.com/amezianechayer/corren">GitHub</a>
-    <a href="https://github.com/amezianechayer/corren/releases" class="nav-cta">Download →</a>
+  <a href="index.html" class="nl">
+    <svg width="30" height="22" viewBox="0 0 38 28" fill="none">
+      <rect x="0" y="0" width="9" height="28" rx="4.5" fill="var(--logo1)"/>
+      <rect x="13" y="4" width="9" height="20" rx="4.5" fill="var(--logo2)"/>
+      <rect x="27" y="8" width="9" height="12" rx="4.5" fill="var(--logo3)"/>
+    </svg>
+    <span>Corren</span>
+  </a>
+  <div class="nr">
+    <a href="docs.html">Docs</a>
+    <a href="grammar.html">Grammaire</a>
+    <a href="https://github.com/amezianechayer/corren" target="_blank">GitHub</a>
+    <button class="tbtn" id="themeToggle">◐</button>
   </div>
 </nav>
 
 <div class="layout">
-<aside class="sidebar">
-  <div class="sb-section">
-    <span class="sb-label">Lexer</span>
-    <a href="#keywords" class="sb-link active"><span class="sb-dot"></span>Keywords</a>
-    <a href="#types-tok" class="sb-link"><span class="sb-dot"></span>Type tokens</a>
-    <a href="#literals" class="sb-link"><span class="sb-dot"></span>Literal tokens</a>
-    <a href="#operators" class="sb-link"><span class="sb-dot"></span>Operators & symbols</a>
-  </div>
-  <div class="sb-section">
-    <span class="sb-label">Parser Rules</span>
-    <a href="#rule-script" class="sb-link"><span class="sb-dot"></span>script</a>
-    <a href="#rule-statement" class="sb-link"><span class="sb-dot"></span>statement</a>
-    <a href="#rule-vardecl" class="sb-link"><span class="sb-dot"></span>varDecl</a>
-    <a href="#rule-expression" class="sb-link"><span class="sb-dot"></span>expression</a>
-    <a href="#rule-monetary" class="sb-link"><span class="sb-dot"></span>monetary</a>
-    <a href="#rule-monetaryall" class="sb-link"><span class="sb-dot"></span>monetaryAll</a>
-    <a href="#rule-source" class="sb-link"><span class="sb-dot"></span>source</a>
-    <a href="#rule-valuesource" class="sb-link"><span class="sb-dot"></span>valueAwareSource</a>
-    <a href="#rule-sourceinorder" class="sb-link"><span class="sb-dot"></span>sourceInOrder</a>
-    <a href="#rule-sourcemaxed" class="sb-link"><span class="sb-dot"></span>sourceMaxed</a>
-    <a href="#rule-sourceallotment" class="sb-link"><span class="sb-dot"></span>sourceAllotment</a>
-    <a href="#rule-destination" class="sb-link"><span class="sb-dot"></span>destination</a>
-    <a href="#rule-destinorder" class="sb-link"><span class="sb-dot"></span>destinationInOrder</a>
-    <a href="#rule-destmaxed" class="sb-link"><span class="sb-dot"></span>destinationMaxed</a>
-    <a href="#rule-destallotment" class="sb-link"><span class="sb-dot"></span>destinationAllotment</a>
-    <a href="#rule-allotportion" class="sb-link"><span class="sb-dot"></span>allotmentPortion</a>
-    <a href="#rule-origin" class="sb-link"><span class="sb-dot"></span>origin</a>
-    <a href="#rule-metadata" class="sb-link"><span class="sb-dot"></span>metadataEntry</a>
-  </div>
-</aside>
+  <aside>
+    <div class="sb-group">
+      <div class="sb-label">Grammaire</div>
+      <a href="#script" class="sb-link active">Script</a>
+      <a href="#statement" class="sb-link">Statement</a>
+      <a href="#transfer-stmt" class="sb-link">transfer</a>
+      <a href="#source" class="sb-link">Source</a>
+      <a href="#destination" class="sb-link">Destination</a>
+      <a href="#monetary" class="sb-link">Monetary</a>
+      <a href="#portion" class="sb-link">Portion</a>
+      <a href="#variables" class="sb-link">Variables</a>
+      <a href="#set-stmt" class="sb-link">set metadata</a>
+      <a href="#print-fail" class="sb-link">print / fail</a>
+      <a href="#lexical" class="sb-link">Lexical</a>
+    </div>
+    <div class="sb-group">
+      <div class="sb-label">Navigation</div>
+      <a href="docs.html" class="sb-link">← Documentation</a>
+      <a href="access.html" class="sb-link">Accès anticipé</a>
+    </div>
+  </aside>
 
-<main class="content">
-  <div class="breadcrumb"><a href="/">corren.io</a><span>/</span><a href="/docs.html">docs</a><span>/</span>Grammar Reference</div>
-  <div class="doc-eyebrow">Grammar Reference</div>
-  <h1 class="doc-h1">FaRl <em>Grammar</em></h1>
-  <p class="doc-lead">Complete ANTLR4 grammar reference for FaRl. This page documents every token and parser rule. The grammar is defined in <code>FaRl.g4</code> and compiled using ANTLR 4.9.2.</p>
+  <main>
+    <div class="bc"><a href="index.html">Corren</a> <span>›</span> <a href="docs.html">Docs</a> <span>›</span> <span>Grammar Reference</span></div>
+    <h1>Grammar Reference</h1>
+    <p class="subtitle">Grammaire formelle BNF du langage FaRl (Financial accounting Rule Language). La notation utilisée est EBNF — les éléments entre <code>[ ]</code> sont optionnels, <code>{ }</code> signifie zéro ou plusieurs répétitions, <code>|</code> est l'alternation.</p>
 
-  <!-- KEYWORDS -->
-  <h2 class="doc-h2 rv" id="keywords">Keywords</h2>
-  <p class="doc-p">Reserved words that cannot be used as identifiers:</p>
-  <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0">
-    <span class="kw-badge">print</span><span class="kw-badge">fail</span><span class="kw-badge">transfer</span>
-    <span class="kw-badge">from</span><span class="kw-badge">to</span><span class="kw-badge">max</span>
-    <span class="kw-badge">keep</span><span class="kw-badge">all</span><span class="kw-badge">var</span>
-    <span class="kw-badge">set</span><span class="kw-badge">transaction</span><span class="kw-badge">metadata</span>
-    <span class="kw-badge">of</span><span class="kw-badge">key</span><span class="kw-badge">meta</span>
-    <span class="kw-badge">remaining</span>
-  </div>
+    <h2 id="script">Script</h2>
+    <p>Un script FaRl est une séquence de déclarations de variables suivies d'instructions.</p>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">script</span>     <span class="op">::=</span> { <span class="nt">var_decl</span> } { <span class="nt">statement</span> }
 
-  <!-- TYPE TOKENS -->
-  <h2 class="doc-h2 rv" id="types-tok">Type Tokens</h2>
-  <table class="tok-table rv">
-    <thead><tr><th>Token</th><th>Keyword</th><th>Used for</th></tr></thead>
-    <tbody>
-      <tr><td><code>TY_ACCOUNT</code></td><td><code>account</code></td><td>Variable type declaration</td></tr>
-      <tr><td><code>TY_ASSET</code></td><td><code>asset</code></td><td>Variable type declaration</td></tr>
-      <tr><td><code>TY_NUMBER</code></td><td><code>number</code></td><td>Variable type declaration</td></tr>
-      <tr><td><code>TY_MONETARY</code></td><td><code>monetary</code></td><td>Variable type declaration</td></tr>
-      <tr><td><code>TY_PORTION</code></td><td><code>portion</code></td><td>Variable type declaration</td></tr>
-      <tr><td><code>TY_STRING</code></td><td><code>string</code></td><td>Variable type declaration</td></tr>
-    </tbody>
-  </table>
+<span class="nt">var_decl</span>   <span class="op">::=</span> <span class="t">"var"</span> <span class="nt">VARIABLE</span> <span class="t">":"</span> <span class="nt">type_name</span>
+                 [ <span class="t">"="</span> <span class="t">"meta"</span> <span class="t">"("</span> <span class="nt">account</span> <span class="t">","</span> <span class="nt">STRING</span> <span class="t">")"</span> ]
 
-  <!-- LITERAL TOKENS -->
-  <h2 class="doc-h2 rv" id="literals">Literal Tokens</h2>
-  <table class="tok-table rv">
-    <thead><tr><th>Token</th><th>Pattern</th><th>Examples</th></tr></thead>
-    <tbody>
-      <tr><td><code>ACCOUNT</code></td><td class="pat">@ [a-z_] [a-z0-9_:]*</td><td><code>@alice</code>, <code>@users:001</code>, <code>@world</code></td></tr>
-      <tr><td><code>ASSET</code></td><td class="pat">[A-Z] [A-Z0-9]*</td><td><code>DZD</code>, <code>EUR</code>, <code>USD</code>, <code>NGN</code>, <code>TND</code></td></tr>
-      <tr><td><code>NUMBER</code></td><td class="pat">[0-9]+</td><td><code>42</code>, <code>5000</code>, <code>0</code></td></tr>
-      <tr><td><code>VARIABLE_NAME</code></td><td class="pat">$ [a-z_] [a-z0-9_]*</td><td><code>$montant</code>, <code>$vendeur</code></td></tr>
-      <tr><td><code>RATIO</code></td><td class="pat">[0-9]+ / [0-9]+</td><td><code>85/100</code>, <code>1/3</code></td></tr>
-      <tr><td><code>STRING</code></td><td class="pat">" [a-zA-Z0-9_/.] * "</td><td><code>"seller"</code>, <code>"commission_rate"</code> — no spaces or <code>%</code></td></tr>
-      <tr><td><code>NEWLINE</code></td><td class="pat">[\r\n]+</td><td>Line separator — significant in grammar</td></tr>
-    </tbody>
-  </table>
+<span class="nt">type_name</span>  <span class="op">::=</span> <span class="t">"account"</span> <span class="op">|</span> <span class="t">"monetary"</span> <span class="op">|</span> <span class="t">"asset"</span>
+             <span class="op">|</span> <span class="t">"portion"</span>  <span class="op">|</span> <span class="t">"number"</span>   <span class="op">|</span> <span class="t">"string"</span></pre>
+    </div>
 
-  <div class="callout ci"><div class="cl">Note</div><p><code>WHITESPACE</code> (spaces and tabs) and comments (<code>/* ... */</code> and <code>// ...</code>) are skipped by the lexer. <code>NEWLINE</code> is <strong>not</strong> skipped — it is used as a statement separator.</p></div>
+    <h2 id="statement">Statement</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">statement</span>  <span class="op">::=</span> <span class="nt">transfer_stmt</span>
+             <span class="op">|</span> <span class="nt">set_stmt</span>
+             <span class="op">|</span> <span class="nt">print_stmt</span>
+             <span class="op">|</span> <span class="nt">fail_stmt</span></pre>
+    </div>
 
-  <!-- OPERATORS -->
-  <h2 class="doc-h2 rv" id="operators">Operators &amp; Symbols</h2>
-  <table class="tok-table rv">
-    <thead><tr><th>Token</th><th>Symbol</th><th>Used in</th></tr></thead>
-    <tbody>
-      <tr><td><code>OP_ADD</code></td><td><code>+</code></td><td>Arithmetic expressions</td></tr>
-      <tr><td><code>OP_SUB</code></td><td><code>-</code></td><td>Arithmetic expressions</td></tr>
-      <tr><td><code>PERCENT</code></td><td><code>%</code></td><td>Portion percentage syntax</td></tr>
-      <tr><td><code>LBRACK / RBRACK</code></td><td><code>[ ]</code></td><td>Monetary literals</td></tr>
-      <tr><td><code>LBRACE / RBRACE</code></td><td><code>{ }</code></td><td>Source/destination blocks</td></tr>
-      <tr><td><code>LPAREN / RPAREN</code></td><td><code>( )</code></td><td>Transfer body, meta() calls</td></tr>
-      <tr><td><code>DOT</code></td><td><code>.</code></td><td>Monetary precision: <code>DZD.2</code></td></tr>
-      <tr><td><code>COLON</code></td><td><code>:</code></td><td>Variable type: <code>var $x: account</code></td></tr>
-      <tr><td><code>STAR</code></td><td><code>*</code></td><td>Transfer all: <code>[DZD.2 *]</code></td></tr>
-      <tr><td><code>EQ</code></td><td><code>=</code></td><td>Variable origin, metadata assignment</td></tr>
-    </tbody>
-  </table>
+    <h2 id="transfer-stmt">Transfer statement</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">transfer_stmt</span>  <span class="op">::=</span> <span class="t">"transfer"</span> <span class="nt">monetary_expr</span> <span class="t">"("</span>
+                     ( <span class="nt">from_clause</span> <span class="nt">to_clause</span>
+                     <span class="op">|</span> <span class="nt">to_clause</span>   <span class="nt">from_clause</span> )
+                   <span class="t">")"</span>
 
-  <hr class="doc-hr">
+<span class="nt">from_clause</span>    <span class="op">::=</span> <span class="t">"from"</span> <span class="nt">source</span>
+<span class="nt">to_clause</span>      <span class="op">::=</span> <span class="t">"to"</span>   <span class="nt">destination</span></pre>
+    </div>
 
-  <!-- SCRIPT -->
-  <h2 class="doc-h2 rv" id="rule-script">script</h2>
-  <p class="doc-p">The top-level rule. A script is zero or more variable declarations followed by one or more statements.</p>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">script</span><span class="grammar-type">start rule</span></div>
-    <pre><span class="gr-rule">script</span>
-    : NEWLINE*
-      <span class="gr-op">(</span><span class="gr-rule">varDecl</span> NEWLINE+<span class="gr-op">)*</span>
-      <span class="gr-rule">stmts</span>+=<span class="gr-rule">statement</span> <span class="gr-op">(</span>NEWLINE+ <span class="gr-rule">stmts</span>+=<span class="gr-rule">statement</span><span class="gr-op">)*</span>
-      NEWLINE? EOF
-    ;</pre>
-  </div>
+    <h2 id="source">Source</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">source</span>       <span class="op">::=</span> <span class="nt">account_ref</span>
+             <span class="op">|</span> <span class="t">"max"</span> <span class="nt">monetary_lit</span> <span class="t">"from"</span> <span class="nt">account_ref</span>
+             <span class="op">|</span> <span class="nt">allotment_source</span>
+             <span class="op">|</span> <span class="nt">ordered_source</span>
 
-  <!-- STATEMENT -->
-  <h2 class="doc-h2 rv" id="rule-statement">statement</h2>
-  <p class="doc-p">Five statement types are supported:</p>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">statement</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">statement</span>
-    <span class="gr-comment">// 1. Print a value</span>
-    : PRINT <span class="gr-rule">expr</span>=<span class="gr-rule">expression</span>
-        # Print
+<span class="nt">ordered_source</span>    <span class="op">::=</span> <span class="t">"{"</span> { <span class="nt">ordered_src_item</span> } <span class="t">"}"</span>
+<span class="nt">ordered_src_item</span>  <span class="op">::=</span> <span class="nt">account_ref</span>
+                    <span class="op">|</span> <span class="t">"max"</span> <span class="nt">monetary_lit</span> <span class="t">"from"</span> <span class="nt">account_ref</span>
 
-    <span class="gr-comment">// 2. Abort the script</span>
-    | FAIL
-        # Fail
+<span class="nt">allotment_source</span>  <span class="op">::=</span> <span class="t">"{"</span> { <span class="nt">allot_src_item</span> } <span class="t">"}"</span>
+<span class="nt">allot_src_item</span>    <span class="op">::=</span> <span class="nt">portion</span> <span class="t">"from"</span> <span class="nt">account_ref</span>
 
-    <span class="gr-comment">// 3. Move money</span>
-    | TRANSFER <span class="gr-op">(</span><span class="gr-rule">mon</span>=<span class="gr-rule">expression</span> | <span class="gr-rule">monAll</span>=<span class="gr-rule">monetaryAll</span><span class="gr-op">)</span> LPAREN NEWLINE
-        <span class="gr-op">(</span> FROM <span class="gr-rule">src</span>=<span class="gr-rule">valueAwareSource</span> NEWLINE TO <span class="gr-rule">dest</span>=<span class="gr-rule">destination</span>
-        | TO <span class="gr-rule">dest</span>=<span class="gr-rule">destination</span> NEWLINE FROM <span class="gr-rule">src</span>=<span class="gr-rule">valueAwareSource</span><span class="gr-op">)</span> NEWLINE RPAREN
-        # Transfer
+<span class="nt">account_ref</span>       <span class="op">::=</span> <span class="nt">ACCOUNT</span> <span class="op">|</span> <span class="nt">VARIABLE</span></pre>
+    </div>
 
-    <span class="gr-comment">// 4. Set transaction metadata (single key)</span>
-    | SET TRANSACTION METADATA STRING EQ <span class="gr-rule">metadataValue</span>
-        # SetTxMeta
+    <h2 id="destination">Destination</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">destination</span>       <span class="op">::=</span> <span class="nt">account_ref</span>
+                    <span class="op">|</span> <span class="nt">allotment_dest</span>
+                    <span class="op">|</span> <span class="nt">ordered_dest</span>
 
-    <span class="gr-comment">// 5. Set transaction metadata (block)</span>
-    | SET TRANSACTION METADATA LBRACE NEWLINE
-        <span class="gr-op">(</span><span class="gr-rule">metadataEntry</span> NEWLINE<span class="gr-op">)+</span>
-      RBRACE
-        # SetTxMetaBlock
+<span class="nt">allotment_dest</span>    <span class="op">::=</span> <span class="t">"{"</span> { <span class="nt">allot_dest_item</span> } <span class="t">"}"</span>
+<span class="nt">allot_dest_item</span>   <span class="op">::=</span> ( <span class="nt">portion</span> <span class="op">|</span> <span class="t">"remaining"</span> ) <span class="t">"to"</span> <span class="nt">account_ref</span>
 
-    <span class="gr-comment">// 6. Set account metadata</span>
-    | SET TY_ACCOUNT METADATA OF <span class="gr-rule">expression</span> KEY STRING EQ <span class="gr-rule">metadataValue</span>
-        # SetAccountMeta
-    ;</pre>
-  </div>
+<span class="nt">ordered_dest</span>      <span class="op">::=</span> <span class="t">"{"</span> { <span class="nt">ordered_dest_item</span> } <span class="t">"}"</span>
+<span class="nt">ordered_dest_item</span> <span class="op">::=</span> [ <span class="t">"max"</span> <span class="nt">monetary_lit</span> ] <span class="t">"to"</span> <span class="nt">account_ref</span></pre>
+    </div>
 
-  <!-- VARDECL -->
-  <h2 class="doc-h2 rv" id="rule-vardecl">varDecl</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">varDecl</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">varDecl</span>
-    : VAR <span class="gr-rule">name</span>=VARIABLE_NAME COLON <span class="gr-rule">ty</span>=<span class="gr-rule">type_</span> <span class="gr-op">(</span>EQ <span class="gr-rule">orig</span>=<span class="gr-rule">origin</span><span class="gr-op">)?</span>
-        # VarTyped
-    ;
+    <h2 id="monetary">Monetary expressions</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">monetary_expr</span>  <span class="op">::=</span> <span class="nt">monetary_lit</span> <span class="op">|</span> <span class="nt">monetary_all</span> <span class="op">|</span> <span class="nt">VARIABLE</span>
 
-<span class="gr-rule">type_</span>
-    : TY_ACCOUNT | TY_ASSET | TY_NUMBER
-    | TY_MONETARY | TY_PORTION | TY_STRING
-    ;</pre>
-  </div>
+<span class="nt">monetary_lit</span>   <span class="op">::=</span> <span class="t">"["</span> <span class="nt">ASSET</span> <span class="nt">NUMBER</span> <span class="t">"]"</span>
+<span class="nt">monetary_all</span>   <span class="op">::=</span> <span class="t">"["</span> <span class="nt">ASSET</span> <span class="t">"*"</span> <span class="t">"]"</span>
 
-  <!-- EXPRESSION -->
-  <h2 class="doc-h2 rv" id="rule-expression">expression</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">expression</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">expression</span>
-    : <span class="gr-rule">lhs</span>=<span class="gr-rule">expression</span> <span class="gr-rule">op</span>=<span class="gr-op">(</span>OP_ADD | OP_SUB<span class="gr-op">)</span> <span class="gr-rule">rhs</span>=<span class="gr-rule">expression</span>  # ExprAddSub
-    | <span class="gr-rule">lit</span>=<span class="gr-rule">literal</span>                                          # ExprLiteral
-    | <span class="gr-rule">variable</span>=VARIABLE_NAME                               # ExprVariable
-    ;
+<span class="cm">(* ASSET inclut la précision optionnelle : DZD, DZD.2, EUR.2 *)</span>
+<span class="nt">ASSET</span>          <span class="op">::=</span> <span class="nt">UPPER</span> { <span class="nt">UPPER</span> <span class="op">|</span> <span class="nt">DIGIT</span> } [ <span class="t">"."</span> <span class="nt">DIGIT</span> { <span class="nt">DIGIT</span> } ]</pre>
+    </div>
 
-<span class="gr-rule">literal</span>
-    : ACCOUNT   # LitAccount
-    | ASSET     # LitAsset
-    | NUMBER    # LitNumber
-    | <span class="gr-rule">monetary</span>  # LitMonetary
-    ;</pre>
-  </div>
+    <h2 id="portion">Portion</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">portion</span>  <span class="op">::=</span> <span class="nt">VARIABLE</span>
+         <span class="op">|</span> <span class="nt">NUMBER</span> <span class="t">"/"</span> <span class="nt">NUMBER</span>   <span class="cm">(* ex: 90/100 *)</span>
+         <span class="op">|</span> <span class="nt">NUMBER</span> <span class="t">"%"</span>           <span class="cm">(* ex: 15%    *)</span>
+         <span class="op">|</span> <span class="nt">FLOAT</span>  <span class="t">"%"</span>           <span class="cm">(* ex: 12.5%  *)</span></pre>
+    </div>
 
-  <!-- MONETARY -->
-  <h2 class="doc-h2 rv" id="rule-monetary">monetary</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">monetary</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">monetary</span>
-    <span class="gr-comment">// With precision: [DZD.2 5000]</span>
-    : LBRACK <span class="gr-rule">asset</span>=ASSET DOT <span class="gr-rule">precision</span>=NUMBER <span class="gr-rule">amount</span>=NUMBER RBRACK  # MonetaryLit
+    <h2 id="variables">Variables</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">VARIABLE</span>  <span class="op">::=</span> <span class="t">"$"</span> <span class="nt">IDENT</span>
 
-    <span class="gr-comment">// Without precision: [COIN 100]</span>
-    | LBRACK <span class="gr-rule">asset</span>=ASSET <span class="gr-rule">amount</span>=NUMBER RBRACK                       # MonetaryNoPrecision
-    ;</pre>
-  </div>
+<span class="cm">(* Injectées via le corps JSON de l'API : *)</span>
+<span class="cm">(* "vars": { "sale": "@vente:0042", "rate": "12%" } *)</span></pre>
+    </div>
 
-  <!-- MONETARYALL -->
-  <h2 class="doc-h2 rv" id="rule-monetaryall">monetaryAll</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">monetaryAll</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">monetaryAll</span>
-    <span class="gr-comment">// Transfer all with precision: [DZD.2 *]</span>
-    : LBRACK <span class="gr-rule">asset</span>=ASSET DOT <span class="gr-rule">precision</span>=NUMBER STAR RBRACK  # MonetaryAllPrec
+    <h2 id="set-stmt">set metadata</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">set_stmt</span>       <span class="op">::=</span> <span class="nt">set_tx_meta</span> <span class="op">|</span> <span class="nt">set_acct_meta</span>
 
-    <span class="gr-comment">// Transfer all without precision: [COIN *]</span>
-    | LBRACK <span class="gr-rule">asset</span>=ASSET STAR RBRACK                       # MonetaryAllNoPrec
-    ;</pre>
-  </div>
+<span class="nt">set_tx_meta</span>    <span class="op">::=</span> <span class="t">"set transaction metadata"</span>
+                   ( <span class="nt">STRING</span> <span class="t">"="</span> <span class="nt">literal</span>
+                   <span class="op">|</span> <span class="t">"{"</span> { <span class="nt">STRING</span> <span class="t">"="</span> <span class="nt">literal</span> } <span class="t">"}"</span> )
 
-  <!-- SOURCE -->
-  <h2 class="doc-h2 rv" id="rule-source">source</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">source</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">source</span>
-    : <span class="gr-rule">expression</span>               # SrcAccount
-    | <span class="gr-rule">sourceMaxed</span>              # SrcMaxed
-    | <span class="gr-rule">sourceInOrder</span>            # SrcInOrder
-    ;</pre>
-  </div>
+<span class="nt">set_acct_meta</span>  <span class="op">::=</span> <span class="t">"set account metadata of"</span> <span class="nt">account_ref</span>
+                   <span class="t">"key"</span> <span class="nt">STRING</span> <span class="t">"="</span> <span class="nt">literal</span>
 
-  <!-- VALUEAWARESOURCE -->
-  <h2 class="doc-h2 rv" id="rule-valuesource">valueAwareSource</h2>
-  <p class="doc-p">Used in the <code>from</code> clause of a transfer. Extends <code>source</code> with allotment support:</p>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">valueAwareSource</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">valueAwareSource</span>
-    : <span class="gr-rule">source</span>          # Src
-    | <span class="gr-rule">sourceAllotment</span> # SrcAllotment
-    ;</pre>
-  </div>
+<span class="nt">literal</span>        <span class="op">::=</span> <span class="nt">STRING</span> <span class="op">|</span> <span class="nt">NUMBER</span> <span class="op">|</span> <span class="nt">portion</span></pre>
+    </div>
 
-  <!-- SOURCEINORDER -->
-  <h2 class="doc-h2 rv" id="rule-sourceinorder">sourceInOrder</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">sourceInOrder</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">sourceInOrder</span>
-    : LBRACE NEWLINE <span class="gr-op">(</span><span class="gr-rule">sources</span>+=<span class="gr-rule">source</span> NEWLINE<span class="gr-op">)+</span> RBRACE
-    ;</pre>
-  </div>
-  <p class="doc-p">Example: <code>{ @alice\n @bob\n @world\n }</code></p>
+    <h2 id="print-fail">print / fail</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">print_stmt</span>  <span class="op">::=</span> <span class="t">"print"</span> <span class="nt">expr</span>
+<span class="nt">fail_stmt</span>   <span class="op">::=</span> <span class="t">"fail"</span>
 
-  <!-- SOURCEMAXED -->
-  <h2 class="doc-h2 rv" id="rule-sourcemaxed">sourceMaxed</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">sourceMaxed</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">sourceMaxed</span>
-    : MAX <span class="gr-rule">max</span>=<span class="gr-rule">expression</span> FROM <span class="gr-rule">src</span>=<span class="gr-rule">source</span>
-    ;</pre>
-  </div>
-  <p class="doc-p">Example: <code>max [DZD.2 1000] from @alice</code></p>
+<span class="nt">expr</span>        <span class="op">::=</span> <span class="nt">NUMBER</span>
+            <span class="op">|</span> <span class="nt">expr</span> ( <span class="t">"+"</span> <span class="op">|</span> <span class="t">"-"</span> <span class="op">|</span> <span class="t">"*"</span> <span class="op">|</span> <span class="t">"/"</span> ) <span class="nt">expr</span>
+            <span class="op">|</span> <span class="nt">account_ref</span>
+            <span class="op">|</span> <span class="nt">VARIABLE</span></pre>
+    </div>
 
-  <!-- SOURCEALLOTMENT -->
-  <h2 class="doc-h2 rv" id="rule-sourceallotment">sourceAllotment</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">sourceAllotment</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">sourceAllotment</span>
-    : LBRACE NEWLINE
-        <span class="gr-op">(</span><span class="gr-rule">portions</span>+=<span class="gr-rule">allotmentPortion</span> FROM <span class="gr-rule">sources</span>+=<span class="gr-rule">source</span> NEWLINE<span class="gr-op">)+</span>
-      RBRACE
-    ;</pre>
-  </div>
+    <h2 id="lexical">Éléments lexicaux</h2>
+    <div class="grammar">
+      <div class="grammar-header"><span>ebnf</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+      <pre><span class="nt">ACCOUNT</span>  <span class="op">::=</span> <span class="t">"@"</span> <span class="nt">IDENT</span> { <span class="t">":"</span> <span class="nt">IDENT</span> }
+<span class="cm">(* ex: @alice, @users:001, @courses:0587:paiement *)</span>
 
-  <!-- DESTINATION -->
-  <h2 class="doc-h2 rv" id="rule-destination">destination</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">destination</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">destination</span>
-    : <span class="gr-rule">expression</span>               # DestAccount
-    | <span class="gr-rule">destinationMaxed</span>         # DestMaxed
-    | <span class="gr-rule">destinationInOrder</span>       # DestInOrder
-    | <span class="gr-rule">destinationAllotment</span>     # DestAllotment
-    ;</pre>
-  </div>
+<span class="nt">IDENT</span>    <span class="op">::=</span> ( <span class="nt">LETTER</span> <span class="op">|</span> <span class="t">"_"</span> ) { <span class="nt">LETTER</span> <span class="op">|</span> <span class="nt">DIGIT</span> <span class="op">|</span> <span class="t">"_"</span> <span class="op">|</span> <span class="t">"-"</span> }
 
-  <!-- DESTINORDER -->
-  <h2 class="doc-h2 rv" id="rule-destinorder">destinationInOrder</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">destinationInOrder</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">destinationInOrder</span>
-    : LBRACE NEWLINE <span class="gr-op">(</span><span class="gr-rule">dests</span>+=<span class="gr-rule">destination</span> NEWLINE<span class="gr-op">)+</span> RBRACE
-    ;</pre>
-  </div>
+<span class="nt">STRING</span>   <span class="op">::=</span> <span class="t">'"'</span> { <span class="nt">CHAR</span> } <span class="t">'"'</span>
 
-  <!-- DESTMAXED -->
-  <h2 class="doc-h2 rv" id="rule-destmaxed">destinationMaxed</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">destinationMaxed</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">destinationMaxed</span>
-    : MAX <span class="gr-rule">max</span>=<span class="gr-rule">expression</span> TO <span class="gr-rule">dest</span>=<span class="gr-rule">destination</span>
-    ;</pre>
-  </div>
-  <p class="doc-p">Example: <code>max [DZD.2 100] to @bob</code></p>
+<span class="nt">NUMBER</span>   <span class="op">::=</span> <span class="nt">DIGIT</span> { <span class="nt">DIGIT</span> }
+<span class="nt">FLOAT</span>    <span class="op">::=</span> <span class="nt">NUMBER</span> <span class="t">"."</span> <span class="nt">NUMBER</span>
 
-  <!-- DESTALLOTMENT -->
-  <h2 class="doc-h2 rv" id="rule-destallotment">destinationAllotment</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">destinationAllotment</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">destinationAllotment</span>
-    : LBRACE NEWLINE
-        <span class="gr-op">(</span><span class="gr-rule">portions</span>+=<span class="gr-rule">allotmentPortion</span> TO <span class="gr-rule">dests</span>+=<span class="gr-rule">destination</span> NEWLINE<span class="gr-op">)+</span>
-      RBRACE
-    ;</pre>
-  </div>
+<span class="nt">COMMENT</span>  <span class="op">::=</span> <span class="t">"//"</span> { <span class="nt">CHAR</span> } <span class="nt">NEWLINE</span>
+<span class="cm">(* Les commentaires sont ignorés par le lexer *)</span>
 
-  <!-- ALLOTPORTION -->
-  <h2 class="doc-h2 rv" id="rule-allotportion">allotmentPortion</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">allotmentPortion</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">allotmentPortion</span>
-    : RATIO                          # allotmentPortionConst        <span class="gr-comment">// 85/100</span>
-    | NUMBER <span class="gr-op">(</span>'.' NUMBER<span class="gr-op">)?</span> PERCENT  # allotmentPortionConstPercent  <span class="gr-comment">// 12.5%</span>
-    | <span class="gr-rule">por</span>=VARIABLE_NAME             # allotmentPortionVar           <span class="gr-comment">// $rate</span>
-    | PORTION_REMAINING              # allotmentPortionRemaining     <span class="gr-comment">// remaining</span>
-    ;</pre>
-  </div>
+<span class="nt">UPPER</span>    <span class="op">::=</span> <span class="t">"A"</span> <span class="op">|</span> ... <span class="op">|</span> <span class="t">"Z"</span>
+<span class="nt">LETTER</span>   <span class="op">::=</span> <span class="nt">UPPER</span> <span class="op">|</span> <span class="t">"a"</span> <span class="op">|</span> ... <span class="op">|</span> <span class="t">"z"</span>
+<span class="nt">DIGIT</span>    <span class="op">::=</span> <span class="t">"0"</span> <span class="op">|</span> ... <span class="op">|</span> <span class="t">"9"</span></pre>
+    </div>
 
-  <!-- ORIGIN -->
-  <h2 class="doc-h2 rv" id="rule-origin">origin</h2>
-  <p class="doc-p">Used in variable declarations to resolve a value from account metadata:</p>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">origin</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">origin</span>
-    : META LPAREN <span class="gr-rule">acc</span>=<span class="gr-rule">expression</span> ',' <span class="gr-rule">key</span>=STRING RPAREN
-    ;
-
-<span class="gr-comment">// Example:</span>
-<span class="gr-comment">// var $seller: account = meta($sale, "seller")</span></pre>
-  </div>
-
-  <!-- METADATA -->
-  <h2 class="doc-h2 rv" id="rule-metadata">metadataEntry &amp; metadataValue</h2>
-  <div class="grammar-block rv">
-    <div class="grammar-bar"><span class="grammar-name">metadataEntry / metadataValue</span><span class="grammar-type">parser rule</span></div>
-    <pre><span class="gr-rule">metadataValue</span>
-    : <span class="gr-rule">expression</span>  # MetaValueExpr   <span class="gr-comment">// any expression: number, string, account...</span>
-    | RATIO       # MetaValueRatio  <span class="gr-comment">// e.g. 1/8</span>
-    ;
-
-<span class="gr-rule">metadataEntry</span>
-    : STRING EQ <span class="gr-rule">metadataValue</span>
-    ;
-
-<span class="gr-comment">// Examples:</span>
-<span class="gr-comment">// "commission_rate" = "10%"</span>
-<span class="gr-comment">// "amount" = 5000</span>
-<span class="gr-comment">// "seller" = @users:001</span></pre>
-  </div>
-
-  <div class="doc-nav">
-    <a href="/docs.html"><span class="dn-label">← Previous</span>FaRl Documentation</a>
-    <a href="/" class="next"><span class="dn-label">Next →</span>Home</a>
-  </div>
-</main>
+    <div class="doc-nav">
+      <a href="docs.html" class="doc-nav-btn">
+        <span class="dn-lbl">← Précédent</span>
+        <span class="dn-title">Documentation FaRl</span>
+      </a>
+      <a href="access.html" class="doc-nav-btn next">
+        <span class="dn-lbl">Suivant →</span>
+        <span class="dn-title">Accès anticipé</span>
+      </a>
+    </div>
+  </main>
 </div>
 
-<script>
-const sideObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if(e.isIntersecting) {
-      document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
-      const a = document.querySelector(`.sb-link[href="#${e.target.id}"]`);
-      if(a) a.classList.add('active');
-    }
-  });
-}, { rootMargin:'-20% 0px -75% 0px' });
-document.querySelectorAll('[id]').forEach(s => sideObs.observe(s));
+<footer>
+  <span>© Corren 2026</span>
+  <div style="display:flex;gap:20px">
+    <a href="index.html">Accueil</a>
+    <a href="docs.html">Docs</a>
+    <a href="https://github.com/amezianechayer/corren">GitHub</a>
+  </div>
+</footer>
 
-const rvObs = new IntersectionObserver((entries) => {
-  entries.forEach((e, i) => {
-    if(e.isIntersecting) {
-      setTimeout(() => e.target.classList.add('v'), i * 60);
-      rvObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.08 });
-document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+<script>
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const h=document.documentElement,n=h.dataset.theme==='dark'?'light':'dark';
+  h.dataset.theme=n;localStorage.setItem('theme',n);
+});
+if(localStorage.getItem('theme'))document.documentElement.dataset.theme=localStorage.getItem('theme');
+function copyCode(btn){const pre=btn.closest('.grammar').querySelector('pre');navigator.clipboard.writeText(pre.innerText).then(()=>{btn.textContent='✓';setTimeout(()=>btn.textContent='Copier',2000)})}
+const hObs=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));const a=document.querySelector(`.sb-link[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{threshold:.6,rootMargin:'-52px 0px -60% 0px'});
+document.querySelectorAll('[id]').forEach(h=>hObs.observe(h));
 </script>
 </body>
 </html>

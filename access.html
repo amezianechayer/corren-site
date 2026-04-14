@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corren — Accès anticipé</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--mono:'JetBrains Mono',monospace;--green:#4ade80}
+[data-theme="dark"]{--bg:#040810;--surface:#080d18;--surface2:#0c1220;--border:rgba(59,130,246,.12);--border-h:rgba(59,130,246,.22);--t1:#eef2ff;--t2:#8898b8;--t3:#3a4a6b;--t4:#1e2a40;--accent:#3b82f6;--accent-b:#60a5fa;--accent2:rgba(59,130,246,.08);--accent3:rgba(59,130,246,.04);--accent-glow:rgba(59,130,246,.15);--logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af}
+[data-theme="light"]{--bg:#f0f4ff;--surface:#fff;--surface2:#e8edf8;--border:rgba(37,99,235,.12);--border-h:rgba(37,99,235,.22);--t1:#0f1a2e;--t2:#4a5a7a;--t3:#9aa8c0;--t4:#d0d8e8;--accent:#2563eb;--accent-b:#3b82f6;--accent2:rgba(37,99,235,.07);--accent3:rgba(37,99,235,.03);--accent-glow:rgba(37,99,235,.1);--logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.65;overflow-x:hidden;transition:background .4s}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--t4);border-radius:2px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:all .4s}
+.nl{display:flex;align-items:center;gap:12px;font-weight:600;font-size:12px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:var(--t1)}
+.nl span{color:var(--logo2)}
+.nr{display:flex;gap:24px;align-items:center}
+.nlinks a{color:var(--t2);text-decoration:none;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:color .2s;padding:0 8px}
+.nlinks a:hover{color:var(--t1)}
+.tbtn{background:none;border:1px solid var(--border);color:var(--t2);font-family:var(--mono);font-size:11px;padding:5px 12px;cursor:pointer;border-radius:3px;transition:all .3s}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* HERO */
+.hero{padding:140px 40px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.3;pointer-events:none}
+.hero::after{content:'';position:absolute;top:50%;left:50%;width:700px;height:700px;background:radial-gradient(circle,rgba(59,130,246,.06) 0%,transparent 65%);transform:translate(-50%,-50%);pointer-events:none}
+.tag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid rgba(74,222,128,.25);border-radius:3px;font-size:10px;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;background:rgba(74,222,128,.05)}
+.tag::before{content:'';width:5px;height:5px;background:var(--green);border-radius:50%;animation:pu 2s infinite}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(28px,5vw,50px);font-weight:300;letter-spacing:-1px;line-height:1.2;margin-bottom:20px;position:relative;z-index:1}
+.hero h1 em{font-style:normal;color:var(--accent-b);font-weight:600}
+.hero p{font-size:14px;color:var(--t2);max-width:520px;margin:0 auto 16px;line-height:1.8;position:relative;z-index:1}
+
+/* PLANS */
+.plans-section{padding:80px 40px;display:flex;flex-direction:column;align-items:center;max-width:1100px;margin:0 auto}
+.plans-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:40px;display:flex;align-items:center;gap:8px}
+.plans-label::before,.plans-label::after{content:'';width:20px;height:1px;background:var(--t3)}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;width:100%;max-width:960px}
+.plan{background:var(--surface);padding:36px 28px;display:flex;flex-direction:column;position:relative;transition:background .4s}
+.plan.featured{background:var(--surface2)}
+.plan.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.plan-badge{display:inline-block;padding:2px 10px;background:var(--accent2);color:var(--accent-b);border:1px solid rgba(59,130,246,.2);border-radius:2px;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;align-self:flex-start}
+.plan-name{font-size:18px;font-weight:500;margin-bottom:8px}
+.plan-desc{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:28px;min-height:48px}
+.plan-price{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.plan-price .amount{font-size:32px;font-weight:300;color:var(--t1)}
+.plan-price .amount span{font-size:13px;color:var(--t3);font-weight:400}
+.plan-price .subtitle{font-size:11px;color:var(--t3);margin-top:4px}
+.plan-features{flex:1;margin-bottom:28px}
+.plan-feature{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:12px;color:var(--t2);border-bottom:1px solid var(--border)}
+.plan-feature:last-child{border-bottom:none}
+.plan-feature::before{content:'✓';color:var(--accent-b);font-size:11px;margin-top:1px;flex-shrink:0}
+.plan-feature.dim{color:var(--t3)}
+.plan-feature.dim::before{content:'—';color:var(--t3)}
+.plan-btn{width:100%;padding:12px;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);cursor:pointer;border-radius:3px;transition:all .25s}
+.plan-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.plan-btn.primary:hover{filter:brightness(1.15);box-shadow:0 0 20px var(--accent-glow)}
+.plan-btn.ghost{background:transparent;color:var(--t2)}
+.plan-btn.ghost:hover{border-color:var(--accent);color:var(--accent-b)}
+
+/* FORM */
+.form-section{padding:80px 40px;display:flex;flex-direction:column;align-items:center}
+.form-section h2{font-size:24px;font-weight:300;text-align:center;margin-bottom:8px;letter-spacing:-.5px}
+.form-section h2 em{font-style:normal;color:var(--accent-b)}
+.form-section p{font-size:13px;color:var(--t2);text-align:center;margin-bottom:40px}
+.form-wrap{width:100%;max-width:540px;border:1px solid var(--border);background:var(--surface);border-radius:4px;overflow:hidden;transition:background .4s}
+.form-header{padding:16px 24px;border-bottom:1px solid var(--border);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.form-header::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pu 2s infinite}
+.form-body{padding:28px 24px;display:flex;flex-direction:column;gap:16px}
+.form-field{display:flex;flex-direction:column;gap:6px}
+.form-field label{font-size:11px;color:var(--t2);letter-spacing:.5px;text-transform:uppercase}
+.form-field input,.form-field select,.form-field textarea{background:var(--bg);border:1px solid var(--border);color:var(--t1);font-family:var(--mono);font-size:12px;padding:10px 14px;border-radius:3px;outline:none;transition:all .3s;width:100%}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent2)}
+.form-field input::placeholder,.form-field textarea::placeholder{color:var(--t3)}
+.form-field select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236678a0' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+[data-theme="light"] .form-field select{background-color:var(--bg)}
+.form-field textarea{min-height:80px;resize:vertical;line-height:1.6}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-submit{padding:12px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;border-radius:3px;transition:all .25s;width:100%;position:relative;overflow:hidden}
+.form-submit:hover{filter:brightness(1.15);box-shadow:0 0 20px var(--accent-glow)}
+.form-note{font-size:10px;color:var(--t3);text-align:center;margin-top:8px;line-height:1.6}
+.form-success{display:none;padding:28px 24px;text-align:center}
+.form-success.show{display:block}
+.form-success .icon{font-size:32px;margin-bottom:12px}
+.form-success h3{font-size:16px;font-weight:500;margin-bottom:8px;color:var(--green)}
+.form-success p{font-size:12px;color:var(--t2);line-height:1.7}
+
+/* FAQ */
+.faq-section{padding:60px 40px;max-width:720px;margin:0 auto;width:100%}
+.faq-title{font-size:20px;font-weight:300;margin-bottom:32px;text-align:center;letter-spacing:-.5px}
+.faq-item{border-bottom:1px solid var(--border);padding:16px 0}
+.faq-q{font-size:13px;font-weight:500;color:var(--t1);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;user-select:none}
+.faq-q:hover{color:var(--accent-b)}
+.faq-q::after{content:'+';color:var(--accent-b);font-size:16px;flex-shrink:0;transition:transform .2s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{font-size:12px;color:var(--t2);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease}
+.faq-item.open .faq-a{max-height:200px;padding-top:12px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px 40px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--t3)}
+footer a{color:var(--t2);text-decoration:none;transition:color .2s}
+footer a:hover{color:var(--accent-b)}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  nav{padding:12px 20px}
+  .plans-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .plans-section,.form-section,.faq-section{padding:40px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nl">
+    <svg width="32" height="24" viewBox="0 0 38 28" fill="none">
+      <rect x="0" y="0" width="9" height="28" rx="4.5" fill="var(--logo1)"/>
+      <rect x="13" y="4" width="9" height="20" rx="4.5" fill="var(--logo2)"/>
+      <rect x="27" y="8" width="9" height="12" rx="4.5" fill="var(--logo3)"/>
+    </svg>
+    <span>Corren</span>
+  </a>
+  <div class="nr">
+    <div class="nlinks" style="display:flex">
+      <a href="index.html">Accueil</a>
+      <a href="docs.html">Docs</a>
+      <a href="https://github.com/amezianechayer/corren" target="_blank">GitHub</a>
+    </div>
+    <button class="tbtn" id="themeToggle">◐</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">Alpha · Accès limité</div>
+  <h1>Infrastructure financière<br>pour les <em>builders africains.</em></h1>
+  <p>Corren est en accès anticipé. Rejoignez les premières équipes qui construisent des produits financiers sur notre ledger programmable.</p>
+</section>
+
+<!-- PLANS -->
+<div class="plans-section reveal">
+  <div class="plans-label">Offres</div>
+  <div class="plans-grid">
+    <!-- OPEN SOURCE -->
+    <div class="plan">
+      <div class="plan-name">Open Source</div>
+      <div class="plan-desc">Pour les développeurs qui veulent explorer et construire localement.</div>
+      <div class="plan-price">
+        <div class="amount">Gratuit<span> / toujours</span></div>
+        <div class="subtitle">Selfhosted · MIT License (soon)</div>
+      </div>
+      <div class="plan-features">
+        <div class="plan-feature">CLI complet (corren run, server...)</div>
+        <div class="plan-feature">FaRl DSL complet</div>
+        <div class="plan-feature">SQLite embarqué</div>
+        <div class="plan-feature">HTTP API REST</div>
+        <div class="plan-feature">Multi-devise (DZD, EUR, USD...)</div>
+        <div class="plan-feature dim">Support prioritaire</div>
+        <div class="plan-feature dim">PostgreSQL managé</div>
+        <div class="plan-feature dim">SLA production</div>
+      </div>
+      <a href="https://github.com/amezianechayer/corren" target="_blank">
+        <button class="plan-btn ghost">Voir sur GitHub →</button>
+      </a>
+    </div>
+
+    <!-- EARLY ACCESS -->
+    <div class="plan featured">
+      <div class="plan-badge">Recommandé</div>
+      <div class="plan-name">Accès anticipé</div>
+      <div class="plan-desc">Pour les équipes qui construisent des produits financiers en production.</div>
+      <div class="plan-price">
+        <div class="amount">Sur devis<span> / mois</span></div>
+        <div class="subtitle">Tarif spécial early adopters</div>
+      </div>
+      <div class="plan-features">
+        <div class="plan-feature">Tout l'open source</div>
+        <div class="plan-feature">PostgreSQL managé ou VPC</div>
+        <div class="plan-feature">Support direct (Slack dédié)</div>
+        <div class="plan-feature">Onboarding technique inclus</div>
+        <div class="plan-feature">Roadmap co-construite</div>
+        <div class="plan-feature">SLA 99.9% disponibilité</div>
+        <div class="plan-feature">Intégration SATIM/CIB (Q3 2026)</div>
+        <div class="plan-feature dim">Déploiement on-premise</div>
+      </div>
+      <button class="plan-btn primary" onclick="document.getElementById('accessForm').scrollIntoView({behavior:'smooth'})">Demander l'accès →</button>
+    </div>
+
+    <!-- ENTERPRISE -->
+    <div class="plan">
+      <div class="plan-name">Entreprise</div>
+      <div class="plan-desc">Pour les banques, fintechs et opérateurs télécoms à large échelle.</div>
+      <div class="plan-price">
+        <div class="amount">Contact<span> / personnalisé</span></div>
+        <div class="subtitle">Volume · On-premise · Air-gap</div>
+      </div>
+      <div class="plan-features">
+        <div class="plan-feature">Tout accès anticipé</div>
+        <div class="plan-feature">Déploiement on-premise</div>
+        <div class="plan-feature">Intégration ISO 8583</div>
+        <div class="plan-feature">SATIM · CIB · PAPSS</div>
+        <div class="plan-feature">Audit de conformité</div>
+        <div class="plan-feature">SLA personnalisé</div>
+        <div class="plan-feature">Ingénieur dédié</div>
+        <div class="plan-feature">Formation équipe incluse</div>
+      </div>
+      <button class="plan-btn ghost" onclick="document.getElementById('accessForm').scrollIntoView({behavior:'smooth'})">Nous contacter →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORM -->
+<section class="form-section reveal" id="accessForm">
+  <h2>Demander l'<em>accès anticipé</em></h2>
+  <p>Parlez-nous de ce que vous construisez. On vous répond sous 48h.</p>
+  <div class="form-wrap">
+    <div class="form-header">Formulaire d'accès · Corren Alpha</div>
+    <div class="form-body" id="formBody">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Prénom *</label>
+          <input type="text" placeholder="Ameziane" id="fname">
+        </div>
+        <div class="form-field">
+          <label>Nom *</label>
+          <input type="text" placeholder="Chayer" id="lname">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Email professionnel *</label>
+        <input type="email" placeholder="vous@company.com" id="email">
+      </div>
+      <div class="form-field">
+        <label>Entreprise / Projet *</label>
+        <input type="text" placeholder="Fintech, néobanque, marketplace..." id="company">
+      </div>
+      <div class="form-field">
+        <label>Secteur *</label>
+        <select id="sector">
+          <option value="">Choisir...</option>
+          <option>Fintech / Néobanque</option>
+          <option>Marketplace / E-commerce</option>
+          <option>Banque traditionnelle</option>
+          <option>Télécoms / Mobile Money</option>
+          <option>Assurance</option>
+          <option>Logistique / Supply chain</option>
+          <option>Gaming / NFT</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Pays / Région *</label>
+        <select id="country">
+          <option value="">Choisir...</option>
+          <option>Algérie</option>
+          <option>Maroc</option>
+          <option>Tunisie</option>
+          <option>Égypte</option>
+          <option>Nigéria</option>
+          <option>Sénégal</option>
+          <option>Côte d'Ivoire</option>
+          <option>Kenya</option>
+          <option>Afrique du Sud</option>
+          <option>France / Europe</option>
+          <option>Autre MENA</option>
+          <option>Autre Afrique</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Décrivez votre use case</label>
+        <textarea placeholder="Ex : Nous construisons une néobanque pour les PME algériennes. Nous avons besoin d'un ledger pour gérer les portefeuilles, les virements, et les splits de commission..." id="usecase"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Offre souhaitée</label>
+        <select id="plan">
+          <option>Accès anticipé (selfhosted + support)</option>
+          <option>Entreprise (on-premise + intégrations)</option>
+          <option>Je ne sais pas encore</option>
+        </select>
+      </div>
+      <button class="form-submit" onclick="submitForm()">Envoyer la demande →</button>
+      <div class="form-note">Vos données ne sont jamais partagées avec des tiers. Réponse sous 48h.</div>
+    </div>
+    <div class="form-success" id="formSuccess">
+      <div class="icon">✓</div>
+      <h3>Demande reçue !</h3>
+      <p>Merci pour votre intérêt. Nous avons bien reçu votre demande et vous contacterons à <strong id="successEmail"></strong> dans les 48 prochaines heures.<br><br>En attendant, explorez la <a href="docs.html">documentation FaRl</a> et testez Corren en local depuis <a href="https://github.com/amezianechayer/corren" target="_blank">GitHub</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section reveal">
+  <h2 class="faq-title">Questions fréquentes</h2>
+  <div class="faq-item">
+    <div class="faq-q">Corren est-il open source ?</div>
+    <div class="faq-a">Le code source est disponible sur GitHub. Nous travaillons sur la licence officielle — le core FaRl et le moteur de ledger seront sous licence open source. Les modules entreprise (intégrations SATIM, PAPSS) resteront propriétaires.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Quelles bases de données sont supportées ?</div>
+    <div class="faq-a">Corren supporte SQLite (embarqué, idéal pour le développement) et PostgreSQL (production). Le driver est configurable dans corren.yaml. MySQL est prévu dans une prochaine version.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Est-ce que Corren gère les transactions ISO 8583 / SATIM ?</div>
+    <div class="faq-a">Le connecteur SATIM/CIB ISO 8583 est en cours de développement et prévu pour Q3 2026. Les clients Enterprise auront accès en priorité. En attendant, Corren s'intègre avec n'importe quel système via son API REST.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Peut-on déployer Corren en interne (on-premise) ?</div>
+    <div class="faq-a">Oui. Corren est un binaire Go unique sans dépendances externes. Il se déploie sur n'importe quel serveur Linux. Le plan Enterprise inclut un accompagnement pour les déploiements air-gappés et les environnements VPC.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Quelle est la différence avec une base de données classique ?</div>
+    <div class="faq-a">Corren n'est pas une base de données générique. C'est un ledger programmable : chaque opération est une transaction double-entrée atomique exprimée en FaRl. Il garantit l'intégrité financière par construction — pas de soldes négatifs inattendus, pas d'états partiels.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Corren supporte quelles devises ?</div>
+    <div class="faq-a">Toutes. Les actifs sont définis librement : DZD.2 (Dinar algérien), EUR.2, USD.2, TND.3, mais aussi COIN, CREDIT, POINT — n'importe quel identifiant en majuscules. La précision décimale est configurable par actif.</div>
+  </div>
+</section>
+
+<footer>
+  <span>© Corren 2026</span>
+  <div style="display:flex;gap:20px">
+    <a href="index.html">Accueil</a>
+    <a href="docs.html">Docs</a>
+    <a href="https://github.com/amezianechayer/corren">GitHub</a>
+  </div>
+</footer>
+
+<script>
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const h=document.documentElement,n=h.dataset.theme==='dark'?'light':'dark';
+  h.dataset.theme=n;localStorage.setItem('theme',n);
+});
+if(localStorage.getItem('theme'))document.documentElement.dataset.theme=localStorage.getItem('theme');
+
+// Reveal
+const rO=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');rO.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(e=>rO.observe(e));
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen)item.classList.add('open');
+  });
+});
+
+// Form submit
+function submitForm(){
+  const email=document.getElementById('email').value;
+  const fname=document.getElementById('fname').value;
+  if(!fname||!email){
+    const field=!fname?'fname':'email';
+    document.getElementById(field).focus();
+    document.getElementById(field).style.borderColor='var(--code-num)';
+    setTimeout(()=>document.getElementById(field).style.borderColor='',2000);
+    return;
+  }
+  document.getElementById('formBody').style.display='none';
+  document.getElementById('successEmail').textContent=email;
+  document.getElementById('formSuccess').classList.add('show');
+}
+</script>
+</body>
+</html>
