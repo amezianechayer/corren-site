@@ -7,18 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--mono:'JetBrains Mono',monospace;--green:#4ade80;--red-t:#fca5a5}
-
 [data-theme="dark"]{
   --bg:#040810;--surface:#080d18;--surface2:#0c1220;
-  --border:rgba(59,130,246,0.12);--border-h:rgba(59,130,246,0.22);
+  --border:rgba(59,130,246,0.12);--border-h:rgba(59,130,246,0.28);
   --t1:#eef2ff;--t2:#8898b8;--t3:#3a4a6b;--t4:#1e2a40;
   --accent:#3b82f6;--accent-b:#60a5fa;
   --accent2:rgba(59,130,246,0.08);--accent3:rgba(59,130,246,0.04);
-  --accent-glow:rgba(59,130,246,0.15);
+  --accent-glow:rgba(59,130,246,0.18);
   --code-kw:#60a5fa;--code-str:#7dd3fc;--code-num:#fca5a5;
   --logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af;
   --term-bg:#04080f;
-  --hero-overlay:rgba(4,8,16,0.3);
 }
 [data-theme="light"]{
   --bg:#f0f4ff;--surface:#ffffff;--surface2:#e8edf8;
@@ -30,9 +28,7 @@
   --code-kw:#1d4ed8;--code-str:#0369a1;--code-num:#dc2626;
   --logo1:#3b82f6;--logo2:#2563eb;--logo3:#1e40af;
   --term-bg:#0f1a2e;
-  --hero-overlay:rgba(240,244,255,0.15);
 }
-
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--t1);font-family:var(--mono);font-size:13px;line-height:1.65;overflow-x:hidden;transition:background .4s,color .4s}
@@ -40,16 +36,16 @@ body{background:var(--bg);color:var(--t1);font-family:var(--mono);font-size:13px
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--t4);border-radius:2px}
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s,transform .9s}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
-/* ═══ NAV ═══ */
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:all .4s}
 .nl{display:flex;align-items:center;gap:12px;font-weight:600;font-size:12px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:var(--t1)}
 .nl:hover .lb1{animation:lw .5s ease}
 .nl:hover .lb2{animation:lw .5s ease .08s}
 .nl:hover .lb3{animation:lw .5s ease .16s}
-@keyframes lw{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes lw{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .nl span{color:var(--logo2)}
 .nr{display:flex;gap:24px;align-items:center}
 .nlinks{display:flex;gap:24px}
@@ -58,120 +54,158 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .tbtn{background:none;border:1px solid var(--border);color:var(--t2);font-family:var(--mono);font-size:11px;padding:5px 12px;cursor:pointer;border-radius:3px;transition:all .3s;letter-spacing:1px}
 .tbtn:hover{border-color:var(--accent);color:var(--accent)}
 .ncta{padding:7px 18px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--mono);border-radius:3px;transition:all .25s;position:relative;overflow:hidden}
-.ncta:hover{filter:brightness(1.15);box-shadow:0 0 20px var(--accent-glow)}
+.ncta::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity .3s}
+.ncta:hover::after{opacity:1}
+.ncta:hover{box-shadow:0 0 24px var(--accent-glow)}
 
-/* ═══ HERO ═══ */
-.hero{height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* HERO */
+.hero{height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:row;align-items:center;justify-content:flex-start}
 #isoCanvas{position:absolute;inset:0;width:100%;height:100%}
-.hero-overlay{position:absolute;inset:0;background:var(--hero-overlay);pointer-events:none;z-index:1}
+#particleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.hero-overlay{position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:linear-gradient(100deg, rgba(4,8,16,.92) 0%, rgba(4,8,16,.85) 30%, rgba(4,8,16,.35) 55%, transparent 72%)}
+[data-theme="light"] .hero-overlay{
+  background:linear-gradient(100deg, rgba(240,244,255,.94) 0%, rgba(240,244,255,.85) 30%, rgba(240,244,255,.25) 55%, transparent 72%)}
 
-/* Floating ledger blocks */
-.hblocks{position:absolute;inset:0;pointer-events:none;z-index:1}
-.hb{position:absolute;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 60%,transparent);backdrop-filter:blur(4px);border-radius:4px;padding:8px 12px;font-size:10px;color:var(--t2);opacity:.22;white-space:nowrap;animation:hbf linear infinite}
-[data-theme="light"] .hb{opacity:.14}
-.hb-v{color:var(--accent-b);font-size:11px;font-weight:500}
+/* Floating blocks */
+.hblocks{position:absolute;inset:0;pointer-events:none;z-index:3}
+.hb{position:absolute;border:1px solid var(--border);backdrop-filter:blur(6px);border-radius:4px;padding:9px 14px;font-size:10px;white-space:nowrap;animation:hbf linear infinite}
+/* 3D floating card base */
+[data-theme="dark"] .hb{background:rgba(7,12,22,0.88);color:rgba(136,152,184,.9);border-color:rgba(59,130,246,.18)}
+[data-theme="light"] .hb{background:rgba(6,14,38,0.90);color:rgba(180,210,245,.92);border-color:rgba(59,130,246,.28)}
+.hb{pointer-events:all;cursor:grab;transition:border-color .25s,box-shadow .25s,transform .15s;
+  perspective:600px;min-width:160px}
+.hb3d{transform-style:preserve-3d;transform:perspective(600px) rotateY(-4deg) rotateX(2deg)}
+.hb:hover{border-color:var(--accent)!important;z-index:10;
+  box-shadow:0 0 24px var(--accent-glow),inset 0 1px 0 rgba(96,165,250,.15);
+  transform:perspective(600px) rotateY(0deg) rotateX(0deg) translateY(-2px)!important}
+.hb.dragging{cursor:grabbing;border-color:var(--accent)!important;
+  box-shadow:0 12px 40px rgba(59,130,246,.3),0 0 20px rgba(59,130,246,.15);
+  transform:perspective(600px) rotateY(0deg) rotateX(0deg) scale(1.02)!important;
+  z-index:20;transition:none}
+.hb-v{color:#60a5fa;font-size:11px;font-weight:600;margin-bottom:3px}
+.hb-s{font-size:9px;color:rgba(136,152,184,.65);margin-bottom:6px}
+.hb-icon{font-size:10px;color:rgba(59,130,246,.5);margin-bottom:5px}
+.hb-badge{display:inline-block;padding:1px 6px;background:rgba(59,130,246,.14);border:1px solid rgba(59,130,246,.2);
+  border-radius:2px;font-size:9px;color:#60a5fa;letter-spacing:.5px}
+.hb-green{background:rgba(74,222,128,.1)!important;border-color:rgba(74,222,128,.2)!important;color:#4ade80!important}
+.hb-num{font-size:9px;color:rgba(96,165,250,.5);letter-spacing:.5px}
+.hb-row{display:flex;align-items:center;gap:8px;margin-top:4px}
+.hb-bar{width:100%;height:2px;background:rgba(59,130,246,.1);border-radius:1px;margin-top:6px;overflow:hidden}
+.hb-bar-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:1px}
+.hb-v{color:#60a5fa;font-size:11px;font-weight:500}
+[data-theme="light"] .hb-v{color:#93c5fd}
 .hb-s{color:var(--t3);font-size:9px;margin-top:2px}
-@keyframes hbf{0%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(.8deg)}100%{transform:translateY(0) rotate(0deg)}}
+[data-theme="light"] .hb-s{color:rgba(100,130,180,.6)}
+.hb-badge{display:inline-block;padding:1px 5px;background:rgba(59,130,246,.12);border-radius:2px;font-size:9px;color:#60a5fa;margin-top:3px}
+@keyframes hbf{
+  0%{transform:translateY(0) rotate(0deg)}
+  33%{transform:translateY(-14px) rotate(.5deg)}
+  66%{transform:translateY(-8px) rotate(-.3deg)}
+  100%{transform:translateY(0) rotate(0deg)}
+}
 
-/* HUD overlays */
-.hud{position:absolute;z-index:3;pointer-events:none}
+/* HUD */
+.hud{position:absolute;z-index:4;pointer-events:none}
 .hud-tl{top:90px;left:40px}
 .hud-tr{top:90px;right:40px}
-.hud-label{font-size:9px;color:rgba(96,165,250,.35);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
-.hud-val{font-size:12px;color:rgba(96,165,250,.6)}
+.hud-bl{bottom:70px;left:40px}
+.hud-br{bottom:70px;right:40px}
+.hud-label{font-size:9px;color:rgba(96,165,250,.3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.hud-val{font-size:12px;color:rgba(96,165,250,.65)}
 .hud-bar{width:100px;height:1px;background:rgba(59,130,246,.1);margin-top:6px}
 .hud-fill{height:100%;background:var(--accent);transition:width .5s}
-.spill{display:flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid rgba(59,130,246,.15);border-radius:12px;backdrop-filter:blur(8px);background:rgba(4,8,16,.5)}
+.spill{display:flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid rgba(59,130,246,.15);border-radius:12px;backdrop-filter:blur(8px);background:rgba(4,8,16,.55)}
+[data-theme="light"] .spill{background:rgba(8,18,42,.7)}
 .spill .sd{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pu 1.5s infinite}
 @keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
-.spill #sTxt{font-size:9px;color:rgba(96,165,250,.6);letter-spacing:1px;text-transform:uppercase}
+.spill #sTxt{font-size:9px;color:rgba(96,165,250,.65);letter-spacing:1px;text-transform:uppercase}
+.hud-mini{font-size:9px;color:rgba(96,165,250,.28);letter-spacing:1px}
+.hud-mini span{color:rgba(96,165,250,.5)}
 
 /* Scroll indicator */
-.scrl{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.3}
+.scrl{position:absolute;bottom:28px;left:60px;z-index:5;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.3}
 .scrl span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t2)}
 .scrl::after{content:'';width:1px;height:28px;background:linear-gradient(var(--accent),transparent)}
 
-/* Hero content */
-.hcontent{position:relative;z-index:4;text-align:center;padding:0 20px}
-.hbadge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border:1px solid var(--border);font-size:11px;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;border-radius:3px;background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(10px);animation:fi .8s ease both .2s}
+/* Hero content — left column */
+.hcontent{position:relative;z-index:5;text-align:left;padding:0 0 0 60px;max-width:52%;pointer-events:all}
+.hbadge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border:1px solid var(--border);font-size:11px;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;border-radius:3px;background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(10px);animation:fi .8s ease both .2s;align-self:flex-start}
 @keyframes fi{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 .hbadge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pu 2s infinite}
-h1{font-size:clamp(26px,5vw,54px);font-weight:300;letter-spacing:-1px;line-height:1.15;margin-bottom:18px;animation:fu 1s ease both .4s}
+h1{font-size:clamp(26px,4vw,54px);font-weight:300;letter-spacing:-1px;line-height:1.15;margin-bottom:18px;animation:fu 1s ease both .4s;text-align:left}
 @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 h1 strong{font-weight:600;color:var(--accent-b)}
-.hsub{font-size:14px;color:var(--t2);max-width:500px;margin:0 auto 44px;line-height:1.8;animation:fu 1s ease both .6s}
-.hbtns{display:flex;gap:12px;justify-content:center;animation:fu 1s ease both .8s}
+.hsub{font-size:13px;color:var(--t2);max-width:420px;margin:0 0 44px;line-height:1.8;animation:fu 1s ease both .6s}
+.hbtns{display:flex;gap:12px;justify-content:flex-start;animation:fu 1s ease both .8s}
 
-/* ═══ TICKER ═══ */
+/* TICKER */
 .ticker-w{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 0;background:var(--surface);transition:background .4s}
-.ticker{display:flex;animation:ts 32s linear infinite;width:max-content}
+.ticker{display:flex;animation:ts 30s linear infinite;width:max-content}
 .ticker span{padding:0 40px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);white-space:nowrap}
 .ticker span em{font-style:normal;color:var(--accent);margin-right:8px}
 @keyframes ts{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ═══ BUTTONS ═══ */
-.btn-p{padding:12px 28px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:all .25s;text-decoration:none;border-radius:3px}
-.btn-p:hover{filter:brightness(1.15);box-shadow:0 0 28px var(--accent-glow)}
+/* BUTTONS */
+.btn-p{padding:12px 28px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;transition:all .25s;text-decoration:none;border-radius:3px;position:relative;overflow:hidden}
+.btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);opacity:0;transition:opacity .3s}
+.btn-p:hover::after{opacity:1}
+.btn-p:hover{box-shadow:0 0 32px var(--accent-glow)}
 .btn-g{padding:12px 28px;background:transparent;color:var(--t2);font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);cursor:pointer;transition:all .25s;text-decoration:none;border-radius:3px}
 .btn-g:hover{border-color:var(--accent);color:var(--accent-b)}
 
-/* ═══ SECTIONS ═══ */
+/* SECTIONS */
 .sw{padding:100px 40px;display:flex;flex-direction:column;align-items:center}
 .sl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .sl::before,.sl::after{content:'';width:20px;height:1px;background:var(--t3)}
 .st{font-size:clamp(22px,3.5vw,38px);font-weight:300;text-align:center;margin-bottom:60px;letter-spacing:-.5px}
 .st em{font-style:normal;color:var(--accent-b);font-weight:500}
 
-/* ═══ TERMINAL ═══ */
-.terminal{width:100%;max-width:760px;border:1px solid var(--border);background:var(--term-bg);overflow:hidden;border-radius:4px}
+/* REACT FLOW GRAPH */
+.flow-section{padding:100px 40px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden}
+.flow-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 50%,rgba(59,130,246,.04),transparent);pointer-events:none}
+.rf-wrap{position:relative;width:100%;max-width:1100px}
+#rfCanvas{width:100%;height:640px;border:1px solid var(--border);border-radius:6px;background:var(--surface);display:block;cursor:default}
+.rf-status{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--border);border-radius:3px;font-size:10px;color:var(--t3);letter-spacing:1px;pointer-events:none;z-index:5}
+.rf-status .dot{width:5px;height:5px;background:var(--green);border-radius:50%;animation:pu 1.5s infinite}
+.rf-scenario{position:absolute;top:12px;right:12px;font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;pointer-events:none;z-index:5;padding:4px 10px;background:color-mix(in srgb,var(--surface) 90%,transparent);border:1px solid var(--border);border-radius:3px}
+
+/* TERMINAL */
+.terminal{width:100%;max-width:780px;border:1px solid var(--border);background:var(--term-bg);overflow:hidden;border-radius:6px;box-shadow:0 0 60px rgba(59,130,246,.04)}
 .term-bar{display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid rgba(59,130,246,.08);background:rgba(59,130,246,.03)}
 .td{width:8px;height:8px;border-radius:50%;border:1.5px solid}
-.td:nth-child(1){border-color:#f87171}
-.td:nth-child(2){border-color:#fbbf24}
-.td:nth-child(3){border-color:#4ade80}
+.td:nth-child(1){border-color:#f87171}.td:nth-child(2){border-color:#fbbf24}.td:nth-child(3){border-color:#4ade80}
 .term-title{flex:1;text-align:center;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:1px;text-transform:uppercase}
 .term-body{padding:20px;height:360px;font-size:12px;line-height:1.8;overflow-y:auto;color:#c8d4f0;scrollbar-width:thin}
 .term-body::-webkit-scrollbar{width:3px}
 .term-body::-webkit-scrollbar-thumb{background:rgba(59,130,246,.2)}
-.tl{opacity:0;animation:tla .25s ease forwards}
+.tl{opacity:0;animation:tla .2s ease forwards}
 @keyframes tla{to{opacity:1}}
 .tp{color:#60a5fa}.tc{color:#e8eeff}.to{color:#6478a0}.tok{color:#4ade80}.tdm{color:#3a4a6b}
 .tcur{display:inline-block;width:7px;height:14px;background:#60a5fa;animation:bl 1s step-end infinite;vertical-align:middle;margin-left:2px}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
 
-/* ═══ LEDGER ═══ */
-.ledger{width:100%;max-width:1000px;border:1px solid var(--border);background:var(--surface);overflow:hidden;border-radius:4px;transition:background .4s}
+/* LEDGER */
+.ledger{width:100%;max-width:1000px;border:1px solid var(--border);background:var(--surface);overflow:hidden;border-radius:6px;transition:background .4s}
 .ledger-h{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
 .st-dot{display:flex;align-items:center;gap:6px}
 .st-dot::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pu 1.5s infinite}
-.ledger-b{display:grid;grid-template-columns:1fr 1fr;min-height:360px}
+.ledger-b{display:grid;grid-template-columns:1fr 1fr;min-height:320px}
 .ledger-c{padding:20px;border-right:1px solid var(--border);position:relative}
 .ledger-c pre{font-size:12px;line-height:1.7;color:var(--t2)}
-.scanl{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent-glow),transparent);animation:scn 3s linear infinite;pointer-events:none;opacity:.6}
+.scanl{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent-glow),transparent);animation:scn 3.5s linear infinite;pointer-events:none;opacity:.7}
 @keyframes scn{0%{top:0}100%{top:100%}}
 .ledger-v{padding:20px;font-size:12px}
 .ledger-vt{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .ar{display:flex;align-items:center;gap:8px;padding:7px 0;transition:all .4s;font-size:12px}
-.ar.act{color:var(--accent-b)}
-.ar.act .ab{text-shadow:0 0 10px var(--accent-glow)}
-.ar.act .abf{box-shadow:0 0 8px var(--accent-glow)}
-.ar.hd{font-weight:600;color:var(--t2);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.ar.act .ab{color:var(--accent-b);text-shadow:0 0 12px var(--accent-glow)}
+.ar.act .abf{box-shadow:0 0 10px var(--accent-glow)}
 .an{flex:1;min-width:130px}
 .ab{font-variant-numeric:tabular-nums;min-width:110px;text-align:right;transition:all .4s}
 .abar{width:65px;height:3px;background:var(--border);overflow:hidden;border-radius:2px}
 .abf{height:100%;background:var(--accent);transition:width .8s ease,box-shadow .4s;border-radius:2px}
-.asep{height:1px;background:var(--border);margin:4px 0}
 
-/* TX FLOW */
-.txf{width:100%;max-width:1000px;margin-top:36px;border:1px solid var(--border);background:var(--surface);padding:24px 32px;border-radius:4px;transition:background .4s}
-.txf-t{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
-.txf-label{font-size:11px;color:var(--t2);text-align:center;margin-top:12px;min-height:16px;transition:color .3s}
-.txf-label.act{color:var(--accent-b)}
-.fc{height:190px;position:relative}
-.fn{position:absolute;border:1px solid var(--border);padding:9px 13px;font-size:11px;background:var(--surface);transition:all .5s;z-index:2;border-radius:3px}
-.fn.act{border-color:var(--accent);color:var(--accent-b);box-shadow:0 0 18px var(--accent-glow)}
-.fn .ns{font-size:9px;color:var(--t3);margin-top:2px}
-.fn-name,.fn-sub{display:block}
+
 
 /* SPINNERS */
 .spr{display:flex;gap:40px;justify-content:center;margin-top:48px;flex-wrap:wrap}
@@ -181,7 +215,7 @@ h1 strong{font-weight:600;color:var(--accent-b)}
 .asp .lb{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-top:6px}
 
 /* PIPELINE */
-.pipe{width:100%;max-width:1000px;border:1px solid var(--border);background:var(--surface);overflow:hidden;border-radius:4px;transition:background .4s}
+.pipe{width:100%;max-width:1000px;border:1px solid var(--border);background:var(--surface);overflow:hidden;border-radius:6px;transition:background .4s}
 .pipe-h{padding:12px 20px;border-bottom:1px solid var(--border);font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;justify-content:space-between}
 .pipe-b{display:grid;grid-template-columns:repeat(6,1fr)}
 .ps{border-right:1px solid var(--border);padding:18px 8px;text-align:center;position:relative;transition:all .5s;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -199,17 +233,18 @@ h1 strong{font-weight:600;color:var(--accent-b)}
 
 /* STATS */
 .stats{padding:70px 40px;display:flex;justify-content:center}
-.stats-in{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);max-width:800px;width:100%;border-radius:4px;overflow:hidden}
+.stats-in{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);max-width:900px;width:100%;border-radius:6px;overflow:hidden}
 .stat{flex:1;background:var(--surface);padding:28px 20px;text-align:center;position:relative;transition:background .4s}
 .stat:hover{background:var(--surface2)}
-.stat-v{font-size:24px;font-weight:300;color:var(--accent-b);margin-bottom:4px}
+.stat-v{font-size:22px;font-weight:300;color:var(--accent-b);margin-bottom:4px}
 .stat-l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:2px}
+.stat-sub{font-size:9px;color:var(--t3);margin-top:5px;letter-spacing:.5px;opacity:.8}
 .stat-bar{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transition:transform 1.5s ease;transform-origin:left}
 .stat.vis .stat-bar{transform:scaleX(1)}
 
 /* FEATURES */
 .features{padding:100px 40px}
-.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:1000px;margin:0 auto;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:1000px;margin:0 auto;border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .fc2{background:var(--surface);padding:32px 24px;transition:all .4s;position:relative;overflow:hidden;cursor:default}
 .fc2::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transform:scaleX(0);transition:transform .5s}
 .fc2:hover::before{transform:scaleX(1)}
@@ -229,7 +264,7 @@ h1 strong{font-weight:600;color:var(--accent-b)}
 .ex-tab.a{color:var(--accent-b);border-color:var(--accent);background:var(--accent2)}
 .ex-panel{display:none;width:100%;max-width:800px}
 .ex-panel.vis{display:block}
-.ex-block{border:1px solid var(--border);background:var(--surface);border-radius:4px;overflow:hidden;transition:background .4s}
+.ex-block{border:1px solid var(--border);background:var(--surface);border-radius:6px;overflow:hidden;transition:background .4s}
 .ex-inner-tabs{display:flex;border-bottom:1px solid var(--border)}
 .ex-inner-tab{padding:10px 18px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);cursor:pointer;border-right:1px solid var(--border);transition:all .2s;font-family:var(--mono);background:transparent;border-top:none;border-bottom:none;border-left:none}
 .ex-inner-tab.a{color:var(--accent-b);background:var(--accent2)}
@@ -242,8 +277,8 @@ h1 strong{font-weight:600;color:var(--accent-b)}
 /* USE CASES */
 .ucs{display:flex;gap:12px;max-width:1100px;width:100%;overflow-x:auto;padding-bottom:12px;scrollbar-width:none}
 .ucs::-webkit-scrollbar{display:none}
-.uc{min-width:190px;flex:1;border:1px solid var(--border);background:var(--surface);padding:22px;transition:all .4s;border-radius:4px}
-.uc:hover{border-color:var(--border-h);background:var(--surface2);transform:translateY(-2px)}
+.uc{min-width:190px;flex:1;border:1px solid var(--border);background:var(--surface);padding:22px;transition:all .4s;border-radius:6px}
+.uc:hover{border-color:var(--border-h);background:var(--surface2);transform:translateY(-3px);box-shadow:0 8px 32px rgba(59,130,246,.07)}
 .uc:hover .ua{opacity:.4}
 .ua{font-size:10px;color:var(--accent);opacity:.15;margin-bottom:14px;line-height:1.2;white-space:pre;transition:opacity .4s}
 [data-theme="light"] .ua{opacity:.25}
@@ -264,16 +299,14 @@ footer a:hover{color:var(--accent-b)}
 
 @media(max-width:768px){
   nav{padding:12px 20px}.nlinks{display:none}
-  .hero{padding:0}
   .fg{grid-template-columns:1fr}
   .ledger-b{grid-template-columns:1fr}
   .ledger-c{border-right:none;border-bottom:1px solid var(--border)}
   .stats-in{flex-direction:column}
-  .sw,.features,.examples{padding:60px 20px}
-  .fc{display:none}
+  .sw,.features,.examples,.flow-section{padding:60px 20px}
   .pipe-b{grid-template-columns:repeat(3,1fr)}.pa{display:none}
-  .hud{display:none}
-  .hblocks{display:none}
+  .hud{display:none}.hblocks{display:none}
+  #rfCanvas{height:360px}
 }
 </style>
 </head>
@@ -293,46 +326,66 @@ footer a:hover{color:var(--accent-b)}
     <div class="nlinks">
       <a href="#product">Produit</a>
       <a href="#features">Fonctionnalités</a>
-      <a href="#usecases">Cas d'usage</a>
-      <a href="https://corren.io/docs" target="_blank">Docs</a>
+      <a href="./docs.html" target="_blank">Docs</a>
+      <a href="./grammar.html" target="_blank">Grammaire</a>
     </div>
     <button class="tbtn" id="themeToggle">◐ Theme</button>
     <button class="ncta">Accès anticipé →</button>
   </div>
 </nav>
 
-<!-- HERO with iso3D background -->
+<!-- HERO -->
 <section class="hero">
   <canvas id="isoCanvas"></canvas>
+  <canvas id="particleCanvas"></canvas>
   <div class="hero-overlay"></div>
 
-  <!-- HUD TL -->
   <div class="hud hud-tl">
     <div class="hud-label">Ledger engine</div>
     <div class="hud-val" id="hudTx">— TX</div>
     <div class="hud-bar"><div class="hud-fill" id="hudFill" style="width:0%"></div></div>
+    <div class="hud-mini" style="margin-top:6px">ASSET <span>DZD · EUR · USD</span></div>
   </div>
-  <!-- Status pill TR -->
   <div class="hud hud-tr">
-    <div class="spill">
-      <div class="sd"></div>
-      <span id="sTxt">initialising</span>
+    <div class="spill"><div class="sd"></div><span id="sTxt">initialising</span></div>
+  </div>
+  <div class="hud hud-bl">
+    <div class="hud-mini">BLOCK <span id="hudBlock">—</span></div>
+    <div class="hud-mini" style="margin-top:3px">LAT <span id="hudLat">—</span></div>
+  </div>
+  <div class="hud hud-br">
+    <div class="hud-mini">NET <span>DZD/MENA</span></div>
+    <div class="hud-mini" style="margin-top:3px">v <span>0.4.2</span></div>
+  </div>
+
+  <div class="hblocks">
+    <!-- Only 4 blocks, all right side, never overlap text -->
+    <div class="hb hb3d" style="top:14%;right:4%;animation-duration:11s">
+      <div class="hb-icon">⬡</div>
+      <div class="hb-v">@wallet:alice</div>
+      <div class="hb-s">solde: 10 000 DA</div>
+      <div class="hb-bar"><div class="hb-bar-fill" style="width:67%"></div></div>
+    </div>
+    <div class="hb hb3d" style="top:37%;right:5%;animation-duration:14s;animation-delay:-4s">
+      <div class="hb-icon">⊕</div>
+      <div class="hb-v">split 90/10</div>
+      <div class="hb-s">allotment · 2 destinations</div>
+      <div class="hb-row"><span class="hb-badge">DZD.2</span><span class="hb-num">5 000 DA</span></div>
+    </div>
+    <div class="hb hb3d" style="top:60%;right:4%;animation-duration:12s;animation-delay:-6s">
+      <div class="hb-icon">⊞</div>
+      <div class="hb-v">Committed ✓</div>
+      <div class="hb-s">DR │ CR · balanced</div>
+      <div class="hb-row"><span class="hb-badge hb-green">atomic</span><span class="hb-num">0 err</span></div>
+    </div>
+    <div class="hb hb3d" style="top:78%;right:6%;animation-duration:10s;animation-delay:-2s">
+      <div class="hb-icon">◉</div>
+      <div class="hb-v">@world → @banque</div>
+      <div class="hb-s">émission · source illimitée</div>
+      <div class="hb-row"><span class="hb-badge">source</span><span class="hb-num">[DZD.2 *]</span></div>
     </div>
   </div>
 
-  <!-- Floating ledger blocks -->
-  <div class="hblocks">
-    <div class="hb" style="top:14%;left:5%;animation-duration:10s"><div class="hb-v">@alice</div><div class="hb-s">+5 000 DA</div></div>
-    <div class="hb" style="top:18%;right:7%;animation-duration:12s;animation-delay:-4s"><div class="hb-v">balanced ✓</div><div class="hb-s">0 errors</div></div>
-    <div class="hb" style="top:62%;left:4%;animation-duration:14s;animation-delay:-6s"><div class="hb-v">[DZD.2 10000]</div><div class="hb-s">monetary</div></div>
-    <div class="hb" style="top:72%;right:5%;animation-duration:11s;animation-delay:-2s"><div class="hb-v">90/100 → @vendeur</div><div class="hb-s">allotment</div></div>
-    <div class="hb" style="top:9%;right:22%;animation-duration:15s;animation-delay:-8s"><div class="hb-v">DR │ CR</div><div class="hb-s">double-entrée</div></div>
-    <div class="hb" style="top:52%;left:14%;animation-duration:13s;animation-delay:-3s"><div class="hb-v">@world → @banque</div><div class="hb-s">émission</div></div>
-    <div class="hb" style="bottom:18%;left:28%;animation-duration:16s;animation-delay:-9s"><div class="hb-v">atomic ✓</div><div class="hb-s">tout ou rien</div></div>
-    <div class="hb" style="bottom:22%;right:16%;animation-duration:12s;animation-delay:-1s"><div class="hb-v">remaining → $seller</div><div class="hb-s">allotment</div></div>
-  </div>
-
-  <!-- Hero text -->
   <div class="hcontent">
     <div class="hbadge"><span class="dot"></span><span>Algérie · MENA · Afrique</span></div>
     <h1><span class="scramble" data-text="Infrastructure">Infrastructure</span><br><span class="scramble" data-text="financière">financière</span> <strong class="scramble" data-text="programmable.">programmable.</strong></h1>
@@ -352,6 +405,17 @@ footer a:hover{color:var(--accent-b)}
   <div class="terminal"><div class="term-bar"><span class="td"></span><span class="td"></span><span class="td"></span><span class="term-title">corren — bash</span></div><div class="term-body" id="termBody"></div></div>
 </section>
 
+<!-- FLOW GRAPH -->
+<section class="flow-section reveal" id="flowgraph">
+  <div class="sl">Flow Graph</div>
+  <h2 class="st">Visualisez vos <em class="scramble" data-text="flux en temps réel.">flux en temps réel.</em></h2>
+  <div class="rf-wrap">
+    <div class="rf-status"><span class="dot"></span>live · FaRl engine</div>
+    <span class="rf-scenario" id="rfScenario">MARKETPLACE · VTC</span>
+    <canvas id="rfCanvas"></canvas>
+  </div>
+</section>
+
 <!-- LEDGER -->
 <section class="sw reveal">
   <div class="sl">Ledger</div>
@@ -363,19 +427,7 @@ footer a:hover{color:var(--accent-b)}
       <div class="ledger-v"><div class="ledger-vt">Comptes · Soldes temps réel</div><div id="accounts"></div></div>
     </div>
   </div>
-  <div class="txf reveal">
-    <div class="txf-t">Flux de transaction</div>
-    <div class="fc" id="flowCanvas">
-      <div class="fn" id="fn0" style="left:1%;top:70px"><span class="fn-name">@world</span><div class="ns"><span class="fn-sub">émission</span></div></div>
-      <div class="fn" id="fn1" style="left:17%;top:70px"><span class="fn-name">@banque</span><div class="ns"><span class="fn-sub">réserve</span></div></div>
-      <div class="fn" id="fn2" style="left:35%;top:70px"><span class="fn-name">@wallet:alice</span><div class="ns"><span class="fn-sub">utilisateur</span></div></div>
-      <div class="fn" id="fn3" style="left:56%;top:20px"><span class="fn-name">@chauffeur</span><div class="ns"><span class="fn-sub">90% · yanis</span></div></div>
-      <div class="fn" id="fn4" style="left:56%;top:125px"><span class="fn-name">@plateforme</span><div class="ns"><span class="fn-sub">10% · frais</span></div></div>
-      <div class="fn" id="fn5" style="left:80%;top:70px"><span class="fn-name">Settled ✓</span><div class="ns"><span class="fn-sub">payout</span></div></div>
-    </div>
-    <div class="txf-label" id="flowLabel"></div>
-    <div style="text-align:center;margin-top:8px;font-size:10px;color:var(--t3)" id="flowScenario"></div>
-  </div>
+
 </section>
 
 <!-- SPINNERS -->
@@ -424,10 +476,36 @@ kw str num</div><div class="pn">Lexer</div><div class="pd">Tokens</div><span cla
 <!-- STATS -->
 <div class="stats reveal">
   <div class="stats-in">
-    <div class="stat"><div class="stat-v">Go</div><div class="stat-l">Runtime natif</div><div class="stat-bar"></div></div>
-    <div class="stat"><div class="stat-v">SQLite</div><div class="stat-l">ou PostgreSQL</div><div class="stat-bar"></div></div>
-    <div class="stat"><div class="stat-v">Multi</div><div class="stat-l">DZD · EUR · USD</div><div class="stat-bar"></div></div>
-    <div class="stat"><div class="stat-v">Atomic</div><div class="stat-l">Tout ou rien</div><div class="stat-bar"></div></div>
+    <div class="stat">
+      <div class="stat-v">FaRl</div>
+      <div class="stat-l">DSL financier</div>
+      <div class="stat-sub">Lexer · Parser · Compiler · VM</div>
+      <div class="stat-bar"></div>
+    </div>
+    <div class="stat">
+      <div class="stat-v">&lt; 2ms</div>
+      <div class="stat-l">Latence d'exécution</div>
+      <div class="stat-sub">VM Go natif embarquée</div>
+      <div class="stat-bar"></div>
+    </div>
+    <div class="stat">
+      <div class="stat-v">DZD · EUR · USD</div>
+      <div class="stat-l">Multi-devises</div>
+      <div class="stat-sub">Précision configurable par actif</div>
+      <div class="stat-bar"></div>
+    </div>
+    <div class="stat">
+      <div class="stat-v">100%</div>
+      <div class="stat-l">Atomicité garantie</div>
+      <div class="stat-sub">Tout ou rien · jamais d'état partiel</div>
+      <div class="stat-bar"></div>
+    </div>
+    <div class="stat">
+      <div class="stat-v">HTTP API</div>
+      <div class="stat-l">Intégration instantanée</div>
+      <div class="stat-sub">REST · POST /script · GET /accounts</div>
+      <div class="stat-bar"></div>
+    </div>
   </div>
 </div>
 
@@ -453,7 +531,6 @@ XFER
 HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>FaRl compilé en bytecode, exécuté dans une VM Go embarquée.</p></div>
     <div class="fc2"><div class="fa">from {
   @a
-  @b
   @world
 }</div><div class="fi">→ Cascades</div><h3>Sources ordonnées</h3><p>Cascade de sources avec max et @world en fallback.</p></div>
     <div class="fc2"><div class="fa">to {
@@ -473,14 +550,14 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
   </div>
   <div class="ex-panel vis" data-panel="0">
     <div class="ex-block">
-      <div class="ex-inner-tabs" data-group="0">
+      <div class="ex-inner-tabs">
         <button class="ex-inner-tab a" data-it="0-0">marketplace.farl</button>
         <button class="ex-inner-tab" data-it="0-1">corren run</button>
         <button class="ex-inner-tab" data-it="0-2">HTTP API</button>
       </div>
       <div class="ex-code vis" data-ic="0-0"><pre><span class="ln"> 1</span><span style="color:var(--t3)">// Paiement client → compte de vente</span>
 <span class="ln"> 2</span><span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">5000</span>] (
-<span class="ln"> 3</span>  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@client:ameziane</span>
+<span class="ln"> 3</span>  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@client:user</span>
 <span class="ln"> 4</span>  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@courses:0587:paiement</span>
 <span class="ln"> 5</span>)
 <span class="ln"> 6</span>
@@ -488,7 +565,7 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
 <span class="ln"> 8</span><span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">5000</span>] (
 <span class="ln"> 9</span>  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@courses:0587:paiement</span>
 <span class="ln">10</span>  <span style="color:var(--code-kw)">to</span> {
-<span class="ln">11</span>    <span style="color:var(--code-num)">90/100</span>  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@chauffeur:yanis</span>
+<span class="ln">11</span>    <span style="color:var(--code-num)">90/100</span>  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@chauffeur:user</span>
 <span class="ln">12</span>    <span style="color:var(--code-num)">10/100</span>  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@plateforme:frais</span>
 <span class="ln">13</span>  }
 <span class="ln">14</span>)
@@ -500,13 +577,13 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
 <span style="color:var(--t3)">  Parsing...    ✓  2 transfers, 1 set</span>
 <span style="color:var(--t3)">  Compiling...  ✓  16 instructions</span>
 <span style="color:var(--t3)">  Executing...</span>
-<span style="color:var(--t3)">    @client:ameziane → @courses:0587 [DZD.2 5000]</span>
+<span style="color:var(--t3)">    @client:user → @courses:0587 [DZD.2 5000]</span>
 <span style="color:var(--t3)">    @courses:0587 → 90% @chauffeur + 10% @plateforme</span>
 
 <span style="color:var(--green)">  ✓ 200 {"ok":true}</span></pre></div>
       <div class="ex-code" data-ic="0-2"><pre><span style="color:var(--code-str)">$</span> curl -X POST http://localhost:3068/market/script \
   -H <span style="color:var(--code-str)">"Content-Type: application/json"</span> \
-  -d <span style="color:var(--code-str)">'{"plain":"transfer [DZD.2 5000] (\n  from @client:ameziane\n  to @courses:0587:paiement\n)\n\ntransfer [DZD.2 5000] (\n  from @courses:0587:paiement\n  to {\n    90/100 to @chauffeur:yanis\n    10/100 to @plateforme:frais\n  }\n)","vars":{}}'</span>
+  -d <span style="color:var(--code-str)">'{"plain":"transfer [DZD.2 5000] (\n  from @client:user\n  to @courses:0587:paiement\n)\n\ntransfer [DZD.2 5000] (\n  from @courses:0587:paiement\n  to {\n    90/100 to @chauffeur:user\n    10/100 to @plateforme:frais\n  }\n)","vars":{}}'</span>
 
 <span style="color:var(--green)">200 {"ok":true}</span></pre></div>
       <div class="ex-desc">Marketplace VTC — paiement client splité automatiquement entre chauffeur (90%) et plateforme (10%).</div>
@@ -514,7 +591,7 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
   </div>
   <div class="ex-panel" data-panel="1">
     <div class="ex-block">
-      <div class="ex-inner-tabs" data-group="1">
+      <div class="ex-inner-tabs">
         <button class="ex-inner-tab a" data-it="1-0">cascade.farl</button>
         <button class="ex-inner-tab" data-it="1-1">corren run</button>
         <button class="ex-inner-tab" data-it="1-2">HTTP API</button>
@@ -522,8 +599,8 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
       <div class="ex-code vis" data-ic="1-0"><pre><span class="ln"> 1</span><span style="color:var(--t3)">// Cascade : wallet d'abord, puis crédit, puis @world</span>
 <span class="ln"> 2</span><span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">3000</span>] (
 <span class="ln"> 3</span>  <span style="color:var(--code-kw)">from</span> {
-<span class="ln"> 4</span>    <span style="color:var(--code-str)">@wallet:ameziane</span>    <span style="color:var(--t3)">// balance: 1000 → utilisé first</span>
-<span class="ln"> 5</span>    <span style="color:var(--code-str)">@credit:ameziane</span>    <span style="color:var(--t3)">// balance: 2000 → utilisé next</span>
+<span class="ln"> 4</span>    <span style="color:var(--code-str)">@wallet:user</span>    <span style="color:var(--t3)">// balance: 1000 → utilisé first</span>
+<span class="ln"> 5</span>    <span style="color:var(--code-str)">@credit:user</span>    <span style="color:var(--t3)">// balance: 2000 → utilisé next</span>
 <span class="ln"> 6</span>    <span style="color:var(--code-str)">@world</span>              <span style="color:var(--t3)">// fallback illimité</span>
 <span class="ln"> 7</span>  }
 <span class="ln"> 8</span>  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@commande:0089</span>
@@ -534,16 +611,14 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
 
 <span style="color:var(--t3)">  Lexing...     ✓  14 tokens</span>
 <span style="color:var(--t3)">  Parsing...    ✓  1 transfer (cascade source)</span>
-<span style="color:var(--t3)">  Compiling...  ✓  12 instructions</span>
 <span style="color:var(--t3)">  Executing...</span>
-<span style="color:var(--t3)">    @wallet:ameziane  → drained 1000</span>
-<span style="color:var(--t3)">    @credit:ameziane  → drained 2000</span>
+<span style="color:var(--t3)">    @wallet:user  → drained 1000</span>
+<span style="color:var(--t3)">    @credit:user  → drained 2000</span>
 <span style="color:var(--t3)">    @world            → not needed</span>
 
 <span style="color:var(--green)">  ✓ 200 {"ok":true}</span></pre></div>
       <div class="ex-code" data-ic="1-2"><pre><span style="color:var(--code-str)">$</span> curl -X POST http://localhost:3068/bank/script \
-  -H <span style="color:var(--code-str)">"Content-Type: application/json"</span> \
-  -d <span style="color:var(--code-str)">'{"plain":"transfer [DZD.2 3000] (\n  from {\n    @wallet:ameziane\n    @credit:ameziane\n    @world\n  }\n  to @commande:0089\n)","vars":{}}'</span>
+  -d <span style="color:var(--code-str)">'{"plain":"transfer [DZD.2 3000] (\n  from {\n    @wallet:user\n    @credit:user\n    @world\n  }\n  to @commande:0089\n)","vars":{}}'</span>
 
 <span style="color:var(--green)">200 {"ok":true}</span></pre></div>
       <div class="ex-desc">Banque — cascade ordonnée : wallet drainé en premier, crédit ensuite, @world en fallback si nécessaire.</div>
@@ -563,7 +638,6 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
 10% → B</div><h4>Marketplace</h4><p>Splits vendeur/plateforme.</p></div>
     <div class="uc"><div class="ua">from {
   @a
-  @b
   @world
 }</div><h4>Néobanques</h4><p>Cascade ordonnée avec fallback.</p></div>
     <div class="uc"><div class="ua">[DZD.2]
@@ -585,14 +659,14 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
   <p class="cta-sub">Corren gère les soldes. Vous construisez le produit.</p>
   <div style="display:flex;gap:12px;justify-content:center;position:relative;z-index:1">
     <a href="#" class="btn-p">Demander un accès →</a>
-    <a href="https://corren.io/docs" class="btn-g" target="_blank">Documentation</a>
+    <a href="./docs.html" class="btn-g" target="_blank">Documentation</a>
   </div>
 </section>
 
 <footer>
   <span>© Corren 2026</span>
   <div style="display:flex;gap:20px">
-    <a href="https://corren.io/docs">Docs</a>
+    <a href="./docs.html">Docs</a>
     <a href="https://github.com/amezianechayer/corren">GitHub</a>
     <a href="#">Contact</a>
   </div>
@@ -600,330 +674,1090 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ═══════════════════════════════════════════════
-//  UTILITIES
-// ═══════════════════════════════════════════════
+'use strict';
+// ═══ UTILITIES ═══
 const CH='01#@$%&?!*+=-_/\\|{}[]<>~^:.';
 const RC=()=>CH[Math.floor(Math.random()*CH.length)];
-function easeOut(t){return 1-Math.pow(1-t,3)}
-function easeIO(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2}
+const easeOut=t=>1-Math.pow(1-t,3);
+const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 
-// ═══════════════════════════════════════════════
-//  THEME
-// ═══════════════════════════════════════════════
+// ═══ THEME ═══
 document.getElementById('themeToggle').addEventListener('click',()=>{
   const h=document.documentElement,n=h.dataset.theme==='dark'?'light':'dark';
   h.dataset.theme=n;localStorage.setItem('theme',n);
 });
 if(localStorage.getItem('theme'))document.documentElement.dataset.theme=localStorage.getItem('theme');
 
-// ═══════════════════════════════════════════════
-//  SCRAMBLE
-// ═══════════════════════════════════════════════
+// ═══ SCRAMBLE ═══
 class Scr{
-  constructor(e){this.e=e;this.t=e.dataset.text||e.textContent;this.q=[];this.f=0}
-  start(){this.q=[];for(let i=0;i<this.t.length;i++){const s=Math.floor(Math.random()*18),e=s+Math.floor(Math.random()*22)+8;this.q.push({to:this.t[i],s,e})}this.f=0;this._s()}
-  _s(){let o='',d=0;for(const q of this.q){if(this.f>=q.e){d++;o+=q.to}else if(this.f>=q.s)o+=`<span style="color:var(--t3)">${RC()}</span>`;else o+=`<span style="color:var(--t4)">${RC()}</span>`}this.e.innerHTML=o;if(d<this.q.length)requestAnimationFrame(()=>{this.f++;this._s()})}
+  constructor(el){this.el=el;this.target=el.dataset.text||el.textContent;this.frames=[];this.f=0}
+  start(){
+    this.frames=[];
+    for(let i=0;i<this.target.length;i++){
+      const s=Math.floor(Math.random()*18),e=s+Math.floor(Math.random()*22)+8;
+      this.frames.push({to:this.target[i],s,e});
+    }
+    this.f=0;this._tick();
+  }
+  _tick(){
+    let out='',done=0;
+    for(const q of this.frames){
+      if(this.f>=q.e){done++;out+=q.to}
+      else if(this.f>=q.s)out+=`<span style="color:var(--t3)">${RC()}</span>`;
+      else out+=`<span style="color:var(--t4)">${RC()}</span>`;
+    }
+    this.el.innerHTML=out;
+    if(done<this.frames.length)requestAnimationFrame(()=>{this.f++;this._tick()});
+  }
 }
-const sO=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){new Scr(e.target).start();sO.unobserve(e.target)}})},{threshold:.5});
-document.querySelectorAll('.scramble').forEach(e=>sO.observe(e));
-document.querySelectorAll('.fc2 h3,.uc h4').forEach(h=>{const o=h.textContent;h.addEventListener('mouseenter',()=>{let f=0;const iv=setInterval(()=>{let s='';for(let i=0;i<o.length;i++)s+=(f>i*.7)?o[i]:RC();h.textContent=s;f++;if(f>10+o.length){clearInterval(iv);h.textContent=o}},35)})});
+const scrObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){new Scr(e.target).start();scrObs.unobserve(e.target)}});
+},{threshold:.5});
+document.querySelectorAll('.scramble').forEach(e=>scrObs.observe(e));
+document.querySelectorAll('.fc2 h3,.uc h4').forEach(h=>{
+  const orig=h.textContent;
+  h.addEventListener('mouseenter',()=>{
+    let f=0;
+    const iv=setInterval(()=>{
+      let s='';for(let i=0;i<orig.length;i++)s+=(f>i*.7)?orig[i]:RC();
+      h.textContent=s;f++;
+      if(f>10+orig.length){clearInterval(iv);h.textContent=orig}
+    },35);
+  });
+});
 
-// ═══════════════════════════════════════════════
-//  REVEAL
-// ═══════════════════════════════════════════════
-const rO=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');rO.unobserve(e.target)}})},{threshold:.1});
-document.querySelectorAll('.reveal').forEach(e=>rO.observe(e));
+// ═══ REVEAL ═══
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revObs.unobserve(e.target)}});
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(e=>revObs.observe(e));
 
-// ═══════════════════════════════════════════════
-//  TICKER
-// ═══════════════════════════════════════════════
-const tI=['<em>→</em> Double-entrée','<em>→</em> Multi-devise','<em>→</em> FaRl DSL','<em>→</em> VM Go','<em>→</em> Atomicité','<em>→</em> Cascades','<em>→</em> @world','<em>→</em> Allotment','<em>→</em> Metadata','<em>→</em> HTTP API','<em>→</em> CLI'];
-document.getElementById('ticker').innerHTML=Array(3).fill(tI.map(t=>`<span>${t}</span>`).join('')).join('');
+// ═══ TICKER ═══
+const tickerItems=['<em>→</em> Double-entrée','<em>→</em> Multi-devise','<em>→</em> FaRl DSL','<em>→</em> VM Go','<em>→</em> Atomicité','<em>→</em> Cascades','<em>→</em> @world','<em>→</em> Allotment','<em>→</em> Metadata','<em>→</em> HTTP API','<em>→</em> CLI'];
+document.getElementById('ticker').innerHTML=Array(3).fill(tickerItems.map(t=>`<span>${t}</span>`).join('')).join('');
 
-// ═══════════════════════════════════════════════
-//  TERMINAL
-// ═══════════════════════════════════════════════
+// ═══ PARTICLE CANVAS (hero background) ═══
+(function(){
+  const c=document.getElementById('particleCanvas');
+  const ctx=c.getContext('2d');
+  let W,H;
+  const dpr=window.devicePixelRatio||1;
+  function resize(){
+    W=c.offsetWidth;H=c.offsetHeight;
+    c.width=W*dpr;c.height=H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  const ro=new ResizeObserver(resize);ro.observe(c.parentElement);resize();
+
+  const pts=[];
+  for(let i=0;i<60;i++){
+    pts.push({
+      x:Math.random()*1920,y:Math.random()*1080,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      r:.5+Math.random()*1.5,phase:Math.random()*Math.PI*2,
+      type:Math.random()<.25?'node':'dot'
+    });
+  }
+
+  let mx=W/2,my=H/2;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+
+  const packets=[];
+  let frame=0;
+
+  function loop(){
+    requestAnimationFrame(loop);
+    // Scale positions to current canvas size
+    const sx=W/1920,sy=H/1080;
+    ctx.clearRect(0,0,W,H);
+    frame++;
+
+    // Update positions
+    pts.forEach(p=>{
+      const px=p.x*sx,py=p.y*sy;
+      const dx=mx-px,dy=my-py,dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<220&&dist>0){p.vx+=dx/dist*.003;p.vy+=dy/dist*.003}
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=1920;if(p.x>1920)p.x=0;
+      if(p.y<0)p.y=1080;if(p.y>1080)p.y=0;
+      p.phase+=.016;
+    });
+
+    // Connections
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const ax=pts[i].x*sx,ay=pts[i].y*sy,bx=pts[j].x*sx,by=pts[j].y*sy;
+        const d=Math.hypot(ax-bx,ay-by);
+        if(d<140){
+          ctx.beginPath();
+          ctx.strokeStyle=`rgba(59,130,246,${(.65-d/140)*0.16})`;
+          ctx.lineWidth=.5;
+          ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
+        }
+      }
+    }
+
+    // Draw particles
+    pts.forEach(p=>{
+      const px=p.x*sx,py=p.y*sy;
+      const pulse=Math.sin(p.phase)*.4+.8;
+      if(p.type==='node'){
+        const g=ctx.createRadialGradient(px,py,0,px,py,9);
+        g.addColorStop(0,'rgba(96,165,250,0.28)');g.addColorStop(1,'rgba(59,130,246,0)');
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,9,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle=`rgba(96,165,250,${.7*pulse})`;
+        ctx.beginPath();ctx.arc(px,py,2,0,Math.PI*2);ctx.fill();
+      } else {
+        ctx.fillStyle=`rgba(59,130,246,${.22*pulse})`;
+        ctx.beginPath();ctx.arc(px,py,p.r,0,Math.PI*2);ctx.fill();
+      }
+    });
+
+    // Packets
+    if(frame%110===0&&pts.length>1){
+      const i=Math.floor(Math.random()*pts.length);
+      const j=(i+1+Math.floor(Math.random()*(pts.length-1)))%pts.length;
+      packets.push({
+        sx:pts[i].x*sx,sy:pts[i].y*sy,
+        ex:pts[j].x*sx,ey:pts[j].y*sy,
+        t:0,sp:.016+Math.random()*.010
+      });
+    }
+    for(let i=packets.length-1;i>=0;i--){
+      const pk=packets[i];pk.t+=pk.sp;
+      const px=lerp(pk.sx,pk.ex,easeIO(pk.t));
+      const py=lerp(pk.sy,pk.ey,easeIO(pk.t));
+      const a=clamp(1-pk.t,.0,1)*.85;
+      if(a>0.01){
+        const g=ctx.createRadialGradient(px,py,0,px,py,6);
+        g.addColorStop(0,`rgba(96,165,250,${a})`);g.addColorStop(1,'rgba(59,130,246,0)');
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle=`rgba(255,255,255,${a*.8})`;
+        ctx.beginPath();ctx.arc(px,py,1.5,0,Math.PI*2);ctx.fill();
+      }
+      if(pk.t>=1)packets.splice(i,1);
+    }
+  }
+  loop();
+})();
+
+// ═══ HUD COUNTERS ═══
+let blockN=100000+Math.floor(Math.random()*9000);
+setInterval(()=>{
+  blockN++;
+  document.getElementById('hudBlock').textContent=blockN.toLocaleString();
+  document.getElementById('hudLat').textContent=(0.7+Math.random()*.9).toFixed(1)+'ms';
+},2200);
+
+// ═══ DRAGGABLE FLOATING BLOCKS ═══
+(function(){
+  let dragEl=null,ox=0,oy=0,bx=0,by=0;
+
+  function getPos(el){
+    const style=getComputedStyle(el);
+    // Parse current transform or position
+    const rect=el.getBoundingClientRect();
+    const parent=el.parentElement.getBoundingClientRect();
+    return{x:rect.left-parent.left,y:rect.top-parent.top};
+  }
+
+  document.querySelectorAll('.hb').forEach(el=>{
+    // Convert to absolute positioning for dragging
+    const hero=document.querySelector('.hero');
+
+    el.addEventListener('mousedown',e=>{
+      e.preventDefault();
+      dragEl=el;
+      const rect=el.getBoundingClientRect();
+      const heroRect=hero.getBoundingClientRect();
+      // Pin to absolute position
+      const absX=rect.left-heroRect.left;
+      const absY=rect.top-heroRect.top;
+      el.style.left=absX+'px';el.style.top=absY+'px';
+      el.style.right='auto';el.style.bottom='auto';
+      el.style.animation='none';
+      el.classList.add('dragging');
+      ox=e.clientX-absX;
+      oy=e.clientY-absY;
+    });
+
+    el.addEventListener('touchstart',e=>{
+      const t=e.touches[0];
+      dragEl=el;
+      const rect=el.getBoundingClientRect();
+      const heroRect=hero.getBoundingClientRect();
+      const absX=rect.left-heroRect.left;
+      const absY=rect.top-heroRect.top;
+      el.style.left=absX+'px';el.style.top=absY+'px';
+      el.style.right='auto';el.style.bottom='auto';
+      el.style.animation='none';
+      el.classList.add('dragging');
+      ox=t.clientX-absX;oy=t.clientY-absY;
+    },{passive:true});
+  });
+
+  function onMove(cx,cy){
+    if(!dragEl)return;
+    const hero=document.querySelector('.hero');
+    const heroRect=hero.getBoundingClientRect();
+    const nx=cx-ox,ny=cy-oy;
+    // Clamp within hero bounds
+    const maxX=heroRect.width-dragEl.offsetWidth;
+    const maxY=heroRect.height-dragEl.offsetHeight;
+    dragEl.style.left=Math.max(0,Math.min(maxX,nx))+'px';
+    dragEl.style.top=Math.max(0,Math.min(maxY,ny))+'px';
+  }
+
+  document.addEventListener('mousemove',e=>onMove(e.clientX,e.clientY));
+  document.addEventListener('touchmove',e=>{
+    if(!dragEl)return;
+    e.preventDefault();
+    onMove(e.touches[0].clientX,e.touches[0].clientY);
+  },{passive:false});
+
+  function onUp(){
+    if(!dragEl)return;
+    dragEl.classList.remove('dragging');
+    dragEl=null;
+  }
+  document.addEventListener('mouseup',onUp);
+  document.addEventListener('touchend',onUp);
+})();
+
+// ═══ TERMINAL ═══
 const tLines=[
   {t:'p',x:'git clone https://github.com/amezianechayer/corren',d:600},
-  {t:'o',x:"Cloning into 'corren'...",d:350},
-  {t:'k',x:'done.',d:200},
-  {t:'p',x:'cd corren && go build -o corren .',d:500},
-  {t:'d',x:'go: downloading dependencies...',d:400},
-  {t:'k',x:'Build complete.',d:200},
-  {t:'p',x:'sudo mv corren /usr/local/bin/',d:300},
-  {t:'p',x:'corren server start',d:450},
-  {t:'o',x:'  Storage: sqlite  ~/.corren/data',d:180},
-  {t:'o',x:'  HTTP:    127.0.0.1:3068',d:180},
-  {t:'k',x:'  ✓ Server running',d:350},
-  {t:'p',x:'corren run market marketplace.farl',d:500},
-  {t:'o',x:'  Lexing...     ✓  18 tokens',d:180},
-  {t:'o',x:'  Parsing...    ✓  2 transfers, 1 set',d:180},
-  {t:'o',x:'  Compiling...  ✓  16 instructions',d:180},
-  {t:'o',x:'  Executing...',d:220},
-  {t:'o',x:'    @client:ameziane → @courses:0587 [DZD.2 5000]',d:180},
-  {t:'o',x:'    @courses:0587 → 90% @chauffeur + 10% @plateforme',d:180},
-  {t:'k',x:'  ✓ 200 {"ok":true}',d:300},
-  {t:'p',x:'curl localhost:3068/market/accounts/@chauffeur:yanis',d:450},
-  {t:'k',x:'  {"address":"@chauffeur:yanis","balances":{"DZD.2":4500}}',d:0},
+  {t:'o',x:"Cloning into 'corren'...",d:300},
+  {t:'k',x:'done.',d:180},
+  {t:'p',x:'cd corren && go build -o corren .',d:480},
+  {t:'d',x:'go: downloading dependencies...',d:380},
+  {t:'k',x:'Build complete.',d:180},
+  {t:'p',x:'sudo mv corren /usr/local/bin/',d:280},
+  {t:'p',x:'corren server start',d:420},
+  {t:'o',x:'  Storage: sqlite  ~/.corren/data',d:160},
+  {t:'o',x:'  HTTP:    127.0.0.1:3068',d:160},
+  {t:'k',x:'  ✓ Server running',d:320},
+  {t:'p',x:'corren run market marketplace.farl',d:480},
+  {t:'o',x:'  Lexing...     ✓  18 tokens',d:160},
+  {t:'o',x:'  Parsing...    ✓  2 transfers, 1 set',d:160},
+  {t:'o',x:'  Compiling...  ✓  16 instructions',d:160},
+  {t:'o',x:'  Executing...',d:200},
+  {t:'o',x:'    @client:user → @courses:0587 [DZD.2 5000]',d:160},
+  {t:'o',x:'    @courses:0587 → 90% @chauffeur + 10% @plateforme',d:160},
+  {t:'k',x:'  ✓ 200 {"ok":true}',d:280},
+  {t:'p',x:'curl localhost:3068/market/accounts/@chauffeur:user',d:420},
+  {t:'k',x:'  {"address":"@chauffeur:user","balances":{"DZD.2":4500}}',d:0},
 ];
-const tB=document.getElementById('termBody');let tSt=false;
-new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting&&!tSt){tSt=true;doTerm(0)}})},{threshold:.3}).observe(tB);
+const termBody=document.getElementById('termBody');
+let termStarted=false;
+new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting&&!termStarted){termStarted=true;doTerm(0)}});
+},{threshold:.3}).observe(termBody);
 function doTerm(i){
-  if(i>=tLines.length){const c=document.createElement('span');c.className='tcur';tB.appendChild(c);setTimeout(()=>{tB.innerHTML='';doTerm(0)},4000);return}
+  if(i>=tLines.length){
+    const c=document.createElement('span');c.className='tcur';termBody.appendChild(c);
+    setTimeout(()=>{termBody.innerHTML='';doTerm(0)},4500);return;
+  }
   const l=tLines[i],d=document.createElement('div');d.className='tl';
-  if(l.t==='p')d.innerHTML=`<span class="tp">❯</span> <span class="tc">${l.x}</span>`;
-  else d.innerHTML=`<span class="${{p:'tp',o:'to',k:'tok',d:'tdm'}[l.t]}">${l.x}</span>`;
-  tB.appendChild(d);tB.scrollTop=tB.scrollHeight;
-  setTimeout(()=>doTerm(i+1),l.d+130);
+  const cls={p:'tp',o:'to',k:'tok',d:'tdm'};
+  d.innerHTML=l.t==='p'
+    ?`<span class="tp">❯</span> <span class="tc">${l.x}</span>`
+    :`<span class="${cls[l.t]}">${l.x}</span>`;
+  termBody.appendChild(d);termBody.scrollTop=termBody.scrollHeight;
+  setTimeout(()=>doTerm(i+1),l.d+120);
 }
 
-// ═══════════════════════════════════════════════
-//  LEDGER — 2 scenarios
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  REACT-FLOW STYLE GRAPH — 2 scenarios, L→R marching dots
+// ═══════════════════════════════════════════════════════════════
+(function(){
+  const canvas=document.getElementById('rfCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=Math.min(devicePixelRatio,2);
+  let W=0,H=0;
+
+  function resize(){
+    W=canvas.offsetWidth;H=canvas.offsetHeight||520;
+    canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);
+    canvas.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    buildLayout();
+  }
+  new ResizeObserver(resize).observe(canvas.parentElement);
+
+  // ── 2 scenarios — positions as {fx,fy} fractions of canvas W/H ──
+  const NW=145,NH=80; // fixed node size — never scaled
+
+  const SCENARIOS=[
+    {
+      name:'MARKETPLACE · VTC',
+      nodes:[
+        {id:'world',  label:'@world',           sub:'source · illimité',    type:'source',  color:'#3b82f6'},
+        {id:'banque', label:'@banque:reserve',   sub:'réserve centrale',     type:'account', color:'#2563eb'},
+        {id:'alice',  label:'@wallet:alice',     sub:'utilisateur',          type:'wallet',  color:'#60a5fa'},
+        {id:'split',  label:'split 90/10',       sub:'allotment',            type:'op',      color:'#f59e0b'},
+        {id:'yanis',  label:'@chauffeur:user',   sub:'90% → +4 500 DA',      type:'account', color:'#4ade80'},
+        {id:'frais',  label:'@plateforme:frais', sub:'10% → +500 DA',        type:'account', color:'#f97316'},
+        {id:'ledger', label:'Committed ✓',       sub:'2 transfers · atomic', type:'ledger',  color:'#a78bfa'},
+      ],
+      edges:[
+        {from:'world',  to:'banque', label:'[DZD.2 30000]'},
+        {from:'banque', to:'alice',  label:'[DZD.2 10000]'},
+        {from:'alice',  to:'split',  label:'[DZD.2 5000]'},
+        {from:'split',  to:'yanis',  label:'90%'},
+        {from:'split',  to:'frais',  label:'10%'},
+        {from:'yanis',  to:'ledger', label:'commit'},
+        {from:'frais',  to:'ledger', label:'commit'},
+      ],
+      // Absolute fractional positions {fx: % of W, fy: % of H for node center}
+      // step=18% @ W=1100 → gap=53px between nodes
+      pos:{
+        world: {fx:0.01, fy:0.50},
+        banque:{fx:0.19, fy:0.50},
+        alice: {fx:0.37, fy:0.50},
+        split: {fx:0.55, fy:0.50},
+        yanis: {fx:0.71, fy:0.20},
+        frais: {fx:0.71, fy:0.78},
+        ledger:{fx:0.84, fy:0.50},
+      },
+      seq:['world','banque','alice','split','yanis','frais','ledger'],
+    },
+    {
+      name:'BANQUE · CASCADE',
+      nodes:[
+        {id:'w1',   label:'@wallet:user',   sub:'1 000 DA · drainé 1er',  type:'source',  color:'#3b82f6'},
+        {id:'c1',   label:'@credit:user',   sub:'2 000 DA · drainé 2ème', type:'source',  color:'#6366f1'},
+        {id:'wld',  label:'@world',         sub:'fallback · non utilisé', type:'fallback',color:'#475569'},
+        {id:'cmd',  label:'@commande:0089', sub:'reçoit 3 000 DA',        type:'account', color:'#8b5cf6'},
+        {id:'vend', label:'@vendeur:user',  sub:'transfer [DZD.2 *]',     type:'account', color:'#10b981'},
+        {id:'meta', label:'set metadata',   sub:'"ref"="CMD-0089"',       type:'meta',    color:'#f59e0b'},
+        {id:'ledg', label:'Committed ✓',   sub:'1 transfer · atomic',    type:'ledger',  color:'#a78bfa'},
+      ],
+      edges:[
+        {from:'w1',  to:'cmd',  label:'1 000 DA'},
+        {from:'c1',  to:'cmd',  label:'2 000 DA'},
+        {from:'wld', to:'cmd',  label:'—', fallback:true},
+        {from:'cmd', to:'vend', label:'[DZD.2 *]'},
+        {from:'vend',to:'meta', label:''},
+        {from:'meta',to:'ledg', label:''},
+      ],
+      // Left col 3 nodes stacked, then 4 right cols at ~18% steps
+      pos:{
+        w1:  {fx:0.01, fy:0.18},
+        c1:  {fx:0.01, fy:0.50},
+        wld: {fx:0.01, fy:0.82},
+        cmd: {fx:0.25, fy:0.50},
+        vend:{fx:0.46, fy:0.50},
+        meta:{fx:0.65, fy:0.50},
+        ledg:{fx:0.83, fy:0.50},
+      },
+      seq:['w1','c1','wld','cmd','vend','meta','ledg'],
+    },
+  ];
+
+  let scIdx=0,nodes=[],edges=[];
+  let activeStep=-1,doneSet=new Set(),stepInt=null;
+  let tick=0;
+
+  function buildLayout(){
+    const sc=SCENARIOS[scIdx];
+    // Direct fractional positioning — no scaling conflicts ever
+    nodes=sc.nodes.map(n=>{
+      const{fx,fy}=sc.pos[n.id];
+      const nx=fx*W;
+      const ny=fy*H-NH/2;
+      const existing=nodes.find(e=>e.id===n.id);
+      return{...n,
+        x:nx,y:ny,
+        cx:existing?existing.cx:nx,
+        cy:existing?existing.cy:ny,
+        w:NW,h:NH,
+        pulsePhase:existing?existing.pulsePhase:Math.random()*Math.PI*2,
+        alpha:existing?existing.alpha:0,
+      };
+    });
+    edges=sc.edges.map(e=>({...e}));
+    document.getElementById('rfScenario').textContent=sc.name;
+  }
+
+    let sceneFadeOut=0; // 0=visible, >0=fading out
+  let sceneFadeIn=0;  // 0=hidden, 1=visible
+  let globalAlphaScale=1; // multiplied into all node/edge alpha
+
+  function startAnim(){
+    if(stepInt)clearInterval(stepInt);
+    activeStep=0;doneSet=new Set();
+    // Reset all node alphas to 0 for fade-in
+    nodes.forEach(n=>{n.alpha=0});
+    sceneFadeIn=0;
+    const seq=SCENARIOS[scIdx].seq;
+    stepInt=setInterval(()=>{
+      if(activeStep<seq.length-1){doneSet.add(seq[activeStep]);activeStep++;}
+      else{
+        doneSet.add(seq[activeStep]);clearInterval(stepInt);
+        // Pause at committed, then fade out
+        setTimeout(()=>{
+          // Fade out: animate globalAlphaScale from 1 to 0 over 600ms
+          const fadeStart=performance.now();
+          const fadeDur=600;
+          function fadeOutTick(now){
+            const p=Math.min(1,(now-fadeStart)/fadeDur);
+            globalAlphaScale=1-p;
+            if(p<1){requestAnimationFrame(fadeOutTick)}
+            else{
+              // Switch scenario and fade back in
+              scIdx=(scIdx+1)%SCENARIOS.length;
+              buildLayout();
+              doneSet=new Set();activeStep=-1;
+              globalAlphaScale=0;
+              const fadeIn=performance.now();
+              function fadeInTick(now){
+                const p2=Math.min(1,(now-fadeIn)/fadeDur);
+                globalAlphaScale=p2;
+                if(p2<1){requestAnimationFrame(fadeInTick)}
+                else{
+                  globalAlphaScale=1;
+                  setTimeout(startAnim,300);
+                }
+              }
+              requestAnimationFrame(fadeInTick);
+            }
+          }
+          requestAnimationFrame(fadeOutTick);
+        },2000);
+      }
+    },700);
+  }
+
+  let rfStarted=false;
+  new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting&&!rfStarted){rfStarted=true;setTimeout(startAnim,600);}
+  },{threshold:.2}).observe(canvas);
+
+  // ── Grid background ──
+  function drawGrid(){
+    const dark=document.documentElement.dataset.theme==='dark';
+    ctx.strokeStyle=dark?'rgba(59,130,246,0.05)':'rgba(37,99,235,0.05)';
+    ctx.lineWidth=1;
+    const step=36;
+    for(let x=0;x<W;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+    for(let y=0;y<H;y+=step){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+    ctx.fillStyle=dark?'rgba(59,130,246,0.07)':'rgba(37,99,235,0.07)';
+    for(let x=0;x<W;x+=step)for(let y=0;y<H;y+=step){
+      ctx.beginPath();ctx.arc(x,y,.9,0,Math.PI*2);ctx.fill();
+    }
+  }
+
+  // ── Cubic bezier ──
+  function cb(t,p0,p1,p2,p3){
+    const m=1-t;
+    return{x:m*m*m*p0.x+3*m*m*t*p1.x+3*m*t*t*p2.x+t*t*t*p3.x,
+           y:m*m*m*p0.y+3*m*m*t*p1.y+3*m*t*t*p2.y+t*t*t*p3.y};
+  }
+
+  // ── Edge points — uses cx/cy (smooth animated position) ──
+  function edgePts(fn,tn){
+    const nx=fn.cx??fn.x,ny=fn.cy??fn.y;
+    const tx2=tn.cx??tn.x,ty2=tn.cy??tn.y;
+    const dy=(ty2+tn.h/2)-(ny+fn.h/2);
+    const isUp=dy<-20,isDown=dy>20;
+    const GAP=6; // gap from node border
+    let ax,ay,bx,by,cp1,cp2;
+    if(isDown){
+      // exit bottom-center of from, enter top-center of to
+      ax=nx+fn.w/2; ay=ny+fn.h+GAP;
+      bx=tx2+tn.w/2; by=ty2-GAP;
+      const hm=(ay+by)/2;
+      cp1={x:ax,y:hm};cp2={x:bx,y:hm};
+    } else if(isUp){
+      // exit right of from, enter bottom-center of to
+      ax=nx+fn.w+GAP; ay=ny+fn.h/2;
+      bx=tx2+tn.w/2;  by=ty2+tn.h+GAP;
+      const mx=(ax+bx)/2;
+      cp1={x:mx,y:ay};cp2={x:mx,y:by};
+    } else {
+      // horizontal: exit right, enter left
+      ax=nx+fn.w+GAP; ay=ny+fn.h/2;
+      bx=tx2-GAP;      by=ty2+tn.h/2;
+      const mx=(ax+bx)/2;
+      cp1={x:mx,y:ay};cp2={x:mx,y:by};
+    }
+    return{ax,ay,bx,by,cp1,cp2};
+  }
+
+  // ── Draw edges with L→R marching dots ──
+  function drawEdges(){
+    const dark=document.documentElement.dataset.theme==='dark';
+    const now=performance.now();
+    const sc=SCENARIOS[scIdx];
+
+    edges.forEach(e=>{
+      const fn=nodes.find(n=>n.id===e.from),tn=nodes.find(n=>n.id===e.to);
+      if(!fn||!tn)return;
+      const{ax,ay,bx,by,cp1,cp2}=edgePts(fn,tn);
+
+      const fromDone=doneSet.has(e.from)||activeStep>=0&&sc.seq[activeStep]===e.from;
+      const toDone=doneSet.has(e.to)||activeStep>=0&&sc.seq[activeStep]===e.to;
+      const lit=fromDone&&toDone;
+      const isFallback=e.fallback||false;
+
+      // Marching dots L→R: ((i - march) % cycle + cycle) % cycle
+      const STEPS=80,CYCLE=18,DASH=2.2;
+      const speed=lit?0.038:0.018;
+      const march=(now*speed)%CYCLE;
+      const dotR=lit?1.9:1.1;
+      // Get node alpha for edge fade-in
+      const nodeA=Math.min(fn.alpha||1,tn.alpha||1);
+      const gScale=typeof globalAlphaScale!=='undefined'?globalAlphaScale:1;
+      const baseA=(lit?(isFallback?.18:.85):(dark?.22:.16))*nodeA*gScale;
+
+      for(let i=0;i<=STEPS;i++){
+        const pos_in_c=((i-march)%CYCLE+CYCLE)%CYCLE;
+        if(pos_in_c>DASH)continue;
+        const t=i/STEPS;
+        const p=cb(t,{x:ax,y:ay},cp1,cp2,{x:bx,y:by});
+        const edgeF=clamp(Math.min(t,1-t)*6,0,1);
+        const fadeC=1-pos_in_c/DASH*.3;
+        const a=baseA*edgeF*fadeC;
+        ctx.beginPath();ctx.arc(p.x,p.y,dotR,0,Math.PI*2);
+        ctx.fillStyle=lit
+          ?(isFallback?`rgba(71,85,105,${a})`:(dark?`rgba(96,165,250,${a})`:`rgba(37,99,235,${a})`))
+          :(dark?`rgba(59,130,246,${a})`:`rgba(37,99,235,${a})`);
+        ctx.fill();
+      }
+
+      // Arrowhead
+      const ep=cb(.88,{x:ax,y:ay},cp1,cp2,{x:bx,y:by});
+      const ang=Math.atan2(by-ep.y,bx-ep.x);
+      const as=lit?6:4.5;
+      ctx.strokeStyle=lit
+        ?(dark?`rgba(96,165,250,.65)`:`rgba(37,99,235,.65)`)
+        :(dark?`rgba(59,130,246,.22)`:`rgba(37,99,235,.22)`);
+      ctx.lineWidth=lit?1.5:1;
+      ctx.beginPath();
+      ctx.moveTo(bx,by);
+      ctx.lineTo(bx-as*Math.cos(ang-.42),by-as*Math.sin(ang-.42));
+      ctx.moveTo(bx,by);
+      ctx.lineTo(bx-as*Math.cos(ang+.42),by-as*Math.sin(ang+.42));
+      ctx.stroke();
+
+      // Label
+      if(e.label){
+        const mid=cb(.5,{x:ax,y:ay},cp1,cp2,{x:bx,y:by});
+        ctx.font='9px JetBrains Mono,monospace';
+        ctx.fillStyle=lit
+          ?(dark?'rgba(147,197,253,.9)':'rgba(37,99,235,.85)')
+          :(dark?'rgba(96,165,250,.38)':'rgba(37,99,235,.35)');
+        ctx.textAlign='center';
+        ctx.fillText(e.label,mid.x,mid.y-7);
+      }
+    });
+  }
+
+  // ── Draw nodes — uses cx/cy animated position, fade-in via alpha ──
+  function drawNodes(){
+    const dark=document.documentElement.dataset.theme==='dark';
+    const sc=SCENARIOS[scIdx];
+    nodes.forEach(n=>{
+      n.cx=n.cx===undefined?n.x:lerp(n.cx,n.x,.08);
+      n.cy=n.cy===undefined?n.y:lerp(n.cy,n.y,.08);
+      n.alpha=Math.min(1,(n.alpha||0)+.04);
+      const effectiveAlpha=(n.alpha||0)*(typeof globalAlphaScale!=='undefined'?globalAlphaScale:1);
+
+      n.pulsePhase+=.018;
+      const isActive=activeStep>=0&&sc.seq[activeStep]===n.id;
+      const isDone=doneSet.has(n.id);
+      const pulse=isActive?(1+.022*Math.sin(n.pulsePhase)):1;
+      const{w,h}=n;
+      const ncx=n.cx+w/2,ncy=n.cy+h/2;
+
+      ctx.save();
+      ctx.globalAlpha=effectiveAlpha;
+      ctx.translate(ncx,ncy);ctx.scale(pulse,pulse);ctx.translate(-w/2,-h/2);
+
+      if(isActive&&dark){ctx.shadowColor=n.color;ctx.shadowBlur=22;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;}
+
+      // Card background
+      ctx.fillStyle=dark
+        ?(isActive?'rgba(6,12,28,1)':'rgba(8,14,26,0.97)')
+        :(isActive?'rgba(235,243,255,1)':'rgba(255,255,255,0.98)');
+      rrPath(0,0,w,h,6);ctx.fill();
+
+      // Border
+      ctx.strokeStyle=isActive?n.color:(dark?'rgba(59,130,246,.18)':'rgba(37,99,235,.15)');
+      ctx.lineWidth=isActive?2:1;
+      rrPath(0,0,w,h,6);ctx.stroke();
+      ctx.shadowBlur=0;
+
+      // Top color strip
+      ctx.fillStyle=n.color+(isActive?'ff':'bb');
+      rrTopPath(0,0,w,3,6);ctx.fill();
+
+      // Left accent dot
+      ctx.beginPath();ctx.arc(12,h-16,4,0,Math.PI*2);
+      ctx.fillStyle=n.color+(isActive?'ff':'cc');ctx.fill();
+
+      // ── Internal layout (top→bottom) ──
+      // Zone 1: badge + checkmark  [y: 6–20]
+      // Zone 2: label              [y: 28–40]
+      // Zone 3: sub                [y: 44–54]
+      ctx.save();
+      rrPath(2,2,w-4,h-4,5);ctx.clip(); // clip to card interior
+
+      const badgeMap={source:'SOURCE',account:'COMPTE',wallet:'WALLET',op:'SPLIT',ledger:'COMMITTED',fallback:'FALLBACK',meta:'METADATA'};
+      const badge=badgeMap[n.type]||n.type.toUpperCase();
+
+      // Badge pill — top left
+      ctx.font='600 8px JetBrains Mono,monospace';
+      const bw=ctx.measureText(badge).width+10;
+      rrFill(8,7,bw,14,2,n.color+(isActive?'55':'28'));
+      ctx.fillStyle=n.color+'ff';
+      ctx.textAlign='left';
+      ctx.fillText(badge,11,18);
+
+      // Checkmark — top right
+      if(isDone&&!isActive){
+        ctx.font='bold 11px sans-serif';ctx.fillStyle='#10b981';
+        ctx.textAlign='right';ctx.fillText('✓',w-8,18);
+      }
+
+      // Separator
+      ctx.strokeStyle=dark?'rgba(59,130,246,.1)':'rgba(37,99,235,.08)';
+      ctx.lineWidth=.5;
+      ctx.beginPath();ctx.moveTo(8,25);ctx.lineTo(w-8,25);ctx.stroke();
+
+      // Label — fixed 12px, vertically centered in remaining space
+      ctx.font='700 12px JetBrains Mono,monospace';
+      ctx.fillStyle=isActive?'#ffffff':(dark?'rgba(225,238,255,.98)':'rgba(8,18,40,.98)');
+      ctx.textAlign='left';
+      ctx.fillText(trunc(n.label,16),9,h/2+4);
+
+      // Sub — fixed 9px
+      ctx.font='400 9px JetBrains Mono,monospace';
+      ctx.fillStyle=dark?(isActive?'rgba(147,197,253,.88)':'rgba(115,145,195,.72)'):'rgba(50,70,110,.72)';
+      ctx.fillText(trunc(n.sub,22),9,h/2+18);
+
+      ctx.restore();
+      ctx.restore();
+    });
+  }
+
+  function rrPath(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath()}
+  function rrTopPath(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h);ctx.lineTo(x,y+h);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath()}
+  function rrFill(x,y,w,h,r,fill){ctx.save();rrPath(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();ctx.restore()}
+  function trunc(s,n){return s.length>n?s.slice(0,n-1)+'…':s}
+
+  function rfLoop(){
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.globalAlpha=1;
+    tick++;
+    drawEdges();
+    drawNodes();
+    requestAnimationFrame(rfLoop);
+  }
+  resize();rfLoop();
+})();
+
+// ═══ LEDGER INTERACTIVE ═══
 const scenarios=[
-  {name:'MARKETPLACE · VTC',
-   accounts:[{name:'@banque:reserve',bal:0,max:30000},{name:'@wallet:alice',bal:0,max:20000},{name:'@chauffeur:yanis',bal:0,max:10000},{name:'@plateforme:frais',bal:0,max:2000}],
-   nodes:[{name:'@world',sub:'émission',left:'1%',top:'75px'},{name:'@banque',sub:'réserve',left:'17%',top:'75px'},{name:'@wallet:alice',sub:'utilisateur',left:'35%',top:'75px'},{name:'@chauffeur',sub:'90% · yanis',left:'56%',top:'25px'},{name:'@plateforme',sub:'10% · frais',left:'56%',top:'130px'},{name:'Settled ✓',sub:'payout',left:'82%',top:'75px'}],
+  {name:'MARKETPLACE · VTC · DZD',
+   accounts:[{name:'@banque:reserve',bal:0,max:30000},{name:'@wallet:alice',bal:0,max:20000},{name:'@chauffeur:user',bal:0,max:10000},{name:'@plateforme:frais',bal:0,max:2000}],
+   nodes:[{name:'@world',sub:'émission',left:'1%',top:'75px'},{name:'@banque',sub:'réserve',left:'17%',top:'75px'},{name:'@wallet:alice',sub:'utilisateur',left:'35%',top:'75px'},{name:'@chauffeur',sub:'90% · yanis',left:'56%',top:'20px'},{name:'@plateforme',sub:'10% · frais',left:'56%',top:'130px'},{name:'Settled ✓',sub:'payout',left:'80%',top:'75px'}],
    steps:[
      {lbl:'Émission @world → @banque:reserve [30 000 DA]',code:`<span style="color:var(--t3)">// 1. Émission initiale</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">30000</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@world</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@banque:reserve</span>\n)`,ch:{'@banque:reserve':30000},fl:[0,1]},
      {lbl:'Recharge @banque → @wallet:alice [20 000 DA]',code:`<span style="color:var(--t3)">// 2. Recharge wallet</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">20000</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@banque:reserve</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@wallet:alice</span>\n)`,ch:{'@banque:reserve':-20000,'@wallet:alice':20000},fl:[1,2]},
-     {lbl:'Split 90% → @chauffeur · 10% → @plateforme',code:`<span style="color:var(--t3)">// 3. Paiement avec split</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">10000</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@wallet:alice</span>\n  <span style="color:var(--code-kw)">to</span> {\n    <span style="color:var(--code-num)">90/100</span> <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@chauffeur:yanis</span>\n    <span style="color:var(--code-num)">10/100</span> <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@plateforme:frais</span>\n  }\n)`,ch:{'@wallet:alice':-10000,'@chauffeur:yanis':9000,'@plateforme:frais':1000},fl:[2,3,4]},
-     {lbl:'Payout @chauffeur → @world [transfer all]',code:`<span style="color:var(--t3)">// 4. Payout chauffeur</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">*</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@chauffeur:yanis</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@world</span>\n)\n\n<span style="color:var(--code-kw)">set transaction metadata</span>\n  <span style="color:var(--code-str)">"ref"</span> = <span style="color:var(--code-str)">"PAY-2026-001"</span>`,ch:{'@chauffeur:yanis':-9000},fl:[3,5]},
+     {lbl:'Split 90% → @chauffeur · 10% → @plateforme',code:`<span style="color:var(--t3)">// 3. Paiement avec split</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">10000</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@wallet:alice</span>\n  <span style="color:var(--code-kw)">to</span> {\n    <span style="color:var(--code-num)">90/100</span> <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@chauffeur:user</span>\n    <span style="color:var(--code-num)">10/100</span> <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@plateforme:frais</span>\n  }\n)`,ch:{'@wallet:alice':-10000,'@chauffeur:user':9000,'@plateforme:frais':1000},fl:[2,3,4]},
+     {lbl:'Payout @chauffeur → @world [transfer all]',code:`<span style="color:var(--t3)">// 4. Payout final</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">*</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@chauffeur:user</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@world</span>\n)\n\n<span style="color:var(--code-kw)">set transaction metadata</span>\n  <span style="color:var(--code-str)">"ref"</span> = <span style="color:var(--code-str)">"PAY-2026-001"</span>`,ch:{'@chauffeur:user':-9000},fl:[3,5]},
    ]},
-  {name:'BANQUE · CASCADE',
-   accounts:[{name:'@wallet:ameziane',bal:1000,max:3000},{name:'@credit:ameziane',bal:2000,max:3000},{name:'@commande:0089',bal:0,max:3000},{name:'@vendeur:yanis',bal:0,max:3000}],
+  {name:'BANQUE · CASCADE · DZD',
+   accounts:[{name:'@wallet:user',bal:1000,max:3000},{name:'@credit:user',bal:2000,max:3000},{name:'@commande:0089',bal:0,max:3000},{name:'@vendeur:user',bal:0,max:3000}],
    nodes:[{name:'@wallet',sub:'1 000 DA',left:'1%',top:'75px'},{name:'@credit',sub:'2 000 DA',left:'18%',top:'75px'},{name:'@world',sub:'non utilisé',left:'35%',top:'75px'},{name:'@commande',sub:'destination',left:'53%',top:'75px'},{name:'@vendeur',sub:'bénéficiaire',left:'70%',top:'75px'},{name:'Settled ✓',sub:'réconcilié',left:'87%',top:'75px'}],
    steps:[
-     {lbl:'@wallet drainé en 1er → 1 000 DA vers @commande',code:`<span style="color:var(--t3)">// Cascade ordonnée</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">3000</span>] (\n  <span style="color:var(--code-kw)">from</span> {\n    <span style="color:var(--code-str)">@wallet:ameziane</span>  <span style="color:var(--t3)">// ← drainé 1er</span>\n    <span style="color:var(--code-str)">@credit:ameziane</span>  <span style="color:var(--t3)">// ← drainé 2ème</span>\n    <span style="color:var(--code-str)">@world</span>            <span style="color:var(--t3)">// ← fallback</span>\n  }\n  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@commande:0089</span>\n)`,ch:{'@wallet:ameziane':-1000,'@commande:0089':1000},fl:[0,3]},
-     {lbl:'@credit drainé ensuite → 2 000 DA vers @commande',code:`<span style="color:var(--t3)">// @wallet épuisé (1 000 drainé)</span>\n<span style="color:var(--t3)">// @credit prend le relais (2 000 drainé)</span>\n<span style="color:var(--t3)">// @world non utilisé (montant atteint)</span>\n<span style="color:var(--t3)">// ─────────────────────────────────</span>\n<span style="color:var(--t3)">// 1 000 + 2 000 = 3 000 DA  ✓</span>`,ch:{'@credit:ameziane':-2000,'@commande:0089':2000},fl:[1,3]},
-     {lbl:'@commande → @vendeur [transfer all]',code:`<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">*</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@commande:0089</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@vendeur:yanis</span>\n)`,ch:{'@commande:0089':-3000,'@vendeur:yanis':3000},fl:[3,4]},
-     {lbl:'✓ Tous les soldes réconciliés',code:`<span style="color:var(--green)">// ✓ @wallet:ameziane    0 DA  (drainé)</span>\n<span style="color:var(--green)">// ✓ @credit:ameziane    0 DA  (drainé)</span>\n<span style="color:var(--green)">// ✓ @world              —     (non utilisé)</span>\n<span style="color:var(--green)">// ✓ @commande:0089      0 DA  (transféré)</span>\n<span style="color:var(--green)">// ✓ @vendeur:yanis  3 000 DA  (reçu)</span>`,ch:{},fl:[4,5]},
+     {lbl:'@wallet drainé en 1er → 1 000 DA',code:`<span style="color:var(--t3)">// Cascade ordonnée</span>\n<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">3000</span>] (\n  <span style="color:var(--code-kw)">from</span> {\n    <span style="color:var(--code-str)">@wallet:user</span>  <span style="color:var(--t3)">// ← 1er</span>\n    <span style="color:var(--code-str)">@credit:user</span>  <span style="color:var(--t3)">// ← 2ème</span>\n    <span style="color:var(--code-str)">@world</span>            <span style="color:var(--t3)">// ← fallback</span>\n  }\n  <span style="color:var(--code-kw)">to</span> <span style="color:var(--code-str)">@commande:0089</span>\n)`,ch:{'@wallet:user':-1000,'@commande:0089':1000},fl:[0,3]},
+     {lbl:'@credit drainé → 2 000 DA (@world non utilisé)',code:`<span style="color:var(--t3)">// 1 000 + 2 000 = 3 000 DA ✓</span>\n<span style="color:var(--t3)">// @world non utilisé</span>`,ch:{'@credit:user':-2000,'@commande:0089':2000},fl:[1,3]},
+     {lbl:'@commande → @vendeur [transfer all]',code:`<span style="color:var(--code-kw)">transfer</span> [<span style="color:var(--code-str)">DZD.2</span> <span style="color:var(--code-num)">*</span>] (\n  <span style="color:var(--code-kw)">from</span> <span style="color:var(--code-str)">@commande:0089</span>\n  <span style="color:var(--code-kw)">to</span>   <span style="color:var(--code-str)">@vendeur:user</span>\n)`,ch:{'@commande:0089':-3000,'@vendeur:user':3000},fl:[3,4]},
+     {lbl:'✓ Soldes réconciliés',code:`<span style="color:var(--green)">// ✓ @wallet:user    0 DA</span>\n<span style="color:var(--green)">// ✓ @credit:user    0 DA</span>\n<span style="color:var(--green)">// ✓ @world              — (non utilisé)</span>\n<span style="color:var(--green)">// ✓ @vendeur:user  3 000 DA</span>`,ch:{},fl:[4,5]},
    ]},
 ];
-const aE=document.getElementById('accounts'),cE=document.getElementById('farlCode'),fL=document.getElementById('flowLabel'),fSc=document.getElementById('flowScenario');
-let fN=document.querySelectorAll('.fn'),curSc=0,curSt=0,curAcc=[];
-function rA(){let h='';for(const a of curAcc){const p=Math.min(100,Math.abs(a.bal)/a.max*100);h+=`<div class="ar" data-n="${a.name}" style="padding-left:4px"><span class="an">${a.name}</span><span class="ab">${a.bal===0?'0':a.bal.toLocaleString('fr-DZ')+' DA'}</span><div class="abar"><div class="abf" style="width:${p}%"></div></div></div>`}aE.innerHTML=h}
-function setFN(sc){fN.forEach((n,i)=>{const c=sc.nodes[i];n.querySelector('.fn-name').textContent=c.name;n.querySelector('.fn-sub').textContent=c.sub;n.style.left=c.left;n.style.top=c.top;n.classList.remove('act')});fSc.textContent='▸ '+sc.name}
-function initSc(sc){curAcc=sc.accounts.map(a=>({...a,bal:a.bal||0}));if(sc===scenarios[1]){curAcc[0].bal=1000;curAcc[1].bal=2000}setFN(sc);rA()}
-function runTx(){const sc=scenarios[curSc],step=sc.steps[curSt];if(curSt===0)initSc(sc);for(const[k,v]of Object.entries(step.ch)){const a=curAcc.find(x=>x.name===k);if(a)a.bal+=v}cE.innerHTML=step.code;rA();aE.querySelectorAll('.ar[data-n]').forEach(r=>{if(step.ch[r.dataset.n]){r.classList.add('act');setTimeout(()=>r.classList.remove('act'),1400)}});fN.forEach(n=>n.classList.remove('act'));fL.textContent=step.lbl;fL.classList.add('act');setTimeout(()=>fL.classList.remove('act'),3500);if(step.fl){step.fl.forEach((fi,i)=>setTimeout(()=>fN[fi].classList.add('act'),i*280));for(let i=0;i<step.fl.length-1;i++)setTimeout(()=>mkP(step.fl[i],step.fl[i+1]),i*320)}curSt++;if(curSt>=sc.steps.length){curSt=0;curSc=(curSc+1)%scenarios.length}}
-function mkP(fi,ti){const cv=document.getElementById('flowCanvas'),f=fN[fi],t=fN[ti];if(!f||!t)return;const p=document.createElement('div');p.style.cssText=`position:absolute;width:5px;height:5px;background:var(--accent);border-radius:50%;box-shadow:0 0 12px var(--accent),0 0 20px var(--accent-glow);z-index:10;transition:all .9s cubic-bezier(.4,0,.2,1);`;p.style.left=(f.offsetLeft+f.offsetWidth/2)+'px';p.style.top=(f.offsetTop+f.offsetHeight/2)+'px';cv.appendChild(p);requestAnimationFrame(()=>{p.style.left=(t.offsetLeft+t.offsetWidth/2)+'px';p.style.top=(t.offsetTop+t.offsetHeight/2)+'px'});setTimeout(()=>p.remove(),1100)}
-initSc(scenarios[0]);cE.innerHTML=`<span style="color:var(--t3)">// En attente...</span>\n<span style="color:var(--code-kw)">corren</span> run market ledger.farl`;
-setTimeout(()=>{runTx();setInterval(runTx,4200)},2000);
+
+const acctEl=document.getElementById('accounts'),codeEl=document.getElementById('farlCode');
+let curSc=0,curSt=0,curAcc=[];
+
+function renderAccounts(){
+  let h='';
+  for(const a of curAcc){
+    const p=Math.min(100,Math.abs(a.bal)/a.max*100);
+    h+=`<div class="ar" data-n="${a.name}"><span class="an">${a.name}</span><span class="ab">${a.bal===0?'0':a.bal.toLocaleString('fr-DZ')+' DA'}</span><div class="abar"><div class="abf" style="width:${p}%"></div></div></div>`;
+  }
+  acctEl.innerHTML=h;
+}
+function setFlowNodes(sc){/* removed */}
+function initScenario(sc){
+  curAcc=sc.accounts.map(a=>({...a,bal:a.bal||0}));
+  if(sc===scenarios[1]){curAcc[0].bal=1000;curAcc[1].bal=2000}
+  setFlowNodes(sc);renderAccounts();
+}
+
+function runTx(){
+  const sc=scenarios[curSc],step=sc.steps[curSt];
+  if(curSt===0)initScenario(sc);
+  for(const[k,v]of Object.entries(step.ch)){const a=curAcc.find(x=>x.name===k);if(a)a.bal+=v}
+  codeEl.innerHTML=step.code;renderAccounts();
+  acctEl.querySelectorAll('.ar[data-n]').forEach(r=>{
+    if(step.ch[r.dataset.n]){r.classList.add('act');setTimeout(()=>r.classList.remove('act'),1400)}
+  });
+  curSt++;
+  if(curSt>=sc.steps.length){curSt=0;curSc=(curSc+1)%scenarios.length}
+}
+
+initScenario(scenarios[0]);
+codeEl.innerHTML=`<span style="color:var(--t3)">// En attente...</span>\n<span style="color:var(--code-kw)">corren</span> run market ledger.farl`;
+setTimeout(()=>{runTx();setInterval(runTx,4400)},2200);
 
 // ═══ SPINNERS ═══
-const s1=['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'],s2=['┌──┐\n│  │\n└──┘','╔══╗\n║  ║\n└──┘','╔══╗\n║  ║\n╚══╝','╔══╗\n║✓ ║\n╚══╝'],s3=[']····[\n]····[',']·*··[\n]····[',']··*·[\n]·*··[',']····[\n]··*·['],s4=['[__________]','[████______]','[███████___]','[██████████]'];
-let si=0;setInterval(()=>{si++;document.getElementById('sp1').textContent=s1[si%s1.length]+' lexing';document.getElementById('sp2').textContent=s2[si%s2.length];document.getElementById('sp3').textContent=s3[si%s3.length];document.getElementById('sp4').textContent=s4[si%s4.length]},250);
+const sp1f=['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
+const sp2f=['┌──┐\n│  │\n└──┘','╔══╗\n║  ║\n└──┘','╔══╗\n║  ║\n╚══╝','╔══╗\n║✓ ║\n╚══╝'];
+const sp3f=[']····[\n]····[',']·*··[\n]····[',']··*·[\n]·*··[',']····[\n]··*·['];
+const sp4f=['[__________]','[████______]','[███████___]','[██████████]'];
+let si=0;
+setInterval(()=>{
+  si++;
+  document.getElementById('sp1').textContent=sp1f[si%sp1f.length]+' lexing';
+  document.getElementById('sp2').textContent=sp2f[si%sp2f.length];
+  document.getElementById('sp3').textContent=sp3f[si%sp3f.length];
+  document.getElementById('sp4').textContent=sp4f[si%sp4f.length];
+},250);
 
 // ═══ PIPELINE ═══
-const stg=document.querySelectorAll('.ps');let pI=0,pR=false;const pSt=document.getElementById('pipeS');
-new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting&&!pR){pR=true;runPipe()}})},{threshold:.3}).observe(document.getElementById('pipeB'));
-function runPipe(){stg.forEach(s=>s.classList.remove('act','dn'));pI=0;pSt.textContent='running...';pSt.style.color='var(--accent-b)';stepP()}
-function stepP(){if(pI>0){stg[pI-1].classList.remove('act');stg[pI-1].classList.add('dn')}if(pI>=stg.length){pSt.textContent='✓ committed';pSt.style.color='var(--green)';setTimeout(runPipe,3000);return}stg[pI].classList.add('act');pI++;setTimeout(stepP,650)}
+const pipeStages=document.querySelectorAll('.ps');
+let pipeIdx=0,pipeRunning=false;
+const pipeStatus=document.getElementById('pipeS');
+new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting&&!pipeRunning){pipeRunning=true;runPipe()}});
+},{threshold:.3}).observe(document.getElementById('pipeB'));
+function runPipe(){
+  pipeStages.forEach(s=>s.classList.remove('act','dn'));
+  pipeIdx=0;pipeStatus.textContent='running...';pipeStatus.style.color='var(--accent-b)';
+  stepPipe();
+}
+function stepPipe(){
+  if(pipeIdx>0){pipeStages[pipeIdx-1].classList.remove('act');pipeStages[pipeIdx-1].classList.add('dn')}
+  if(pipeIdx>=pipeStages.length){
+    pipeStatus.textContent='✓ committed';pipeStatus.style.color='var(--green)';
+    setTimeout(runPipe,3200);return;
+  }
+  pipeStages[pipeIdx].classList.add('act');pipeIdx++;setTimeout(stepPipe,660);
+}
 
 // ═══ STATS ═══
-new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.stat').forEach(s=>s.classList.add('vis'))}})},{threshold:.5}).observe(document.querySelector('.stats'));
+new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)document.querySelectorAll('.stat').forEach(s=>s.classList.add('vis'))});
+},{threshold:.5}).observe(document.querySelector('.stats'));
 
 // ═══ CTA BG ═══
-const cB=document.getElementById('ctaBg');function uCB(){let t='';for(let i=0;i<200;i++)t+=RC()+((i%80===79)?'\n':' ');cB.textContent=t}uCB();setInterval(uCB,180);
+const ctaBg=document.getElementById('ctaBg');
+function updateCta(){let t='';for(let i=0;i<200;i++)t+=RC()+((i%80===79)?'\n':' ');ctaBg.textContent=t}
+updateCta();setInterval(updateCta,200);
 
 // ═══ EXAMPLE TABS ═══
-document.querySelectorAll('.ex-tab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.ex-tab').forEach(t=>t.classList.remove('a'));tab.classList.add('a');document.querySelectorAll('.ex-panel').forEach(p=>p.classList.remove('vis'));document.querySelector(`[data-panel="${tab.dataset.ex}"]`).classList.add('vis')})});
-document.querySelectorAll('.ex-inner-tab').forEach(tab=>{tab.addEventListener('click',()=>{const g=tab.closest('.ex-block');g.querySelectorAll('.ex-inner-tab').forEach(t=>t.classList.remove('a'));tab.classList.add('a');g.querySelectorAll('.ex-code').forEach(c=>c.classList.remove('vis'));g.querySelector(`[data-ic="${tab.dataset.it}"]`).classList.add('vis')})});
+document.querySelectorAll('.ex-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.ex-tab').forEach(t=>t.classList.remove('a'));
+    tab.classList.add('a');
+    document.querySelectorAll('.ex-panel').forEach(p=>p.classList.remove('vis'));
+    document.querySelector(`[data-panel="${tab.dataset.ex}"]`).classList.add('vis');
+  });
+});
+document.querySelectorAll('.ex-inner-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    const g=tab.closest('.ex-block');
+    g.querySelectorAll('.ex-inner-tab').forEach(t=>t.classList.remove('a'));
+    tab.classList.add('a');
+    g.querySelectorAll('.ex-code').forEach(c=>c.classList.remove('vis'));
+    g.querySelector(`[data-ic="${tab.dataset.it}"]`).classList.add('vis');
+  });
+});
 
-// ═══════════════════════════════════════════════════════════
-//  THREE.JS ISOMETRIC HERO ANIMATION
-// ═══════════════════════════════════════════════════════════
-const cvs=document.getElementById('isoCanvas');
-const sTxt=document.getElementById('sTxt'),hTx=document.getElementById('hudTx'),hFill=document.getElementById('hudFill');
+// ═══════════════════════════════════════════════════════════════
+//  THREE.JS ISOMETRIC HERO — blocks always solid (no clipping)
+// ═══════════════════════════════════════════════════════════════
+const isoCvs=document.getElementById('isoCanvas');
+const sTxtEl=document.getElementById('sTxt');
+const hudTxEl=document.getElementById('hudTx'),hudFillEl=document.getElementById('hudFill');
 
 const scene=new THREE.Scene();
 const clock=new THREE.Clock();
 
-// Responsive resize
-function resize3(){
-  const W=cvs.parentElement.clientWidth,H=cvs.parentElement.clientHeight;
-  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  const a=W/H;camera.left=-CAM_D*a;camera.right=CAM_D*a;camera.top=CAM_D;camera.bottom=-CAM_D;camera.updateProjectionMatrix();
-}
-const CAM_D=11;
+const CAM_D=12;
 const camera=new THREE.OrthographicCamera(-CAM_D*1.7,CAM_D*1.7,CAM_D,-CAM_D,.1,300);
 camera.position.set(20,20,20);camera.lookAt(0,2,0);
-const renderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
-renderer.localClippingEnabled=true;renderer.setClearColor(0,0);
+
+const renderer=new THREE.WebGLRenderer({canvas:isoCvs,antialias:true,alpha:true});
+renderer.setClearColor(0,0);
+
+function resize3(){
+  const W=isoCvs.parentElement.clientWidth,H=isoCvs.parentElement.clientHeight;
+  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const a=W/H;camera.left=-CAM_D*a;camera.right=CAM_D*a;
+  camera.top=CAM_D;camera.bottom=-CAM_D;camera.updateProjectionMatrix();
+}
 resize3();window.addEventListener('resize',resize3);
 
 // Lights
-scene.add(new THREE.AmbientLight(0x8aaed8,.65));
-const sun=new THREE.DirectionalLight(0xffffff,.9);sun.position.set(15,22,12);scene.add(sun);
-const fill3=new THREE.DirectionalLight(0x3b82f6,.35);fill3.position.set(-12,5,-8);scene.add(fill3);
+scene.add(new THREE.AmbientLight(0x8aaed8,.85));
+const sun=new THREE.DirectionalLight(0xffffff,1.1);sun.position.set(15,22,12);scene.add(sun);
+const fill3=new THREE.DirectionalLight(0x3b82f6,.4);fill3.position.set(-12,5,-8);scene.add(fill3);
+const rim=new THREE.DirectionalLight(0x60a5fa,.2);rim.position.set(0,-5,15);scene.add(rim);
 
-// Scan plane (shows fill where y <= scanLevel)
-let scanLvl=-2;
-const scanPlane=new THREE.Plane(new THREE.Vector3(0,-1,0),-2);
-
-// Box factory
+// ── isoBox: NO clipping plane — always solid ──
 function isoBox(w,h,d,solidColor,wireOpacity=.45,fillOpacity=.9){
-  const g=new THREE.Group();const geo=new THREE.BoxGeometry(w,h,d);
-  const fill=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({color:solidColor,shininess:25,transparent:true,opacity:fillOpacity,clippingPlanes:[scanPlane]}));
-  g.add(fill);
-  const wire=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0x60a5fa,transparent:true,opacity:wireOpacity}));
+  const g=new THREE.Group(),geo=new THREE.BoxGeometry(w,h,d);
+  // Fill material — no clippingPlanes, always visible
+  const fillMat=new THREE.MeshPhongMaterial({color:solidColor,shininess:30,transparent:true,opacity:fillOpacity});
+  g.add(new THREE.Mesh(geo,fillMat));
+  const wire=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:wireOpacity}));
   g.add(wire);
-  g.userData={fillMat:fill.material,wireMat:wire.material,h};
+  g.userData={fillMat,h};
   return g;
 }
 
 // Platform
 (()=>{
-  const g=new THREE.Group();const t=0.22,w=20,d=14;
+  const g=new THREE.Group(),t=0.22,w=22,d=15;
   g.add(new THREE.Mesh(new THREE.BoxGeometry(w,t,d),new THREE.MeshPhongMaterial({color:0x050c1a,opacity:.95,transparent:true})));
   g.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,t,d)),new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:.18})));
-  // Corner accents
   [[w/2-.5,-d/2+.5],[w/2-.5,d/2-.5],[-w/2+.5,-d/2+.5],[-w/2+.5,d/2-.5]].forEach(([ax,az])=>{
     const am=new THREE.MeshPhongMaterial({color:0x3b82f6});
-    const m1=new THREE.Mesh(new THREE.BoxGeometry(.7,t+.02,.15),am);m1.position.set(ax,0,az);g.add(m1);
-    const m2=new THREE.Mesh(new THREE.BoxGeometry(.15,t+.02,.7),am.clone());m2.position.set(ax,0,az);g.add(m2);
+    [new THREE.BoxGeometry(.7,t+.02,.15),new THREE.BoxGeometry(.15,t+.02,.7)].forEach((geo,gi)=>{
+      const m=new THREE.Mesh(geo,gi===0?am:am.clone());m.position.set(ax,0,az);g.add(m);
+    });
   });
-  // Grid lines
   const lm=new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:.06});
-  for(let z=-6;z<=6;z+=2){const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-w/2,t/2+.01,z),new THREE.Vector3(w/2,t/2+.01,z)]),lm.clone());g.add(ln)}
-  for(let x=-9;x<=9;x+=2){const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,t/2+.01,-d/2),new THREE.Vector3(x,t/2+.01,d/2)]),lm.clone());g.add(ln)}
+  for(let z=-7;z<=7;z+=2){g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-w/2,t/2+.01,z),new THREE.Vector3(w/2,t/2+.01,z)]),lm.clone()))}
+  for(let x=-10;x<=10;x+=2){g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,t/2+.01,-d/2),new THREE.Vector3(x,t/2+.01,d/2)]),lm.clone()))}
   scene.add(g);
 })();
 
-// Central CORREN ledger block
+// Floating rings (atmosphere)
+const rings=[];
+for(let i=0;i<3;i++){
+  const r=new THREE.Mesh(
+    new THREE.TorusGeometry(3.5+i*2,.02,8,64),
+    new THREE.MeshBasicMaterial({color:0x3b82f6,transparent:true,opacity:.055-i*.015})
+  );
+  r.rotation.x=Math.PI/2;r.position.y=.5+i*2;
+  scene.add(r);rings.push({mesh:r,sp:.003+i*.002,phase:i*1.05});
+}
+
+// Central ledger block
 const LEDGER_H=6;
-const ledger=isoBox(3,LEDGER_H,3,0x0a1a40,.6,.9);
-ledger.position.set(0,.11+LEDGER_H/2,0);ledger.scale.y=0;
+const ledger=isoBox(3.2,LEDGER_H,3.2,0x0a1a40,.65,.92);
+ledger.position.set(0,.11+LEDGER_H/2,0);
 scene.add(ledger);
 
-// Logo bars on top
-const logoH=[1.6,1.1,.7],logoBars=[];
-logoH.forEach((h,i)=>{
-  const b=isoBox(.55,h,.55,[0x3b82f6,0x2563eb,0x1e40af][i],.65,.95);
-  b.position.set([-0.85,.15,1][i],.11+LEDGER_H+h/2,0);b.scale.y=0;
-  scene.add(b);logoBars.push({mesh:b,h});
+// Logo bars
+const logoConfs=[{h:1.8,x:-.9,c:0x3b82f6},{h:1.2,x:.15,c:0x2563eb},{h:.75,x:1.1,c:0x1e40af}];
+const logoBars=logoConfs.map(({h,x,c})=>{
+  const b=isoBox(.6,h,.6,c,.7,.96);
+  b.position.set(x,.11+LEDGER_H+h/2,0);
+  scene.add(b);return{mesh:b,h};
 });
 
-// Node configs
+// Floating data cubes
+const dataCubes=[];
+for(let i=0;i<8;i++){
+  const s=.14+Math.random()*.18;
+  const c=new THREE.Mesh(
+    new THREE.BoxGeometry(s,s,s),
+    new THREE.MeshPhongMaterial({color:0x3b82f6,transparent:true,opacity:.2+Math.random()*.2,wireframe:Math.random()<.4})
+  );
+  const angle=Math.random()*Math.PI*2,radius=5+Math.random()*5;
+  c.position.set(Math.cos(angle)*radius,1+Math.random()*4,Math.sin(angle)*radius);
+  c.userData={angle,radius,sp:.005+Math.random()*.007,y0:c.position.y,phase:Math.random()*Math.PI*2};
+  scene.add(c);dataCubes.push(c);
+}
+
+// Account nodes — each color-coded by type
 const nodeCfgs=[
-  {x:-6.5,z:-2.5,w:2.4,h:4.2,d:2.4,c:0x071020,delay:.15,lbl:'@world'},
-  {x:-6,z:2.5,w:1.8,h:3.0,d:1.8,c:0x060e1c,delay:.5,lbl:'@client'},
-  {x:6,z:-3,w:2.1,h:4.0,d:2.1,c:0x071020,delay:.35,lbl:'@banque'},
-  {x:6,z:.5,w:1.7,h:2.8,d:1.7,c:0x060e1c,delay:.65,lbl:'@wallet:alice'},
-  {x:5.5,z:3.5,w:1.4,h:2.1,d:1.4,c:0x050b18,delay:.9,lbl:'@plateforme'},
+  // @world — blue (source illimité)
+  {x:-6.5,z:-2.5,w:2.4,h:4.2,d:2.4,c:0x0d2040,accent:0x3b82f6,lbl:'@world',sub:'source'},
+  // @client — indigo (wallet utilisateur)
+  {x:-6,z:2.5,w:1.8,h:3.0,d:1.8,c:0x10122a,accent:0x6366f1,lbl:'@client',sub:'wallet'},
+  // @banque — blue (réserve centrale)
+  {x:6,z:-3,w:2.1,h:4.0,d:2.1,c:0x0e1e3a,accent:0x2563eb,lbl:'@banque',sub:'réserve'},
+  // @wallet:alice — cyan (wallet)
+  {x:6,z:.5,w:1.7,h:2.8,d:1.7,c:0x0a1828,accent:0x60a5fa,lbl:'@wallet',sub:'utilisateur'},
+  // @plateforme — orange (commission)
+  {x:5.5,z:3.5,w:1.4,h:2.1,d:1.4,c:0x1a1008,accent:0xf97316,lbl:'@plateforme',sub:'frais'},
 ];
+
 nodeCfgs.forEach(cfg=>{
-  const bx=isoBox(cfg.w,cfg.h,cfg.d,cfg.c,.38,.88);
-  bx.position.set(cfg.x,.11+cfg.h/2,cfg.z);bx.scale.y=0;
-  bx.userData.delay=cfg.delay;bx.userData.baseY=.11+cfg.h/2;bx.userData.lbl=cfg.lbl;
+  const bx=isoBox(cfg.w,cfg.h,cfg.d,cfg.c,.38,.9);
+  bx.position.set(cfg.x,.11+cfg.h/2,cfg.z);
   scene.add(bx);cfg.mesh=bx;
-  // Label sprite
-  const cv2=document.createElement('canvas');cv2.width=256;cv2.height=56;
-  const ctx=cv2.getContext('2d');ctx.font='14px JetBrains Mono,monospace';ctx.fillStyle='#60a5fa';ctx.textAlign='center';ctx.fillText(cfg.lbl,128,36);
-  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv2),transparent:true,opacity:0}));
-  sp.scale.set(2.6,.55,1);sp.position.set(cfg.x,.11+cfg.h+.6,cfg.z);scene.add(sp);cfg.sprite=sp;
+
+  // Colored top-face indicator (accent stripe)
+  const topGeo=new THREE.BoxGeometry(cfg.w*.8,.06,cfg.d*.8);
+  const topMat=new THREE.MeshBasicMaterial({color:cfg.accent,transparent:true,opacity:.7});
+  const topMesh=new THREE.Mesh(topGeo,topMat);
+  topMesh.position.set(cfg.x,.11+cfg.h+.03,cfg.z);
+  scene.add(topMesh);
+
+  // Accent glow plane on top
+  const glowGeo=new THREE.PlaneGeometry(cfg.w*1.4,cfg.d*1.4);
+  const glowMat=new THREE.MeshBasicMaterial({color:cfg.accent,transparent:true,opacity:.08,side:THREE.DoubleSide});
+  const glowMesh=new THREE.Mesh(glowGeo,glowMat);
+  glowMesh.rotation.x=-Math.PI/2;glowMesh.position.set(cfg.x,.11+cfg.h+.1,cfg.z);
+  scene.add(glowMesh);
+
+  // Label sprite with type badge
+  const cv=document.createElement('canvas');cv.width=300;cv.height=72;
+  const ct=cv.getContext('2d');
+
+  // Badge background
+  const hex=cfg.accent.toString(16).padStart(6,'0');
+  ct.fillStyle=`#${hex}33`;
+  ct.beginPath();ct.roundRect(6,4,ct.canvas.width-12,24,4);ct.fill();
+
+  // Badge text
+  ct.font='bold 10px JetBrains Mono,monospace';
+  ct.fillStyle=`#${hex}`;
+  ct.textAlign='center';ct.fillText(cfg.sub.toUpperCase(),150,20);
+
+  // Main label
+  ct.font='13px JetBrains Mono,monospace';
+  ct.fillStyle='#93c5fd';
+  ct.fillText(cfg.lbl,150,48);
+
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,opacity:.85}));
+  sp.scale.set(3,.8,1);sp.position.set(cfg.x,.11+cfg.h+.85,cfg.z);
+  scene.add(sp);cfg.sprite=sp;
 });
-const ledgerLabel=(()=>{const cv2=document.createElement('canvas');cv2.width=256;cv2.height=56;const ctx=cv2.getContext('2d');ctx.font='bold 18px JetBrains Mono,monospace';ctx.fillStyle='#93c5fd';ctx.textAlign='center';ctx.fillText('CORREN',128,38);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv2),transparent:true,opacity:0}));sp.scale.set(2.8,.58,1);sp.position.set(0,.11+LEDGER_H+3.2,0);scene.add(sp);return sp})();
+
+// CORREN label
+const corrCv=document.createElement('canvas');corrCv.width=256;corrCv.height=56;
+const corrCt=corrCv.getContext('2d');corrCt.font='bold 18px JetBrains Mono,monospace';corrCt.fillStyle='#93c5fd';corrCt.textAlign='center';corrCt.fillText('CORREN',128,38);
+const ledgerLabel=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(corrCv),transparent:true,opacity:.88}));
+ledgerLabel.scale.set(2.8,.58,1);ledgerLabel.position.set(0,.11+LEDGER_H+3.2,0);
+scene.add(ledgerLabel);
 
 // Connection curves
-function makeCurve(p1,ctrl,p2,op=.14){
-  const pts=new THREE.QuadraticBezierCurve3(new THREE.Vector3(...p1),new THREE.Vector3(...ctrl),new THREE.Vector3(...p2)).getPoints(60);
-  const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:op}));
-  return l;
-}
-[makeCurve([-6.5,2.2,-2.5],[-3,.4,-1],[0,3,0]),makeCurve([-6,1.7,2.5],[-3,.4,1],[0,3,0]),makeCurve([0,3,0],[3,.4,-2],[6,2,- 3]),makeCurve([0,3,0],[3,.4,.2],[6,1.5,.5]),makeCurve([0,3,0],[2.5,.4,2],[5.5,1.2,3.5])].forEach(l=>scene.add(l));
+[[[-6.5,2.2,-2.5],[-3,.4,-1],[0,3,0]],[[-6,1.7,2.5],[-3,.4,1],[0,3,0]],[[0,3,0],[3,.4,-2],[6,2,-3]],[[0,3,0],[3,.4,.2],[6,1.5,.5]],[[0,3,0],[2.5,.4,2],[5.5,1.2,3.5]]].forEach(([p1,ctrl,p2])=>{
+  const pts2=new THREE.QuadraticBezierCurve3(new THREE.Vector3(...p1),new THREE.Vector3(...ctrl),new THREE.Vector3(...p2)).getPoints(60);
+  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts2),new THREE.LineBasicMaterial({color:0x3b82f6,transparent:true,opacity:.14})));
+});
 
-// Particles
-class Pt{
-  constructor(p1,c,p2,color=0x60a5fa){
-    const cv=new THREE.QuadraticBezierCurve3(new THREE.Vector3(...p1),new THREE.Vector3(...c),new THREE.Vector3(...p2));
-    this.cv=cv;this.t=0;this.sp=.004+Math.random()*.002;this.active=false;
-    this.m=new THREE.Mesh(new THREE.SphereGeometry(.09,8,8),new THREE.MeshBasicMaterial({color}));
-    const gm=new THREE.Mesh(new THREE.SphereGeometry(.17,8,8),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.28}));
-    this.m.add(gm);scene.add(this.m);this.m.visible=false;
-    this.trail=Array.from({length:4},(_,i)=>{const tm=new THREE.Mesh(new THREE.SphereGeometry(.07-i*.012,6,6),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.35-i*.07}));scene.add(tm);tm.visible=false;return tm});
+// Ambient particles
+const pGeo=new THREE.BufferGeometry();
+const pCount=100,pPos=new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){pPos[i*3]=(Math.random()-.5)*24;pPos[i*3+1]=Math.random()*8;pPos[i*3+2]=(Math.random()-.5)*18}
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+const pSystem=new THREE.Points(pGeo,new THREE.PointsMaterial({color:0x3b82f6,size:.055,transparent:true,opacity:.35}));
+scene.add(pSystem);
+
+// 3D moving particles
+class Pt3D{
+  constructor(p1,ctrl,p2,color=0x60a5fa){
+    const cv3=new THREE.QuadraticBezierCurve3(new THREE.Vector3(...p1),new THREE.Vector3(...ctrl),new THREE.Vector3(...p2));
+    this.cv=cv3;this.t=0;this.sp=.004+Math.random()*.002;this.active=false;
+    const g=new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(.1,8,8),new THREE.MeshBasicMaterial({color})));
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(.22,8,8),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.2})));
+    scene.add(g);this.m=g;this.m.visible=false;
+    this.trail=Array.from({length:5},(_,i)=>{const tm=new THREE.Mesh(new THREE.SphereGeometry(.08-i*.012,6,6),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.28-i*.05}));scene.add(tm);tm.visible=false;return tm});
   }
   start(delay=0){setTimeout(()=>{this.t=0;this.active=true;this.m.visible=true;this.trail.forEach(t=>t.visible=true)},delay)}
-  update(){if(!this.active)return;this.t+=this.sp;if(this.t>=1){this.active=false;this.m.visible=false;this.trail.forEach(t=>t.visible=false);return}this.m.position.copy(this.cv.getPoint(this.t));this.trail.forEach((t,i)=>{t.position.copy(this.cv.getPoint(Math.max(0,this.t-(i+1)*.04)))})}
+  update(){
+    if(!this.active)return;this.t+=this.sp;
+    if(this.t>=1){this.active=false;this.m.visible=false;this.trail.forEach(t=>t.visible=false);return}
+    this.m.position.copy(this.cv.getPoint(this.t));
+    this.trail.forEach((t,i)=>t.position.copy(this.cv.getPoint(Math.max(0,this.t-(i+1)*.04))));
+  }
 }
-const ptConfigs=[
-  [[-6.5,2.2,-2.5],[-3,.4,-1],[0,3,0]],[[-6,1.7,2.5],[-3,.4,1],[0,3,0]],
-  [[0,3,0],[3,.4,-2],[6,2,-3]],[[0,3,0],[3,.4,.2],[6,1.5,.5]],[[0,3,0],[2.5,.4,2],[5.5,1.2,3.5]],
-];
-const pts=ptConfigs.flatMap(([p1,c,p2])=>[new Pt(p1,c,p2),new Pt(p1,c,p2),new Pt(p1,c,p2)]);
+const pt3Ds=[[-6.5,2.2,-2.5],[-3,.4,-1],[0,3,0]].map(()=>null);
+const pts3d=[
+  [[-6.5,2.2,-2.5],[-3,.4,-1],[0,3,0]],
+  [[-6,1.7,2.5],[-3,.4,1],[0,3,0]],
+  [[0,3,0],[3,.4,-2],[6,2,-3]],
+  [[0,3,0],[3,.4,.2],[6,1.5,.5]],
+  [[0,3,0],[2.5,.4,2],[5.5,1.2,3.5]],
+].flatMap(([p1,c,p2])=>[new Pt3D(p1,c,p2),new Pt3D(p1,c,p2),new Pt3D(p1,c,p2)]);
 
-// Scan glow plane
+// Scan glow (recurring sweep)
 const sgMat=new THREE.MeshBasicMaterial({color:0x60a5fa,transparent:true,opacity:0,side:THREE.DoubleSide});
-const sgMesh=new THREE.Mesh(new THREE.PlaneGeometry(24,.05),sgMat);sgMesh.rotation.x=Math.PI/2;scene.add(sgMesh);
+const sgMesh=new THREE.Mesh(new THREE.PlaneGeometry(28,.06),sgMat);
+sgMesh.rotation.x=Math.PI/2;scene.add(sgMesh);
 
-// Build list
-const buildList=[
-  {m:ledger,delay:.6,H:LEDGER_H,baseY:.11+LEDGER_H/2},
-  ...logoBars.map((b,i)=>({m:b.mesh,delay:1.6+i*.2,H:b.h,baseY:.11+LEDGER_H+b.h/2})),
-  ...nodeCfgs.map(c=>({m:c.mesh,delay:c.delay,H:c.h,baseY:.11+c.h/2})),
-];
+// Animation states
+let animState=0,stTimer=0,txCnt=0;
+// State 0: idle loop with tx bursts + recurring scan
 
-// Animation state
-let state=0,stTimer=0,txCnt=0;
-const stDur=[3.5,.5,2.5,5,1.5,1];
-const stLbl=['building','ready','scanning','processing','committed ✓','resetting'];
-
-function launchTxBurst(){
-  pts[0].start(0);pts[3].start(200);pts[6].start(800);pts[7].start(900);pts[8].start(1000);
-  txCnt++;hTx.textContent=txCnt+' TX';hFill.style.width=Math.min(100,txCnt*8)+'%';
+function launchBurst(){
+  pts3d[0].start(0);pts3d[3].start(200);
+  pts3d[6].start(750);pts3d[7].start(900);pts3d[8].start(1050);
+  txCnt++;
+  hudTxEl.textContent=txCnt+' TX';
+  hudFillEl.style.width=Math.min(100,txCnt*7)+'%';
 }
 
-function animate(){
-  requestAnimationFrame(animate);
+function isoAnimate(){
+  requestAnimationFrame(isoAnimate);
   const dt=clock.getDelta();stTimer+=dt;
-  const t=Math.min(stTimer/stDur[state],1);
-  sTxt.textContent=stLbl[state];
+  const time=clock.elapsedTime;
+  sTxtEl.textContent='processing';
 
-  if(state===0){
-    buildList.forEach(({m,delay,H,baseY})=>{const lt=Math.max(0,(stTimer-delay)/1.5);m.scale.y=easeOut(Math.min(lt,1));m.position.y=baseY+(m.scale.y-1)*H*.5});
-    if(t>=1){state=1;stTimer=0}
-  }
-  else if(state===1){if(t>=1){state=2;stTimer=0;scanLvl=-2;scanPlane.constant=scanLvl}}
-  else if(state===2){
-    const sy=-2+easeIO(t)*9.5;scanLvl=sy;scanPlane.constant=sy;
-    sgMesh.position.y=sy;sgMat.opacity=.3*Math.sin(t*Math.PI);
-    const sp=easeIO(t);nodeCfgs.forEach(c=>{if(c.sprite&&sy>c.h*.5)c.sprite.material.opacity=Math.min(.85,(sy-c.h*.5)*.9)});
-    if(sy>LEDGER_H*.6)ledgerLabel.material.opacity=Math.min(.9,(sy-LEDGER_H*.6)*.7);
-    if(t>=1){state=3;stTimer=0;sgMat.opacity=0}
-  }
-  else if(state===3){
-    if(stTimer<.3)launchTxBurst();
-    if(stTimer>1.9&&stTimer<2.1)launchTxBurst();
-    if(stTimer>3.6&&stTimer<3.9)launchTxBurst();
-    pts.forEach(p=>p.update());
-    const pulse=1+.025*Math.sin(stTimer*6);ledger.scale.x=pulse;ledger.scale.z=pulse;
-    logoBars.forEach(b=>{b.mesh.scale.x=pulse;b.mesh.scale.z=pulse});
-    if(t>=1){state=4;stTimer=0}
-  }
-  else if(state===4){
-    pts.forEach(p=>p.update());
-    if(t>=1){state=5;stTimer=0}
-  }
-  else if(state===5){
-    nodeCfgs.forEach(c=>{if(c.sprite)c.sprite.material.opacity*=.96});
-    ledgerLabel.material.opacity*=.96;
-    if(t>=1){
-      state=0;stTimer=0;scanLvl=-2;scanPlane.constant=-2;sgMat.opacity=0;
-      buildList.forEach(({m,H,baseY})=>{m.scale.set(1,0,1);m.position.y=baseY-H*.5});
-      nodeCfgs.forEach(c=>{if(c.sprite)c.sprite.material.opacity=0});ledgerLabel.material.opacity=0;
-      ledger.scale.x=1;ledger.scale.z=1;logoBars.forEach(b=>{b.mesh.scale.x=1;b.mesh.scale.z=1});
-      pts.forEach(p=>{p.active=false;p.m.visible=false;p.trail.forEach(t=>t.visible=false)});
-    }
-  }
+  // Rings
+  rings.forEach(r=>{
+    r.mesh.rotation.z=time*r.sp*20;
+    r.mesh.position.y=.5+Math.sin(time*r.sp*3+r.phase)*.3;
+    r.mesh.material.opacity=.04+Math.sin(time*r.sp*5+r.phase)*.018;
+  });
+
+  // Floating cubes
+  dataCubes.forEach(c=>{
+    c.userData.angle+=c.userData.sp;
+    c.position.x=Math.cos(c.userData.angle)*c.userData.radius;
+    c.position.z=Math.sin(c.userData.angle)*c.userData.radius;
+    c.position.y=c.userData.y0+Math.sin(time*1.4+c.userData.phase)*.35;
+    c.rotation.x+=.01;c.rotation.y+=.014;
+  });
+
+  pSystem.rotation.y=time*.007;
+
+  // Ledger pulse
+  const pulse=1+.025*Math.sin(time*5);
+  ledger.scale.x=pulse;ledger.scale.z=pulse;
+  logoBars.forEach(b=>{b.mesh.scale.x=pulse;b.mesh.scale.z=pulse});
+
+  // TX bursts
+  if(stTimer<.25)launchBurst();
+  if(stTimer>2.2&&stTimer<2.45)launchBurst();
+  if(stTimer>4.4&&stTimer<4.65)launchBurst();
+  pts3d.forEach(p=>p.update());
+  if(stTimer>6.5){stTimer=0;txCnt=0;hudFillEl.style.width='0%';pts3d.forEach(p=>{p.active=false;p.m.visible=false;p.trail.forEach(t=>t.visible=false)})}
+
+  // Scan sweep every cycle
+  const scanT=stTimer%5;
+  if(scanT<2.2){
+    const sy=-2+easeIO(scanT/2.2)*10;
+    sgMesh.position.y=sy;sgMat.opacity=.28*Math.sin((scanT/2.2)*Math.PI);
+  } else {sgMat.opacity*=.9}
+
   renderer.render(scene,camera);
 }
-animate();
+isoAnimate();
 
-// Subtle mouse parallax
-let mx=0,my=0;
-document.addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2});
-setInterval(()=>{camera.position.x+=(20+mx*1.8-camera.position.x)*.025;camera.position.y+=(20-my*1.2-camera.position.y)*.025;camera.lookAt(0,2,0);camera.updateProjectionMatrix()},16);
+// Mouse parallax
+let mx3=0,my3=0;
+document.addEventListener('mousemove',e=>{mx3=(e.clientX/innerWidth-.5)*2;my3=(e.clientY/innerHeight-.5)*2});
+setInterval(()=>{
+  camera.position.x+=(20+mx3*2-camera.position.x)*.025;
+  camera.position.y+=(20-my3*1.5-camera.position.y)*.025;
+  camera.lookAt(0,2,0);camera.updateProjectionMatrix();
+},16);
 </script>
 </body>
 </html>
