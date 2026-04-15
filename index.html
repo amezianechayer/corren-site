@@ -330,7 +330,7 @@ footer a:hover{color:var(--accent-b)}
       <a href="./grammar.html" target="_blank">Grammaire</a>
     </div>
     <button class="tbtn" id="themeToggle">◐ Theme</button>
-    <button class="ncta">Accès anticipé →</button>
+    <a href="./access.html" class="ncta">Accès anticipé →</a>
   </div>
 </nav>
 
@@ -390,7 +390,7 @@ footer a:hover{color:var(--accent-b)}
     <div class="hbadge"><span class="dot"></span><span>Algérie · MENA · Afrique</span></div>
     <h1><span class="scramble" data-text="Infrastructure">Infrastructure</span><br><span class="scramble" data-text="financière">financière</span> <strong class="scramble" data-text="programmable.">programmable.</strong></h1>
     <p class="hsub">Composez n'importe quel flux financier, transformez-le en code, intégrez-le dans votre produit. Ne vous trompez plus jamais de solde.</p>
-    <div class="hbtns"><a href="#" class="btn-p">Commencer →</a><a href="#product" class="btn-g">Voir la démo</a></div>
+    <div class="hbtns"><a href="./access.html" class="btn-p">Commencer →</a><a href="#product" class="btn-g">Voir la démo</a></div>
   </div>
   <div class="scrl"><span>Scroll</span></div>
 </section>
@@ -658,7 +658,7 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
   <h2>Personne ne construit sa propre base de données.<br>Pourquoi construire celle de votre <em class="scramble" data-text="argent ?">argent ?</em></h2>
   <p class="cta-sub">Corren gère les soldes. Vous construisez le produit.</p>
   <div style="display:flex;gap:12px;justify-content:center;position:relative;z-index:1">
-    <a href="#" class="btn-p">Demander un accès →</a>
+    <a href="./access.html" class="btn-p">Demander un accès →</a>
     <a href="./docs.html" class="btn-g" target="_blank">Documentation</a>
   </div>
 </section>
@@ -667,7 +667,6 @@ HALT</div><div class="fi">→ VM intégrée</div><h3>Machine virtuelle</h3><p>Fa
   <span>© Corren 2026</span>
   <div style="display:flex;gap:20px">
     <a href="./docs.html">Docs</a>
-    <a href="https://github.com/amezianechayer/corren">GitHub</a>
     <a href="#">Contact</a>
   </div>
 </footer>
@@ -928,13 +927,10 @@ setInterval(()=>{
 
 // ═══ TERMINAL ═══
 const tLines=[
-  {t:'p',x:'git clone https://github.com/amezianechayer/corren',d:600},
-  {t:'o',x:"Cloning into 'corren'...",d:300},
-  {t:'k',x:'done.',d:180},
-  {t:'p',x:'cd corren && go build -o corren .',d:480},
-  {t:'d',x:'go: downloading dependencies...',d:380},
-  {t:'k',x:'Build complete.',d:180},
-  {t:'p',x:'sudo mv corren /usr/local/bin/',d:280},
+  {t:'p',x:'curl -sSL https://corren.io/install.sh | bash',d:600},
+  {t:'o',x:'  Fetching latest release...',d:300},
+  {t:'o',x:'  Installing corren v0.4.2...',d:380},
+  {t:'k',x:'  ✓ corren installed → /usr/local/bin/corren',d:280},
   {t:'p',x:'corren server start',d:420},
   {t:'o',x:'  Storage: sqlite  ~/.corren/data',d:160},
   {t:'o',x:'  HTTP:    127.0.0.1:3068',d:160},
